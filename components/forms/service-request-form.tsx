@@ -1,23 +1,44 @@
 "use client"
 
-import React from "react"
-import { useState } from "react"
+import React, { useRef, useState } from "react"
+import Link from "next/link"
+import { validateStepNativeFields } from "@/lib/form-wizard"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { CheckCircle } from "lucide-react"
+import { ArrowLeft, CheckCircle } from "lucide-react"
+
+const labelClass = "block text-sm font-medium text-[#333] mb-2"
 
 interface ServiceRequestFormProps {
   onSuccess?: () => void
+  /** Full-page route: thank-you screen includes “Back to Home”. */
+  showBackLinkOnSuccess?: boolean
 }
 
-export function ServiceRequestForm({ onSuccess }: ServiceRequestFormProps) {
+export function ServiceRequestForm({
+  onSuccess,
+  showBackLinkOnSuccess = false,
+}: ServiceRequestFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [step, setStep] = useState(0)
+  const step0Ref = useRef<HTMLDivElement>(null)
+  const step1Ref = useRef<HTMLDivElement>(null)
+
+  const stepTitles = ["Contact & request details", "Authorization"]
+
+  const goNext = () => {
+    if (!validateStepNativeFields(step0Ref.current)) return
+    setStep(1)
+  }
+
+  const goBack = () => setStep(0)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!validateStepNativeFields(step1Ref.current)) return
     setIsSubmitting(true)
     await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsSubmitting(false)
@@ -32,129 +53,207 @@ export function ServiceRequestForm({ onSuccess }: ServiceRequestFormProps) {
       <div className="text-center py-8">
         <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
         <h2 className="text-2xl font-serif text-[#8B2332] mb-2">Thank You!</h2>
-        <p className="text-[#333]">Your service request has been submitted. We will address your issue as soon as possible.</p>
+        <p className="text-[#333]">
+          Your service request has been submitted. Our maintenance team will contact you shortly.
+        </p>
+        {showBackLinkOnSuccess && (
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-[#8B2332] hover:underline mt-8"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Home
+          </Link>
+        )}
       </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
-            Tenant Name <span className="text-red-600">*</span>
-          </label>
-          <Input
-            placeholder="Tenant Name"
-            required
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
-        </div>
-        <div>
-          <label className="block text-[#c4a000] font-medium mb-2 text-sm">
-            Email <span className="text-red-600">*</span>
-          </label>
-          <Input
-            type="email"
-            placeholder="Email"
-            required
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
-            Cell <span className="text-red-600">*</span>
-          </label>
-          <Input
-            type="tel"
-            placeholder="Cell"
-            required
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
-        </div>
-        <div>
-          <label className="block text-[#c4a000] font-medium mb-2 text-sm">
-            Address <span className="text-red-600">*</span>
-          </label>
-          <Input
-            placeholder="Address"
-            required
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 pb-2 border-b border-[#d4c5b0]/60">
+        <p className="text-sm font-medium text-[#333]">
+          Step {step + 1} of 2
+          <span className="text-muted-foreground font-normal"> — {stepTitles[step]}</span>
+        </p>
+        <div
+          className="flex gap-1.5"
+          role="progressbar"
+          aria-valuenow={step + 1}
+          aria-valuemin={1}
+          aria-valuemax={2}
+        >
+          {[0, 1].map((i) => (
+            <span
+              key={i}
+              className={`h-1.5 flex-1 rounded-full min-w-[2.5rem] transition-colors ${
+                i <= step ? "bg-[#8B2332]" : "bg-[#d4c5b0]/80"
+              }`}
+            />
+          ))}
         </div>
       </div>
 
-      <div className="md:w-1/2">
-        <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
-          City <span className="text-red-600">*</span>
-        </label>
-        <Input
-          placeholder="City"
-          required
-          className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-        />
-      </div>
-
-      <div>
-        <label className="block text-[#c4a000] font-medium mb-2 text-sm">
-          Description <span className="text-red-600">*</span>
-        </label>
-        <Textarea
-          placeholder="Description"
-          required
-          rows={4}
-          className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-        />
-      </div>
-
-      {/* File uploads */}
-      <div className="space-y-4">
-        {[1, 2, 3, 4, 5].map((num) => (
-          <div key={num}>
-            <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
-              Upload File/Take Photo or Video
+      <div
+        ref={step0Ref}
+        className={step === 0 ? "space-y-6" : "hidden"}
+        aria-hidden={step !== 0}
+      >
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>
+              Tenant Name <span className="text-red-600">*</span>
             </label>
             <Input
-              type="file"
-              accept="image/*,video/*"
+              name="tenantName"
+              placeholder="Tenant Name"
+              required
+              autoComplete="name"
               className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
             />
           </div>
-        ))}
+          <div>
+            <label className={labelClass}>
+              Email <span className="text-red-600">*</span>
+            </label>
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email"
+              required
+              autoComplete="email"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>
+              Cell <span className="text-red-600">*</span>
+            </label>
+            <Input
+              name="cell"
+              type="tel"
+              placeholder="Cell"
+              required
+              autoComplete="tel"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>
+              Address <span className="text-red-600">*</span>
+            </label>
+            <Input
+              name="address"
+              placeholder="Address"
+              required
+              autoComplete="street-address"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+        </div>
+
+        <div className="md:w-1/2">
+          <label className={labelClass}>
+            City <span className="text-red-600">*</span>
+          </label>
+          <Input
+            name="city"
+            placeholder="City"
+            required
+            autoComplete="address-level2"
+            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Description <span className="text-red-600">*</span>
+          </label>
+          <Textarea
+            name="description"
+            placeholder="Description"
+            required
+            rows={4}
+            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+          />
+        </div>
+
+        <div className="space-y-4">
+          {[1, 2, 3, 4, 5, 6].map((num) => (
+            <div key={num}>
+              <label className={labelClass} htmlFor={`service-file-${num}`}>
+                Upload File/Take Photo or Video
+              </label>
+              <Input
+                id={`service-file-${num}`}
+                name={`attachment${num}`}
+                type="file"
+                accept="image/*,video/*,.pdf"
+                className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332] file:mr-3"
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Authorization */}
-      <div>
-        <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
-          Authorization <span className="text-red-600">*</span>
-        </label>
-        <RadioGroup defaultValue="granted" className="space-y-2">
-          <div className="flex items-start space-x-2">
-            <RadioGroupItem value="granted" id="auth-granted" className="mt-1" />
-            <label htmlFor="auth-granted" className="text-sm text-[#333]">
-              Permission granted to enter the premises in order to make repairs
-            </label>
-          </div>
-          <div className="flex items-start space-x-2">
-            <RadioGroupItem value="not-granted" id="auth-not-granted" className="mt-1" />
-            <label htmlFor="auth-not-granted" className="text-sm text-[#c4a000]">
-              Permission not granted to enter the premises in order to make repairs- please contact prior to entry and 24 hour notice is required
-            </label>
-          </div>
-        </RadioGroup>
+      <div
+        ref={step1Ref}
+        className={step === 1 ? "space-y-6" : "hidden"}
+        aria-hidden={step !== 1}
+      >
+        <div>
+          <label className={labelClass}>
+            Authorization <span className="text-red-600">*</span>
+          </label>
+          <RadioGroup defaultValue="granted" name="authorization" className="space-y-3">
+            <div className="flex items-start gap-2">
+              <RadioGroupItem value="granted" id="auth-granted" className="mt-1 shrink-0" />
+              <label htmlFor="auth-granted" className="text-sm text-[#333] leading-snug">
+                Permission granted to enter the premises in order to make repairs
+              </label>
+            </div>
+            <div className="flex items-start gap-2">
+              <RadioGroupItem value="not-granted" id="auth-not-granted" className="mt-1 shrink-0" />
+              <label htmlFor="auth-not-granted" className="text-sm text-[#333] leading-snug">
+                Permission not granted to enter the premises in order to make repairs- please
+                contact prior to entry and 24 hour notice is required
+              </label>
+            </div>
+          </RadioGroup>
+        </div>
       </div>
 
-      <div className="flex justify-center pt-4">
+      <div className="flex flex-col-reverse gap-3 pt-4 border-t border-[#d4c5b0]/50 sm:flex-row sm:items-center sm:justify-between">
         <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3"
+          type="button"
+          variant="outline"
+          className="border-[#8B2332] text-[#8B2332] hover:bg-[#8B2332]/10 sm:min-w-[100px]"
+          disabled={step === 0}
+          onClick={goBack}
         >
-          {isSubmitting ? "Submitting..." : "Submit Request"}
+          Back
         </Button>
+        <div className="flex justify-center gap-3 sm:justify-end">
+          {step < 1 ? (
+            <Button
+              type="button"
+              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
+              onClick={goNext}
+            >
+              Next
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Request"}
+            </Button>
+          )}
+        </div>
       </div>
     </form>
   )

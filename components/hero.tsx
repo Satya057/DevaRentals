@@ -44,13 +44,15 @@ export function Hero() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button 
-                asChild 
-                size="lg" 
-                variant="outline" 
-                className="border-white/60 text-white hover:bg-white/15 text-base px-8 bg-transparent"
+              <Button
+                asChild
+                size="lg"
+                className="bg-secondary text-secondary-foreground hover:bg-secondary/90 text-base px-8"
               >
-                <Link href="#landlords">For Landlords</Link>
+                <Link href="/rented-properties">
+                  Rented Property
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
             </div>
 

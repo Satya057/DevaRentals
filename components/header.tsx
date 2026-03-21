@@ -103,7 +103,7 @@ export function Header() {
                     {btn.label}
                   </button>
                 </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
+                <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
                   <DialogHeader className="px-6 pt-6 pb-0">
                     <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
                       {getFormTitle(btn.id)}
@@ -196,7 +196,7 @@ export function Header() {
                           {btn.label}
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
+                      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
                         <DialogHeader className="px-6 pt-6 pb-0">
                           <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
                             {getFormTitle(btn.id)}

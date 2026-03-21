@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Facebook, Twitter, Youtube, Instagram, Linkedin } 
 const quickLinks = [
   { href: "#home", label: "Home" },
   { href: "#about", label: "About Us" },
-  { href: "#landlords", label: "For Landlords" },
+  { href: "#landlords", label: "Rented Property" },
   { href: "#tenants", label: "For Tenants" },
   { href: "#contact", label: "Contact" },
 ]

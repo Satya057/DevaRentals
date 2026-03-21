@@ -1,8 +1,8 @@
 "use client"
 
-import React from "react"
-import { useState } from "react"
+import React, { useRef, useState } from "react"
 import { Input } from "@/components/ui/input"
+import { validateRadixCheckboxChecked, validateStepNativeFields } from "@/lib/form-wizard"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -16,9 +16,25 @@ interface RentalApplicationFormProps {
 export function RentalApplicationForm({ onSuccess }: RentalApplicationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [step, setStep] = useState(0)
+  const step0Ref = useRef<HTMLDivElement>(null)
+  const step1Ref = useRef<HTMLDivElement>(null)
+  const step2Ref = useRef<HTMLDivElement>(null)
+
+  const stepTitles = ["Property & applicant", "Co-applicant, tenancy & work", "Credit, contacts & agreement"]
+
+  const goNext = () => {
+    const root = step === 0 ? step0Ref.current : step1Ref.current
+    if (!validateStepNativeFields(root)) return
+    setStep((s) => Math.min(s + 1, 2))
+  }
+
+  const goBack = () => setStep((s) => Math.max(s - 1, 0))
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!validateStepNativeFields(step2Ref.current)) return
+    if (!validateRadixCheckboxChecked(step2Ref.current, "terms")) return
     setIsSubmitting(true)
     await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsSubmitting(false)
@@ -39,7 +55,31 @@ export function RentalApplicationForm({ onSuccess }: RentalApplicationFormProps)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 pb-2 border-b border-[#d4c5b0]/60">
+        <p className="text-sm font-medium text-[#333]">
+          Step {step + 1} of 3
+          <span className="text-muted-foreground font-normal"> — {stepTitles[step]}</span>
+        </p>
+        <div
+          className="flex gap-1.5"
+          role="progressbar"
+          aria-valuenow={step + 1}
+          aria-valuemin={1}
+          aria-valuemax={3}
+        >
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className={`h-1.5 flex-1 rounded-full min-w-[2.5rem] transition-colors ${
+                i <= step ? "bg-[#8B2332]" : "bg-[#d4c5b0]/80"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div ref={step0Ref} className={step === 0 ? "space-y-8" : "hidden"} aria-hidden={step !== 0}>
       {/* Your Personal Information */}
       <section>
         <h2 className="text-lg font-semibold text-[#333] mb-4">Your Personal Information</h2>
@@ -203,6 +243,9 @@ export function RentalApplicationForm({ onSuccess }: RentalApplicationFormProps)
         </div>
       </section>
 
+      </div>
+
+      <div ref={step1Ref} className={step === 1 ? "space-y-8" : "hidden"} aria-hidden={step !== 1}>
       {/* Co-Applicant's Personal Information */}
       <section>
         <h2 className="text-lg font-semibold text-[#1e3a5f] mb-4">Co-Applicant{"'"}s Personal Information (if applicable)</h2>
@@ -428,6 +471,9 @@ export function RentalApplicationForm({ onSuccess }: RentalApplicationFormProps)
         </div>
       </section>
 
+      </div>
+
+      <div ref={step2Ref} className={step === 2 ? "space-y-8" : "hidden"} aria-hidden={step !== 2}>
       {/* Credit History */}
       <section>
         <h2 className="text-lg font-semibold text-[#333] mb-4">Credit History Description</h2>
@@ -592,14 +638,37 @@ export function RentalApplicationForm({ onSuccess }: RentalApplicationFormProps)
         </div>
       </section>
 
-      <div className="flex justify-center pt-4">
+      </div>
+
+      <div className="flex flex-col-reverse gap-3 pt-4 border-t border-[#d4c5b0]/50 sm:flex-row sm:items-center sm:justify-between">
         <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3"
+          type="button"
+          variant="outline"
+          className="border-[#8B2332] text-[#8B2332] hover:bg-[#8B2332]/10 sm:min-w-[100px]"
+          disabled={step === 0}
+          onClick={goBack}
         >
-          {isSubmitting ? "Submitting..." : "Submit Application"}
+          Back
         </Button>
+        <div className="flex justify-center gap-3 sm:justify-end">
+          {step < 2 ? (
+            <Button
+              type="button"
+              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
+              onClick={goNext}
+            >
+              Next
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Application"}
+            </Button>
+          )}
+        </div>
       </div>
     </form>
   )
