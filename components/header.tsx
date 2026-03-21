@@ -100,7 +100,7 @@ export function Header() {
                 <DialogTrigger asChild>
                   <button
                     type="button"
-                    className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-medium hover:bg-secondary/90 transition-colors cursor-pointer"
+                    className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md text-sm font-semibold tracking-wide shadow-[inset_0_1px_0_rgba(255,255,255,0.22)] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:bg-secondary/88 hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)] transition-[background-color,text-shadow] cursor-pointer"
                   >
                     {btn.label}
                   </button>
