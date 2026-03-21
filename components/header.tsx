@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { BrandLogoMark } from "@/components/brand-logo-mark"
 import { LandlordInquiryForm } from "@/components/forms/landlord-inquiry-form"
 import { ScheduleViewingForm } from "@/components/forms/schedule-viewing-form"
 import { RentalApplicationForm } from "@/components/forms/rental-application-form"
@@ -125,14 +126,7 @@ export function Header() {
       <div className="w-[90%] mx-auto">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex flex-col items-center justify-center bg-primary text-primary-foreground p-2 rounded">
-              <div className="flex gap-0.5">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="w-1.5 h-4 bg-secondary rounded-t-sm" />
-                ))}
-              </div>
-              <div className="w-6 h-1 bg-secondary mt-0.5" />
-            </div>
+            <BrandLogoMark />
             <div className="flex flex-col">
               <span className="text-xl font-serif font-bold text-primary tracking-tight">DEVA RENTALS</span>
               <span className="text-[10px] text-muted-foreground tracking-widest uppercase">Property Management</span>

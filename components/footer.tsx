@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { BrandLogoMark } from "@/components/brand-logo-mark"
 import { Mail, Phone, MapPin, Facebook, Twitter, Youtube, Instagram, Linkedin } from "lucide-react"
 
 const quickLinks = [
@@ -33,14 +34,7 @@ export function Footer() {
           {/* Logo & Description */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-6">
-              <div className="flex flex-col items-center justify-center bg-primary text-primary-foreground p-2 rounded">
-                <div className="flex gap-0.5">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="w-1.5 h-4 bg-secondary rounded-t-sm" />
-                  ))}
-                </div>
-                <div className="w-6 h-1 bg-secondary mt-0.5" />
-              </div>
+              <BrandLogoMark />
               <div className="flex flex-col">
                 <span className="text-xl font-serif font-bold text-background tracking-tight">DEVA RENTALS</span>
                 <span className="text-[10px] text-background/60 tracking-widest uppercase">Property Management</span>
