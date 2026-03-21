@@ -136,7 +136,8 @@ export function Contact() {
                 >
                   <DialogTrigger asChild>
                     <button
-                      className="flex items-center gap-4 p-5 bg-muted rounded-xl hover:bg-primary/10 transition-colors group border border-transparent hover:border-primary/20 text-left w-full"
+                      type="button"
+                      className="flex items-center gap-4 p-5 bg-muted rounded-xl hover:bg-primary/10 transition-colors group border border-transparent hover:border-primary/20 text-left w-full cursor-pointer"
                     >
                       <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                         <IconComponent className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
