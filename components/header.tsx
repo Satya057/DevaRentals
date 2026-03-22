@@ -128,7 +128,9 @@ export function Header() {
           <Link href="/" className="flex items-center gap-3">
             <BrandLogoMark />
             <div className="flex flex-col">
-              <span className="text-xl font-serif font-bold text-primary tracking-tight">DEVA RENTALS</span>
+              <span className="brand-wordmark-chromatic-dark text-xl font-serif font-bold tracking-tight">
+                DEVA RENTALS
+              </span>
               <span className="text-[10px] text-muted-foreground tracking-widest uppercase">Property Management</span>
             </div>
           </Link>
