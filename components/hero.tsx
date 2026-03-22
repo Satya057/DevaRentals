@@ -39,7 +39,11 @@ export function Hero() {
                 size="lg" 
                 className="bg-secondary text-secondary-foreground hover:bg-secondary/90 text-base px-8"
               >
-                <Link href="#contact">
+                <Link
+                  href="https://www.rentfaster.ca/ab/edmonton/rentals/?l=11,53.5249,-113.47&user_ID=2236644"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Available Properties
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
