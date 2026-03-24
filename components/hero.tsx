@@ -17,7 +17,7 @@ const aboutBody =
   "For 10+ years, Deva Rentals has delivered rock-solid results for property owners across Edmonton. From single-family homes to condos and apartments, we don't just manage properties, we maximize your investment and protect your peace of mind."
 
 const heroFeatureCardClass =
-  "hero-motion-up group flex cursor-pointer items-center gap-2.5 rounded-lg border border-white/20 bg-card/95 px-2.5 py-2 shadow-lg backdrop-blur-md transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+  "hero-motion-up grid cursor-default grid-cols-[auto_1fr] items-center gap-3 rounded-lg border-2 border-primary/25 bg-card/95 px-3 py-2.5 shadow-lg shadow-black/10 ring-1 ring-white/60 backdrop-blur-md"
 
 export function Hero() {
   return (
@@ -66,25 +66,26 @@ export function Hero() {
               <Button
                 asChild
                 size="lg"
-                className="cursor-pointer bg-secondary px-8 text-base text-secondary-foreground transition-transform duration-200 hover:scale-[1.02] hover:bg-secondary/90 active:scale-[0.99]"
+                className="border-2 border-white/35 bg-secondary px-8 text-base font-semibold text-secondary-foreground shadow-lg ring-2 ring-black/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/50 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99]"
               >
                 <Link
                   href="https://www.rentfaster.ca/ab/edmonton/rentals/?l=11,53.5249,-113.47&user_ID=2236644"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="inline-flex items-center"
                 >
                   Available Properties
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 shrink-0 opacity-95" />
                 </Link>
               </Button>
               <Button
                 asChild
                 size="lg"
-                className="cursor-pointer bg-secondary px-8 text-base text-secondary-foreground transition-transform duration-200 hover:scale-[1.02] hover:bg-secondary/90 active:scale-[0.99]"
+                className="border-2 border-white/35 bg-secondary px-8 text-base font-semibold text-secondary-foreground shadow-lg ring-2 ring-black/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/50 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99]"
               >
-                <Link href="/rented-properties">
+                <Link href="/rented-properties" className="inline-flex items-center">
                   Rented Property
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 shrink-0 opacity-95" />
                 </Link>
               </Button>
             </div>
@@ -155,51 +156,39 @@ export function Hero() {
 
         {/* Three feature strips — alag-alag box, stats ke neeche, patli strip */}
         <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-2 lg:mt-5 lg:gap-2.5">
-          <Link
-            href="/forms/landlord"
-            className={heroFeatureCardClass}
-            style={{ ["--hero-d" as string]: "320ms" }}
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 transition-colors duration-300 group-hover:bg-primary/18">
+          <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "320ms" }}>
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
               <TrendingUp className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0 text-left">
-              <h3 className="text-sm font-semibold leading-tight text-foreground">Maximize ROI</h3>
-              <p className="text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <h3 className="text-sm font-semibold leading-snug text-foreground">Maximize ROI</h3>
+              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
                 Expert tenant management that boosts your rental income
               </p>
             </div>
-          </Link>
-          <Link
-            href="/forms/service"
-            className={heroFeatureCardClass}
-            style={{ ["--hero-d" as string]: "380ms" }}
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 transition-colors duration-300 group-hover:bg-primary/18">
+          </div>
+          <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "380ms" }}>
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
               <Clock className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0 text-left">
-              <h3 className="text-sm font-semibold leading-tight text-foreground">Fast Response</h3>
-              <p className="text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <h3 className="text-sm font-semibold leading-snug text-foreground">Fast Response</h3>
+              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
                 Lightning-fast maintenance through our trusted vendor network
               </p>
             </div>
-          </Link>
-          <Link
-            href="/#contact"
-            className={heroFeatureCardClass}
-            style={{ ["--hero-d" as string]: "440ms" }}
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 transition-colors duration-300 group-hover:bg-primary/18">
+          </div>
+          <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "440ms" }}>
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
               <Shield className="h-4 w-4 text-primary" />
             </div>
             <div className="min-w-0 text-left">
-              <h3 className="text-sm font-semibold leading-tight text-foreground">Legal Compliance</h3>
-              <p className="text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <h3 className="text-sm font-semibold leading-snug text-foreground">Legal Compliance</h3>
+              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
                 Stay bulletproof with Alberta rental law expertise
               </p>
             </div>
-          </Link>
+          </div>
         </div>
       </div>
     </section>

@@ -15,11 +15,15 @@ import {
 } from "@/components/ui/select"
 import { ArrowLeft, CheckCircle } from "lucide-react"
 import { validateStepNativeFields } from "@/lib/form-wizard"
+import {
+  formFieldLabelClass as labelForm,
+  formRadioOptionLabelClass as radioOptionLabel,
+} from "@/components/forms/form-label-styles"
 
-const labelPrimary = "block text-[#1e3a5f] font-medium mb-2 text-sm"
-const labelSecondary = "block text-[#1e6b35] font-medium mb-2 text-sm"
-const labelAccent = "block text-[#c4a000] font-medium mb-2 text-sm"
-const labelMaroon = "block text-[#8B2332] font-medium mb-2 text-sm"
+const labelPrimary = labelForm
+const labelSecondary = labelForm
+const labelAccent = labelForm
+const labelMaroon = labelForm
 
 const BEDROOM_OPTIONS: { value: string; label: string }[] = [
   { value: "1", label: "1" },
@@ -127,9 +131,7 @@ export function LandlordInquiryForm({
       </div>
 
       <div ref={step0Ref} className={step === 0 ? "space-y-6" : "hidden"} aria-hidden={step !== 0}>
-      {/* Full Name / 2nd Owner */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
+        <div className="min-w-0">
           <label className={labelPrimary}>
             Full Name <span className="text-red-600">*</span>
           </label>
@@ -140,73 +142,42 @@ export function LandlordInquiryForm({
             autoComplete="name"
             className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
           />
-          <p className="text-xs text-[#666] mt-1">
+          <p className="mt-1 text-xs text-[#666]">
             Please provide the full name of the registered landlord as it appears on the property
             title.
           </p>
         </div>
-        <div>
-          <label className={labelSecondary}>2nd Owner Full Name</label>
-          <Input
-            name="secondOwnerName"
-            placeholder="2nd Owner Full Name"
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
-        </div>
-      </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <label className={labelPrimary}>
-            Phone Number <span className="text-red-600">*</span>
-          </label>
-          <Input
-            name="phone"
-            type="tel"
-            placeholder="Phone Number"
-            required
-            autoComplete="tel"
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="min-w-0">
+            <label className={labelPrimary}>
+              Phone Number <span className="text-red-600">*</span>
+            </label>
+            <Input
+              name="phone"
+              type="tel"
+              placeholder="Phone Number"
+              required
+              autoComplete="tel"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+          <div className="min-w-0">
+            <label className={labelPrimary}>
+              Email <span className="text-red-600">*</span>
+            </label>
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email"
+              required
+              autoComplete="email"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
         </div>
-        <div>
-          <label className={labelSecondary}>2nd Owner Phone Number</label>
-          <Input
-            name="secondOwnerPhone"
-            type="tel"
-            placeholder="2nd Owner Phone Number"
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
-        </div>
-      </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <label className={labelPrimary}>
-            Email <span className="text-red-600">*</span>
-          </label>
-          <Input
-            name="email"
-            type="email"
-            placeholder="Email"
-            required
-            autoComplete="email"
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
-        </div>
-        <div>
-          <label className={labelSecondary}>2nd Owner Email</label>
-          <Input
-            name="secondOwnerEmail"
-            type="email"
-            placeholder="2nd Owner Email"
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
+        <div className="min-w-0">
           <label className={labelPrimary}>
             Property Address <span className="text-red-600">*</span>
           </label>
@@ -218,15 +189,35 @@ export function LandlordInquiryForm({
             className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
           />
         </div>
-        <div>
-          <label className={labelSecondary}>2nd Property Address</label>
-          <Input
-            name="secondPropertyAddress"
-            placeholder="If you have 2nd property, please enter address here."
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="min-w-0">
+            <label className={labelSecondary}>2nd Owner Full Name</label>
+            <Input
+              name="secondOwnerName"
+              placeholder="2nd Owner Full Name"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+          <div className="min-w-0">
+            <label className={labelSecondary}>2nd Owner Phone Number</label>
+            <Input
+              name="secondOwnerPhone"
+              type="tel"
+              placeholder="2nd Owner Phone Number"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+          <div className="min-w-0 sm:col-span-2 lg:col-span-1">
+            <label className={labelSecondary}>2nd Owner Email</label>
+            <Input
+              name="secondOwnerEmail"
+              type="email"
+              placeholder="2nd Owner Email"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
         </div>
-      </div>
       </div>
 
       <div ref={step1Ref} className={step === 1 ? "space-y-6" : "hidden"} aria-hidden={step !== 1}>
@@ -391,43 +382,43 @@ export function LandlordInquiryForm({
         <RadioGroup defaultValue="front-attach" className="flex flex-wrap gap-x-4 gap-y-2">
           <div className="flex items-center gap-2">
             <RadioGroupItem value="front-attach" id="front-attach" />
-            <label htmlFor="front-attach" className="text-sm text-[#333]">
+            <label htmlFor="front-attach" className={radioOptionLabel}>
               Front Attach Garage
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="lane-home" id="lane-home" />
-            <label htmlFor="lane-home" className="text-sm text-[#333]">
+            <label htmlFor="lane-home" className={radioOptionLabel}>
               Lane Home (Back Garage)
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="duplex" id="duplex" />
-            <label htmlFor="duplex" className="text-sm text-[#333]">
+            <label htmlFor="duplex" className={radioOptionLabel}>
               Duplex
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="townhouse" id="townhouse" />
-            <label htmlFor="townhouse" className="text-sm text-[#333]">
+            <label htmlFor="townhouse" className={radioOptionLabel}>
               Townhouse
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="apartment" id="apartment" />
-            <label htmlFor="apartment" className="text-sm text-[#333]">
+            <label htmlFor="apartment" className={radioOptionLabel}>
               Apartment
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="main-floor" id="main-floor" />
-            <label htmlFor="main-floor" className="text-sm text-[#333]">
+            <label htmlFor="main-floor" className={radioOptionLabel}>
               Main Floor
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="basement" id="basement" />
-            <label htmlFor="basement" className="text-sm text-[#333]">
+            <label htmlFor="basement" className={radioOptionLabel}>
               Basement
             </label>
           </div>
@@ -447,19 +438,19 @@ export function LandlordInquiryForm({
         <RadioGroup defaultValue="no" className="flex flex-wrap gap-4">
           <div className="flex items-center gap-2">
             <RadioGroupItem value="yes" id="pets-yes" />
-            <label htmlFor="pets-yes" className="text-sm text-[#333]">
+            <label htmlFor="pets-yes" className={radioOptionLabel}>
               Yes
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="no" id="pets-no" />
-            <label htmlFor="pets-no" className="text-sm text-[#333]">
+            <label htmlFor="pets-no" className={radioOptionLabel}>
               No
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="negotiable" id="pets-negotiable" />
-            <label htmlFor="pets-negotiable" className="text-sm text-[#333]">
+            <label htmlFor="pets-negotiable" className={radioOptionLabel}>
               Negotiable
             </label>
           </div>
@@ -488,31 +479,31 @@ export function LandlordInquiryForm({
         <RadioGroup defaultValue="single" className="flex flex-wrap gap-x-4 gap-y-2">
           <div className="flex items-center gap-2">
             <RadioGroupItem value="single" id="parking-single" />
-            <label htmlFor="parking-single" className="text-sm text-[#333]">
+            <label htmlFor="parking-single" className={radioOptionLabel}>
               Single Garage
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="double" id="parking-double" />
-            <label htmlFor="parking-double" className="text-sm text-[#333]">
+            <label htmlFor="parking-double" className={radioOptionLabel}>
               Double Garage
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="street" id="parking-street" />
-            <label htmlFor="parking-street" className="text-sm text-[#333]">
+            <label htmlFor="parking-street" className={radioOptionLabel}>
               Street Parking
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="covered" id="parking-covered" />
-            <label htmlFor="parking-covered" className="text-sm text-[#333]">
+            <label htmlFor="parking-covered" className={radioOptionLabel}>
               Covered Stall
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="underground" id="parking-underground" />
-            <label htmlFor="parking-underground" className="text-sm text-[#333]">
+            <label htmlFor="parking-underground" className={radioOptionLabel}>
               Under Ground
             </label>
           </div>
@@ -552,37 +543,37 @@ export function LandlordInquiryForm({
         <RadioGroup defaultValue="google" className="flex flex-wrap gap-x-4 gap-y-2">
           <div className="flex items-center gap-2">
             <RadioGroupItem value="facebook" id="hear-facebook" />
-            <label htmlFor="hear-facebook" className="text-sm text-[#333]">
+            <label htmlFor="hear-facebook" className={radioOptionLabel}>
               Facebook
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="google" id="hear-google" />
-            <label htmlFor="hear-google" className="text-sm text-[#333]">
+            <label htmlFor="hear-google" className={radioOptionLabel}>
               Google
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="website" id="hear-website" />
-            <label htmlFor="hear-website" className="text-sm text-[#333]">
+            <label htmlFor="hear-website" className={radioOptionLabel}>
               Website
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="instagram" id="hear-instagram" />
-            <label htmlFor="hear-instagram" className="text-sm text-[#333]">
+            <label htmlFor="hear-instagram" className={radioOptionLabel}>
               Instagram
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="referral" id="hear-referral" />
-            <label htmlFor="hear-referral" className="text-sm text-[#333]">
+            <label htmlFor="hear-referral" className={radioOptionLabel}>
               Friend Referral
             </label>
           </div>
           <div className="flex items-center gap-2">
             <RadioGroupItem value="others" id="hear-others" />
-            <label htmlFor="hear-others" className="text-sm text-[#333]">
+            <label htmlFor="hear-others" className={radioOptionLabel}>
               Others
             </label>
           </div>

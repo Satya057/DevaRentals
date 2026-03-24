@@ -8,8 +8,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ArrowLeft, CheckCircle } from "lucide-react"
-
-const labelClass = "block text-sm font-medium text-[#333] mb-2"
+import {
+  formFieldLabelClass as labelClass,
+  formRadioOptionLabelClass,
+} from "@/components/forms/form-label-styles"
 
 interface ServiceRequestFormProps {
   onSuccess?: () => void
@@ -210,13 +212,13 @@ export function ServiceRequestForm({
           <RadioGroup defaultValue="granted" name="authorization" className="space-y-3">
             <div className="flex items-start gap-2">
               <RadioGroupItem value="granted" id="auth-granted" className="mt-1 shrink-0" />
-              <label htmlFor="auth-granted" className="text-sm text-[#333] leading-snug">
+              <label htmlFor="auth-granted" className={formRadioOptionLabelClass}>
                 Permission granted to enter the premises in order to make repairs
               </label>
             </div>
             <div className="flex items-start gap-2">
               <RadioGroupItem value="not-granted" id="auth-not-granted" className="mt-1 shrink-0" />
-              <label htmlFor="auth-not-granted" className="text-sm text-[#333] leading-snug">
+              <label htmlFor="auth-not-granted" className={formRadioOptionLabelClass}>
                 Permission not granted to enter the premises in order to make repairs- please
                 contact prior to entry and 24 hour notice is required
               </label>

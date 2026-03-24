@@ -1,6 +1,5 @@
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
 import { WhyUs } from "@/components/why-us"
 import { Services } from "@/components/services"
 import { Testimonials } from "@/components/testimonials"
@@ -13,9 +12,8 @@ export default function Home() {
     <main className="min-h-screen">
       <Header />
       <Hero />
-      <About />
-      <WhyUs />
       <Services />
+      <WhyUs />
       <Testimonials />
       <CTA />
       <Contact />

@@ -9,6 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { validateRadixCheckboxChecked, validateStepNativeFields } from "@/lib/form-wizard"
+import {
+  formFieldLabelClass,
+  formFieldLabelClassMb3,
+  formRadioOptionLabelClass,
+} from "@/components/forms/form-label-styles"
 import { cn } from "@/lib/utils"
 
 const RENTFASTER_LISTINGS_URL =
@@ -125,10 +130,10 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       >
           {/* Your Personal Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-4">Your Personal Information</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Your Personal Information</h2>
             
             <div className="mb-6">
-              <h3 className="text-lg font-medium text-[#333] mb-3">Terms & Conditions</h3>
+              <h3 className="mb-3 text-lg font-semibold text-[#1c1917]">Terms & Conditions</h3>
               <div className="bg-white p-4 rounded border border-[#d4c5b0] text-sm text-[#555] space-y-3">
                 <p>MaxWell Excel Realty [The LANDLORD] is committed to safeguarding the personal information entrusted to us by the Applicant. Personal information means any information about an identifiable individual. This can include but is not limited to an individual{"'"}s name, home address and phone number, age, sex, marital or family status, financial information, educational history, or employment status. We manage your personal information in accordance with Alberta{"'"}s Personal Information Protection Act and other applicable laws. This policy applies to the LANDLORD and to any person providing services on our behalf.</p>
                 <p>We collect the personal information for the purposes of assessing the Applicant(s) and co co-Applicant(s) if any as to suitability as a tenant in general, and/or for a specific rental location</p>
@@ -153,7 +158,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Address of Property <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -163,7 +168,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Date Occupancy Desired <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -176,7 +181,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Adults <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -188,7 +193,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Children <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -204,11 +209,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Personal Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-6">Personal Information</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Personal Information</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Name <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -218,7 +223,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Social Insurance Number
                 </label>
                 <Input
@@ -230,7 +235,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Current Address <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -240,7 +245,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Email Address <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -254,7 +259,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Phone 1 <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -265,7 +270,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Phone 2
                 </label>
                 <Input
@@ -278,7 +283,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Date of Birth <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -288,7 +293,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Govt Issued Photo ID <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -310,18 +315,18 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       >
           {/* Co-Applicant's Personal Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1e3a5f] mb-6">Co-Applicant{"'"}s Personal Information (if applicable)</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Co-Applicant{"'"}s Personal Information (if applicable)</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Name</label>
+                <label className={formFieldLabelClass}>Name</label>
                 <Input
                   placeholder="Name"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Social Insurance Number</label>
+                <label className={formFieldLabelClass}>Social Insurance Number</label>
                 <Input
                   placeholder="Social Insurance Number"
                   className={fieldInputClass}
@@ -331,14 +336,14 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Current Address</label>
+                <label className={formFieldLabelClass}>Current Address</label>
                 <Input
                   placeholder="Current Address"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Email Address</label>
+                <label className={formFieldLabelClass}>Email Address</label>
                 <Input
                   type="email"
                   placeholder="Email Address"
@@ -349,7 +354,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Phone 1</label>
+                <label className={formFieldLabelClass}>Phone 1</label>
                 <Input
                   type="tel"
                   placeholder="Phone 1"
@@ -357,7 +362,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Phone 2</label>
+                <label className={formFieldLabelClass}>Phone 2</label>
                 <Input
                   type="tel"
                   placeholder="Phone 2"
@@ -368,14 +373,14 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Date of Birth</label>
+                <label className={formFieldLabelClass}>Date of Birth</label>
                 <Input
                   type="date"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Govt Issued Photo ID</label>
+                <label className={formFieldLabelClass}>Govt Issued Photo ID</label>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
@@ -387,32 +392,32 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Co-Applicant's Personal Information who is under 18 */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1e3a5f] mb-6">Co-Applicant{"'"}s Personal Information who is under_18</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Co-Applicant{"'"}s Personal Information who is under_18</h2>
             
             <div className="grid md:grid-cols-4 gap-4">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Name_1</label>
+                <label className={formFieldLabelClass}>Name_1</label>
                 <Input
                   placeholder="Name"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">Name_2</label>
+                <label className={formFieldLabelClass}>Name_2</label>
                 <Input
                   placeholder="Name"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#1e6b35] font-medium mb-2">Name_3</label>
+                <label className={formFieldLabelClass}>Name_3</label>
                 <Input
                   placeholder="Name"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">Name_4</label>
+                <label className={formFieldLabelClass}>Name_4</label>
                 <Input
                   placeholder="Name"
                   className={fieldInputClass}
@@ -423,12 +428,12 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Previous Tenancy */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-2">Previous Tenancy</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-2">Previous Tenancy</h2>
             <p className="text-sm text-[#666] mb-6 italic">If less than 2 years at current location</p>
             
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Landlord{"'"}s Name <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -437,7 +442,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Landlord{"'"}s Phone <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -450,7 +455,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             </div>
 
             <div className="mb-6">
-              <label className="block text-[#1e3a5f] font-medium mb-2">
+              <label className={formFieldLabelClass}>
                 Present Address <span className="text-red-600">*</span>
               </label>
               <Input
@@ -461,7 +466,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Time at this location <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -470,7 +475,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Monthly Rent <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -481,7 +486,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             </div>
 
             <div>
-              <label className="block text-[#8B2332] font-medium mb-2">
+              <label className={formFieldLabelClass}>
                 Reason for Leaving <span className="text-red-600">*</span>
               </label>
               <Textarea
@@ -494,39 +499,39 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Employment Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-6">Employment Information</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Employment Information</h2>
             
             <div className="mb-6">
-              <label className="block text-[#1e3a5f] font-medium mb-3">
+              <label className={formFieldLabelClassMb3}>
                 Status <span className="text-red-600">*</span>
               </label>
               <RadioGroup defaultValue="full-time" className="flex flex-wrap gap-4">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="full-time" id="status-full" />
-                  <label htmlFor="status-full" className="text-sm text-[#333]">Full-Time</label>
+                  <label htmlFor="status-full" className={formRadioOptionLabelClass}>Full-Time</label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="part-time" id="status-part" />
-                  <label htmlFor="status-part" className="text-sm text-[#333]">Part-Time</label>
+                  <label htmlFor="status-part" className={formRadioOptionLabelClass}>Part-Time</label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="student" id="status-student" />
-                  <label htmlFor="status-student" className="text-sm text-[#333]">Student</label>
+                  <label htmlFor="status-student" className={formRadioOptionLabelClass}>Student</label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="unemployed" id="status-unemployed" />
-                  <label htmlFor="status-unemployed" className="text-sm text-[#333]">Unemployed</label>
+                  <label htmlFor="status-unemployed" className={formRadioOptionLabelClass}>Unemployed</label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="retired" id="status-retired" />
-                  <label htmlFor="status-retired" className="text-sm text-[#333]">Retired</label>
+                  <label htmlFor="status-retired" className={formRadioOptionLabelClass}>Retired</label>
                 </div>
               </RadioGroup>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Current Employer <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -535,7 +540,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e6b35] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Address <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -547,7 +552,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Supervisor{"'"}s Name <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -556,7 +561,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Phone <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -569,7 +574,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Length of Employment <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -578,7 +583,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Monthly Wage <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -589,7 +594,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             </div>
 
             <div className="mb-6">
-              <label className="block text-[#1e3a5f] font-medium mb-2">
+              <label className={formFieldLabelClass}>
                 Job Position <span className="text-red-600">*</span>
               </label>
               <Input
@@ -599,7 +604,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             </div>
 
             <div className="mb-6">
-              <label className="block text-[#1e6b35] font-medium mb-2">
+              <label className={formFieldLabelClass}>
                 If you have other sources of income that you would like us to consider, please list income, source and person <span className="text-red-600">*</span>
               </label>
               <Textarea
@@ -611,7 +616,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Upload Pictures <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -621,7 +626,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Upload Pictures <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -631,7 +636,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Upload Pictures
                 </label>
                 <Input
@@ -645,18 +650,18 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Co-Applicant's Employment Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-6">Co-Applicant{"'"}s Employment Information</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Co-Applicant{"'"}s Employment Information</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Current Employer</label>
+                <label className={formFieldLabelClass}>Current Employer</label>
                 <Input
                   placeholder="Current Employer"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#1e6b35] font-medium mb-2">Address</label>
+                <label className={formFieldLabelClass}>Address</label>
                 <Input
                   placeholder="Address"
                   className={fieldInputClass}
@@ -666,14 +671,14 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Supervisor{"'"}s Name</label>
+                <label className={formFieldLabelClass}>Supervisor{"'"}s Name</label>
                 <Input
                   placeholder="Supervisor's Name"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Phone</label>
+                <label className={formFieldLabelClass}>Phone</label>
                 <Input
                   type="tel"
                   placeholder="Phone"
@@ -684,14 +689,14 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Length of Employment</label>
+                <label className={formFieldLabelClass}>Length of Employment</label>
                 <Input
                   placeholder="Length of Employment"
                   className={fieldInputClass}
                 />
               </div>
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">Monthly Wage</label>
+                <label className={formFieldLabelClass}>Monthly Wage</label>
                 <Input
                   placeholder="Monthly Wage"
                   className={fieldInputClass}
@@ -700,7 +705,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             </div>
 
             <div className="mb-6">
-              <label className="block text-[#1e3a5f] font-medium mb-2">Job Position</label>
+              <label className={formFieldLabelClass}>Job Position</label>
               <Input
                 placeholder="Job Position"
                 className={fieldInputClass}
@@ -709,7 +714,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">Upload Pictures</label>
+                <label className={formFieldLabelClass}>Upload Pictures</label>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
@@ -717,7 +722,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">Upload Pictures</label>
+                <label className={formFieldLabelClass}>Upload Pictures</label>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
@@ -725,7 +730,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">Upload Pictures</label>
+                <label className={formFieldLabelClass}>Upload Pictures</label>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
@@ -744,75 +749,75 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       >
           {/* Credit History Description */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-6">Credit History Description</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Credit History Description</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-3">
+                <label className={formFieldLabelClassMb3}>
                   Have you declared bankruptcy in the past seven (7) years? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup defaultValue="no" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="bankruptcy-yes" />
-                    <label htmlFor="bankruptcy-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="bankruptcy-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="bankruptcy-no" />
-                    <label htmlFor="bankruptcy-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="bankruptcy-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-3">
+                <label className={formFieldLabelClassMb3}>
                   Have you ever been evicted from a rental residence? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup defaultValue="no" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="evicted-yes" />
-                    <label htmlFor="evicted-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="evicted-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="evicted-no" />
-                    <label htmlFor="evicted-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="evicted-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-3">
+                <label className={formFieldLabelClassMb3}>
                   Have you had two or more late rental payments in the past 12 months? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup defaultValue="no" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="late-yes" />
-                    <label htmlFor="late-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="late-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="late-no" />
-                    <label htmlFor="late-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="late-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-3">
+                <label className={formFieldLabelClassMb3}>
                   Have you ever refused to pay rent when due? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup defaultValue="no" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="refused-yes" />
-                    <label htmlFor="refused-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="refused-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="refused-no" />
-                    <label htmlFor="refused-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="refused-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   If you have answered YES to any of the above, please state your reasons and/or circumstances
                 </label>
                 <Textarea
@@ -823,7 +828,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
 
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Please upload if you have current credit report
                 </label>
                 <Input
@@ -834,7 +839,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
 
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Please upload if you have current credit report
                 </label>
                 <Input
@@ -848,27 +853,27 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Additional Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-6">Additional Information</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Additional Information</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-3">
+                <label className={formFieldLabelClassMb3}>
                   Do you wish to bring a pet(s) to the rental premises? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup defaultValue="no" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="bring-pets-yes" />
-                    <label htmlFor="bring-pets-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="bring-pets-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="bring-pets-no" />
-                    <label htmlFor="bring-pets-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="bring-pets-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   If yes, describe the pets
                 </label>
                 <Textarea
@@ -879,33 +884,33 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
 
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-3">
+                <label className={formFieldLabelClassMb3}>
                   Do you, or any proposed occupant, smoke? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup defaultValue="no" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="smoke-yes" />
-                    <label htmlFor="smoke-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="smoke-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="smoke-no" />
-                    <label htmlFor="smoke-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="smoke-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <label className="block text-[#1e6b35] font-medium mb-3">
+                <label className={formFieldLabelClassMb3}>
                   If you are co-applicants, do you consent to a joint credit report? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup defaultValue="yes" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="joint-yes" />
-                    <label htmlFor="joint-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="joint-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="joint-no" />
-                    <label htmlFor="joint-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="joint-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
@@ -918,17 +923,17 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <RadioGroup defaultValue="yes" className="flex gap-6">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yes" id="insurance-yes" />
-                    <label htmlFor="insurance-yes" className="text-sm text-[#333]">Yes</label>
+                    <label htmlFor="insurance-yes" className={formRadioOptionLabelClass}>Yes</label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="no" id="insurance-no" />
-                    <label htmlFor="insurance-no" className="text-sm text-[#333]">No</label>
+                    <label htmlFor="insurance-no" className={formRadioOptionLabelClass}>No</label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Additional Comments by Applicants
                 </label>
                 <Textarea
@@ -942,11 +947,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Emergency Contact */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-6">Emergency Contact</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Emergency Contact</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Name of a person not residing with you <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -955,7 +960,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#1e6b35] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Address <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -967,7 +972,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Phone <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -977,7 +982,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 />
               </div>
               <div>
-                <label className="block text-[#c4a000] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Relationship <span className="text-red-600">*</span>
                 </label>
                 <Input
@@ -990,7 +995,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Terms & Conditions */}
           <section>
-            <h2 className="text-xl font-semibold text-[#333] mb-6">Terms & Conditions</h2>
+            <h2 className="text-xl font-semibold text-[#1c1917] mb-6">Terms & Conditions</h2>
             
             <div className="bg-white p-4 rounded border border-[#d4c5b0] text-sm text-[#555] space-y-3 mb-6">
               <p className="text-[#8B2332]">The Applicant and/or Co-Applicant acknowledges that pets, barbeques, waterbeds and aquariums are not permitted without the advance written permission of the Landlord.</p>
@@ -1001,14 +1006,14 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="flex items-center space-x-2 mb-6">
               <Checkbox id="rental-app-terms" required />
-              <label htmlFor="rental-app-terms" className="text-sm text-[#333]">
+              <label htmlFor="rental-app-terms" className={formRadioOptionLabelClass}>
                 Agree with terms and conditions <span className="text-red-600">*</span>
               </label>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Signature <span className="text-red-600">*</span>
                 </label>
                 <div className="bg-white border border-[#d4c5b0] rounded min-h-40 h-40 flex items-center justify-center">
@@ -1016,7 +1021,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 </div>
               </div>
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Co-Applicant{"'"}s Signature
                 </label>
                 <div className="bg-white border border-[#d4c5b0] rounded min-h-40 h-40 flex items-center justify-center">
@@ -1027,13 +1032,13 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="grid md:grid-cols-2 gap-6 mt-6">
               <div>
-                <label className="block text-[#1e3a5f] font-medium mb-2">
+                <label className={formFieldLabelClass}>
                   Legal Name <span className="text-red-600">*</span>
                 </label>
                 <Input placeholder="Legal Name" required className={fieldInputClass} />
               </div>
               <div>
-                <label className="block text-[#8B2332] font-medium mb-2">Co-Applicant{"'"}s Legal Name</label>
+                <label className={formFieldLabelClass}>Co-Applicant{"'"}s Legal Name</label>
                 <Input placeholder="Co-Applicant's Legal Name" className={fieldInputClass} />
               </div>
             </div>

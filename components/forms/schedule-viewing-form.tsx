@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { CheckCircle } from "lucide-react"
+import { formFieldLabelClass } from "@/components/forms/form-label-styles"
 
 interface ScheduleViewingFormProps {
   onSuccess?: () => void
@@ -39,7 +40,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Full Name <span className="text-red-600">*</span>
           </label>
           <Input
@@ -49,7 +50,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
           />
         </div>
         <div>
-          <label className="block text-[#c4a000] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Phone Number <span className="text-red-600">*</span>
           </label>
           <Input
@@ -63,7 +64,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Email <span className="text-red-600">*</span>
           </label>
           <Input
@@ -74,7 +75,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
           />
         </div>
         <div>
-          <label className="block text-[#c4a000] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Number of Adults - moving in <span className="text-red-600">*</span>
           </label>
           <Input
@@ -89,7 +90,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Number of Kids - moving in <span className="text-red-600">*</span>
           </label>
           <Input
@@ -101,7 +102,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
           />
         </div>
         <div>
-          <label className="block text-[#c4a000] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Pets <span className="text-red-600">*</span>
           </label>
           <Input
@@ -114,7 +115,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Desired Move-In Date <span className="text-red-600">*</span>
           </label>
           <Input
@@ -124,7 +125,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
           />
         </div>
         <div>
-          <label className="block text-[#c4a000] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Desired Lease Term (e.g., 6 months, 1 year, long-term) <span className="text-red-600">*</span>
           </label>
           <Input
@@ -137,7 +138,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[#1e3a5f] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Number of Vehicles <span className="text-red-600">*</span>
           </label>
           <Input
@@ -149,7 +150,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
           />
         </div>
         <div>
-          <label className="block text-[#c4a000] font-medium mb-2 text-sm">
+          <label className={formFieldLabelClass}>
             Property You{"'"}re Interested In <span className="text-red-600">*</span>
           </label>
           <Input
