@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { validateStepNativeFields } from "@/lib/form-wizard"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,7 @@ import {
   formFieldLabelClass as labelClass,
   formRadioOptionLabelClass,
 } from "@/components/forms/form-label-styles"
+import { FormStepProgress } from "@/components/forms/form-step-progress"
 
 interface ServiceRequestFormProps {
   onSuccess?: () => void
@@ -28,8 +29,17 @@ export function ServiceRequestForm({
   const [step, setStep] = useState(0)
   const step0Ref = useRef<HTMLDivElement>(null)
   const step1Ref = useRef<HTMLDivElement>(null)
+  const skipScrollOnMount = useRef(true)
 
   const stepTitles = ["Contact & request details", "Authorization"]
+
+  useEffect(() => {
+    if (skipScrollOnMount.current) {
+      skipScrollOnMount.current = false
+      return
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+  }, [step])
 
   const goNext = () => {
     if (!validateStepNativeFields(step0Ref.current)) return
@@ -71,36 +81,19 @@ export function ServiceRequestForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4 pb-2 border-b border-[#d4c5b0]/60">
-        <p className="text-sm font-medium text-[#333]">
-          Step {step + 1} of 2
-          <span className="text-muted-foreground font-normal"> — {stepTitles[step]}</span>
-        </p>
-        <div
-          className="flex gap-1.5"
-          role="progressbar"
-          aria-valuenow={step + 1}
-          aria-valuemin={1}
-          aria-valuemax={2}
-        >
-          {[0, 1].map((i) => (
-            <span
-              key={i}
-              className={`h-1.5 flex-1 rounded-full min-w-[2.5rem] transition-colors ${
-                i <= step ? "bg-[#8B2332]" : "bg-[#d4c5b0]/80"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      <FormStepProgress
+        step={step}
+        stepTitles={stepTitles}
+        ariaLabel="Service request form progress"
+      />
 
       <div
         ref={step0Ref}
-        className={step === 0 ? "space-y-6" : "hidden"}
+        className={step === 0 ? "space-y-4" : "hidden"}
         aria-hidden={step !== 0}
       >
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>
               Tenant Name <span className="text-red-600">*</span>
@@ -128,7 +121,7 @@ export function ServiceRequestForm({
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>
               Cell <span className="text-red-600">*</span>
@@ -182,7 +175,7 @@ export function ServiceRequestForm({
           />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {[1, 2, 3, 4, 5, 6].map((num) => (
             <div key={num}>
               <label className={labelClass} htmlFor={`service-file-${num}`}>
@@ -202,7 +195,7 @@ export function ServiceRequestForm({
 
       <div
         ref={step1Ref}
-        className={step === 1 ? "space-y-6" : "hidden"}
+        className={step === 1 ? "space-y-4" : "hidden"}
         aria-hidden={step !== 1}
       >
         <div>

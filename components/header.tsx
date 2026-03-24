@@ -23,6 +23,9 @@ import { LandlordInquiryForm } from "@/components/forms/landlord-inquiry-form"
 import { ScheduleViewingForm } from "@/components/forms/schedule-viewing-form"
 import { RentalApplicationForm } from "@/components/forms/rental-application-form"
 import { ServiceRequestForm } from "@/components/forms/service-request-form"
+import { cn } from "@/lib/utils"
+
+const MOBILE_NAV_STAGGER_MS = 48
 
 const navLinks = [
   { href: "#home", label: "Home" },
@@ -35,8 +38,8 @@ const navLinks = [
 
 const ctaButtons = [
   { id: "landlord", label: "Landlord Inquiry" },
-  { id: "schedule", label: "Schedule Viewing" },
   { id: "rental", label: "Rental Application" },
+  { id: "schedule", label: "Schedule Viewing" },
   { id: "service", label: "Service Request" },
 ]
 
@@ -183,19 +186,24 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <SheetTitle className="sr-only">Main navigation</SheetTitle>
-              <nav className="flex flex-col gap-4 mt-8">
-                {navLinks.map((link) => (
+              <nav className="mt-8 flex flex-col items-stretch gap-4 px-1 text-center">
+                {navLinks.map((link, i) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="border-b border-border/80 py-3.5 text-lg font-medium text-foreground/80 transition-colors hover:text-primary"
+                    style={{ animationDelay: `${i * MOBILE_NAV_STAGGER_MS}ms` }}
+                    className={cn(
+                      "block w-full border-b border-border/80 py-3.5 text-center text-lg font-medium text-foreground/80 transition-colors duration-200 hover:text-primary",
+                      "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
+                      "animate-in fade-in slide-in-from-right-6 fill-mode-backwards duration-300 ease-out",
+                    )}
                   >
                     {link.label}
                   </Link>
                 ))}
-                <div className="flex flex-col gap-2 mt-4">
-                  {ctaButtons.map((btn) => (
+                <div className="mt-4 flex flex-col gap-2">
+                  {ctaButtons.map((btn, i) => (
                     <Dialog 
                       key={btn.id}
                       open={openDialog === btn.id} 
@@ -207,7 +215,14 @@ export function Header() {
                       <DialogTrigger asChild>
                         <Button
                           variant="outline"
-                          className="justify-start bg-transparent"
+                          style={{
+                            animationDelay: `${(navLinks.length + i) * MOBILE_NAV_STAGGER_MS}ms`,
+                          }}
+                          className={cn(
+                            "w-full justify-center bg-transparent text-center",
+                            "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
+                            "animate-in fade-in slide-in-from-right-5 fill-mode-backwards duration-300 ease-out",
+                          )}
                         >
                           {btn.label}
                         </Button>
@@ -228,12 +243,19 @@ export function Header() {
                 </div>
                 <Button
                   asChild
-                  className="mt-4 border border-primary-foreground/20 bg-primary font-semibold shadow-md ring-1 ring-primary/25 hover:bg-primary/90"
+                  className={cn(
+                    "mt-4 w-full justify-center border border-primary-foreground/20 bg-primary font-semibold shadow-md ring-1 ring-primary/25 hover:bg-primary/90",
+                    "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
+                    "animate-in fade-in slide-in-from-right-5 zoom-in-95 fill-mode-backwards duration-300 ease-out",
+                  )}
+                  style={{
+                    animationDelay: `${(navLinks.length + ctaButtons.length) * MOBILE_NAV_STAGGER_MS}ms`,
+                  }}
                 >
                   <Link
                     href="#contact"
                     onClick={() => setIsOpen(false)}
-                    className="inline-flex items-center justify-center gap-2"
+                    className="inline-flex w-full items-center justify-center gap-2 text-center"
                   >
                     Get Started
                     <ChevronRight className="h-4 w-4" aria-hidden />

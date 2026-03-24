@@ -22,7 +22,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
     setIsSubmitting(false)
     setIsSubmitted(true)
     if (onSuccess) {
-      setTimeout(onSuccess, 2000)
+      setTimeout(onSuccess, 5000)
     }
   }
 
@@ -37,8 +37,8 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid md:grid-cols-2 gap-3">
         <div>
           <label className={formFieldLabelClass}>
             Full Name <span className="text-red-600">*</span>
@@ -62,7 +62,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-3">
         <div>
           <label className={formFieldLabelClass}>
             Email <span className="text-red-600">*</span>
@@ -88,7 +88,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-3">
         <div>
           <label className={formFieldLabelClass}>
             Number of Kids - moving in <span className="text-red-600">*</span>
@@ -113,7 +113,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-3">
         <div>
           <label className={formFieldLabelClass}>
             Desired Move-In Date <span className="text-red-600">*</span>
@@ -136,7 +136,7 @@ export function ScheduleViewingForm({ onSuccess }: ScheduleViewingFormProps) {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-3">
         <div>
           <label className={formFieldLabelClass}>
             Number of Vehicles <span className="text-red-600">*</span>

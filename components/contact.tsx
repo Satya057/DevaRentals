@@ -24,18 +24,18 @@ const formCards = [
     title: "Landlord Inquiry Form",
   },
   {
-    id: "schedule",
-    icon: CalendarDays,
-    label: "Schedule Viewing",
-    description: "Book a property tour",
-    title: "Schedule Viewing",
-  },
-  {
     id: "rental",
     icon: FileText,
     label: "Rental Application",
     description: "Apply for a rental property",
     title: "Rental Application",
+  },
+  {
+    id: "schedule",
+    icon: CalendarDays,
+    label: "Schedule Viewing",
+    description: "Book a property tour",
+    title: "Schedule Viewing",
   },
   {
     id: "service",
