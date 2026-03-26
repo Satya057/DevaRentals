@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Menu, Phone, Mail, ChevronRight, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -46,6 +46,11 @@ const ctaButtons = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [openDialog, setOpenDialog] = useState<string | null>(null)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const renderForm = (formId: string, onClose: () => void) => {
     switch (formId) {
@@ -102,42 +107,53 @@ export function Header() {
           </div>
           <div className="flex items-center gap-3">
             {ctaButtons.map((btn) => (
-              <Dialog 
-                key={btn.id} 
-                open={openDialog === btn.id} 
-                onOpenChange={(open) => setOpenDialog(open ? btn.id : null)}
-              >
-                <DialogTrigger asChild>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-semibold tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10 transition-[background-color,box-shadow] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:bg-secondary/88 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
-                    {btn.label}
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
-                  <DialogHeader className="px-6 pt-6 pb-0">
-                    <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
-                      {getFormTitle(btn.id)}
-                    </DialogTitle>
-                    <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
-                    <div className="mt-2 text-center">
-                      <Link
-                        href={getFormPath(btn.id)}
-                        onClick={() => setOpenDialog(null)}
-                        className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
-                      >
-                        Open full page
-                        <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-                      </Link>
-                    </div>
-                  </DialogHeader>
-                  <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
-                    {renderForm(btn.id, () => setOpenDialog(null))}
-                  </ScrollArea>
-                </DialogContent>
-              </Dialog>
+              isClient ? (
+                <Dialog
+                  key={btn.id}
+                  open={openDialog === btn.id}
+                  onOpenChange={(open) => setOpenDialog(open ? btn.id : null)}
+                >
+                  <DialogTrigger asChild>
+                    <button
+                      type="button"
+                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-semibold tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10 transition-[background-color,box-shadow] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:bg-secondary/88 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
+                      {btn.label}
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
+                    <DialogHeader className="px-6 pt-6 pb-0">
+                      <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
+                        {getFormTitle(btn.id)}
+                      </DialogTitle>
+                      <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
+                      <div className="mt-2 text-center">
+                        <Link
+                          href={getFormPath(btn.id)}
+                          onClick={() => setOpenDialog(null)}
+                          className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
+                        >
+                          Open full page
+                          <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                        </Link>
+                      </div>
+                    </DialogHeader>
+                    <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
+                      {renderForm(btn.id, () => setOpenDialog(null))}
+                    </ScrollArea>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <button
+                  key={btn.id}
+                  type="button"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-semibold tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10"
+                >
+                  <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
+                  {btn.label}
+                </button>
+              )
             ))}
           </div>
         </div>
@@ -216,54 +232,64 @@ export function Header() {
                 ))}
                 <div className="mt-4 flex flex-col gap-2">
                   {ctaButtons.map((btn, i) => (
-                    <Dialog 
-                      key={btn.id}
-                      open={openDialog === btn.id} 
-                      onOpenChange={(open) => {
-                        setOpenDialog(open ? btn.id : null)
-                        if (open) setIsOpen(false)
-                      }}
-                    >
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          style={{
-                            animationDelay: `${(navLinks.length + i) * MOBILE_NAV_STAGGER_MS}ms`,
-                          }}
-                          className={cn(
-                            "w-full justify-center bg-transparent text-center",
-                            "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
-                            "animate-in fade-in slide-in-from-right-5 fill-mode-backwards duration-300 ease-out",
-                          )}
-                        >
-                          {btn.label}
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
-                        <DialogHeader className="px-6 pt-6 pb-0">
-                          <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
-                            {getFormTitle(btn.id)}
-                          </DialogTitle>
-                          <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
-                          <div className="mt-2 text-center">
-                            <Link
-                              href={getFormPath(btn.id)}
-                              onClick={() => {
-                                setOpenDialog(null)
-                                setIsOpen(false)
-                              }}
-                              className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
-                            >
-                              Open full page
-                              <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-                            </Link>
-                          </div>
-                        </DialogHeader>
-                        <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
-                          {renderForm(btn.id, () => setOpenDialog(null))}
-                        </ScrollArea>
-                      </DialogContent>
-                    </Dialog>
+                    isClient ? (
+                      <Dialog
+                        key={btn.id}
+                        open={openDialog === btn.id}
+                        onOpenChange={(open) => {
+                          setOpenDialog(open ? btn.id : null)
+                          if (open) setIsOpen(false)
+                        }}
+                      >
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            style={{
+                              animationDelay: `${(navLinks.length + i) * MOBILE_NAV_STAGGER_MS}ms`,
+                            }}
+                            className={cn(
+                              "w-full cursor-pointer justify-center bg-transparent text-center",
+                              "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
+                              "animate-in fade-in slide-in-from-right-5 fill-mode-backwards duration-300 ease-out",
+                            )}
+                          >
+                            {btn.label}
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
+                          <DialogHeader className="px-6 pt-6 pb-0">
+                            <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
+                              {getFormTitle(btn.id)}
+                            </DialogTitle>
+                            <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
+                            <div className="mt-2 text-center">
+                              <Link
+                                href={getFormPath(btn.id)}
+                                onClick={() => {
+                                  setOpenDialog(null)
+                                  setIsOpen(false)
+                                }}
+                                className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
+                              >
+                                Open full page
+                                <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                              </Link>
+                            </div>
+                          </DialogHeader>
+                          <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
+                            {renderForm(btn.id, () => setOpenDialog(null))}
+                          </ScrollArea>
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <Button
+                        key={btn.id}
+                        variant="outline"
+                        className="w-full cursor-pointer justify-center bg-transparent text-center"
+                      >
+                        {btn.label}
+                      </Button>
+                    )
                   ))}
                 </div>
                 <Button

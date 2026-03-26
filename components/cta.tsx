@@ -30,13 +30,13 @@ export function CTA() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 h-10">
+            <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 h-10 cursor-pointer">
               <Link href="#contact">
                 Get Started Today
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" className="px-6 h-10 bg-transparent">
+            <Button asChild variant="outline" className="px-6 h-10 bg-transparent cursor-pointer">
               <Link href="tel:780-984-1996">
                 Call 780-984-1996
               </Link>
@@ -49,7 +49,7 @@ export function CTA() {
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               {formLinks.map((form) => (
-                <Button key={form.href} asChild variant="outline" className="h-9 bg-transparent px-4">
+                <Button key={form.href} asChild variant="outline" className="h-9 bg-transparent px-4 cursor-pointer">
                   <Link href={form.href} className="inline-flex items-center">
                     {form.label}
                     <ExternalLink className="ml-2 h-3.5 w-3.5" />

@@ -57,7 +57,7 @@ export function Services() {
   return (
     <>
       {/* For Landlords Section */}
-      <section id="landlords" className="py-20 md:py-28 bg-card">
+      <section id="landlords" className="pt-4 pb-20 md:pt-8 md:pb-28 bg-card">
         <div className="w-[90%] mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
