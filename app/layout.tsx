@@ -14,7 +14,12 @@ export const metadata: Metadata = {
   title: 'Deva Rentals | Property Management Edmonton',
   description: 'Edmonton\'s trusted property management company. 10+ years of delivering rock-solid results for property owners. Expert tenant management, maintenance, and rental law compliance.',
   icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
+    icon: [
+      { url: '/pic/Logo1.png', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/pic/Logo1.png',
+    apple: '/pic/Logo1.png',
   },
 }
 
