@@ -33,6 +33,9 @@ export function Hero() {
               "url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop')",
           }}
         />
+        {/* Improve text contrast and visual focus */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/58 via-black/34 to-black/18" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.14),transparent_45%)]" />
       </div>
 
       <div className="relative z-10 mx-auto flex w-[90%] max-w-7xl flex-col">
@@ -47,14 +50,14 @@ export function Hero() {
             </div>
 
             <h1
-              className="hero-motion-up mb-3 text-balance font-serif text-4xl font-bold leading-tight md:text-5xl lg:text-[3rem] lg:leading-[1.08]"
+              className="hero-motion-up mb-3 text-balance font-serif text-4xl font-bold leading-tight md:text-5xl lg:text-[3.15rem] lg:leading-[1.05]"
               style={{ ["--hero-d" as string]: "90ms" }}
             >
               Find the Perfect Property for Your Lifestyle
             </h1>
 
             <p
-              className="hero-motion-up mb-4 max-w-xl text-base leading-relaxed opacity-90 md:text-lg"
+              className="hero-motion-up mb-4 max-w-2xl text-base leading-relaxed opacity-95 md:text-lg"
               style={{ ["--hero-d" as string]: "140ms" }}
             >
               Transform your Edmonton rental property into a stress-free investment. 10+ years of delivering rock-solid
@@ -120,18 +123,22 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Top-right: About card — solid white, maroon accents, warm list rows */}
+          {/* Top-right: About card — premium warm style */}
           <div className="lg:justify-self-end lg:w-full lg:max-w-md xl:max-w-xl">
             <div
-              className="hero-motion-up rounded-[1.25rem] border border-black/[0.06] bg-white/95 p-5 shadow-[0_24px_48px_-12px_rgba(15,10,10,0.26),0_8px_16px_-6px_rgba(15,10,10,0.1),0_0_0_1px_rgba(108,21,23,0.04)] backdrop-blur-sm md:p-6 xl:p-7"
+              className="hero-motion-up rounded-2xl border border-[#e8ddd4] bg-[#fffdfb] p-5 text-[#1c1917] shadow-[0_20px_46px_-16px_rgba(15,10,10,0.3),0_8px_16px_-8px_rgba(15,10,10,0.12)] md:p-6 xl:p-7"
               style={{ ["--hero-d" as string]: "160ms" }}
             >
               <h2 className="sr-only">About Deva Rentals</h2>
-              <p className="mb-2 text-pretty text-base font-bold leading-snug tracking-tight text-[#1c1917] md:text-lg md:leading-snug">
+              <div className="mb-2 inline-flex items-center rounded-full border border-[#edd8d1] bg-[#f8efec] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#8B2332]">
+                Owner Benefits
+              </div>
+
+              <p className="mb-2 border-l-4 border-[#8B2332]/75 pl-3 text-pretty text-base font-bold leading-snug tracking-tight text-[#1c1917] md:text-lg md:leading-snug">
                 {aboutIntroBold}
               </p>
 
-              <p className="mb-4 max-w-prose text-sm leading-[1.55] text-neutral-600 md:text-[0.9375rem] md:leading-[1.6]">
+              <p className="mb-4 max-w-prose text-sm leading-[1.62] text-[#44403c] md:text-[0.95rem] md:leading-[1.65]">
                 {aboutBody}
               </p>
 
@@ -139,7 +146,7 @@ export function Hero() {
                 {ownerHighlights.map((line, i) => (
                   <li
                     key={line}
-                    className="hero-motion-from-right group flex cursor-default items-start gap-2.5 rounded-md border border-[#ebe4e2]/90 bg-[#faf6f5] px-2.5 py-2"
+                    className="hero-motion-from-right group flex cursor-default items-start gap-2.5 rounded-lg border border-[#e9dcd7] bg-[#fff7f3] px-3 py-2.5 transition-[background-color,border-color,transform] duration-200 hover:border-[#d8c6bf] hover:bg-[#fff2ec] hover:translate-x-[1px]"
                     style={{ ["--hero-d" as string]: `${220 + i * HERO_HIGHLIGHT_STAGGER_MS}ms` }}
                   >
                     <span
@@ -148,7 +155,7 @@ export function Hero() {
                     >
                       <Check className="h-3 w-3" strokeWidth={3} />
                     </span>
-                    <span className="pt-px text-[0.8125rem] leading-snug text-[#292524] md:text-[0.875rem]">{line}</span>
+                    <span className="pt-px text-[0.84rem] leading-snug text-[#2b2422] md:text-[0.9rem]">{line}</span>
                   </li>
                 ))}
               </ul>

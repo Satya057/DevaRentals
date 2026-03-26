@@ -103,6 +103,7 @@ export function Contact() {
                     <div className="mt-2 text-center">
                       <Link
                         href={`/forms/${card.id}`}
+                        onClick={() => setOpenDialog(null)}
                         className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
                       >
                         Open full page
