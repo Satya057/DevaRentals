@@ -1,6 +1,13 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ExternalLink } from "lucide-react"
+
+const formLinks = [
+  { href: "/forms/landlord", label: "Landlord Inquiry" },
+  { href: "/forms/rental", label: "Rental Application" },
+  { href: "/forms/schedule", label: "Schedule Viewing" },
+  { href: "/forms/service", label: "Service Request" },
+]
 
 export function CTA() {
   return (
@@ -34,6 +41,22 @@ export function CTA() {
                 Call 780-984-1996
               </Link>
             </Button>
+          </div>
+
+          <div className="mt-5 rounded-lg border border-border/70 bg-background/70 p-4">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Direct Form Links (shareable)
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {formLinks.map((form) => (
+                <Button key={form.href} asChild variant="outline" className="h-9 bg-transparent px-4">
+                  <Link href={form.href} className="inline-flex items-center">
+                    {form.label}
+                    <ExternalLink className="ml-2 h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+              ))}
+            </div>
           </div>
 
           {/* Partner Logos */}

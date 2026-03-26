@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Building, CalendarDays, FileText, Wrench } from "lucide-react"
+import Link from "next/link"
+import { Building, CalendarDays, ExternalLink, FileText, Wrench } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -99,6 +100,15 @@ export function Contact() {
                       {card.title}
                     </DialogTitle>
                     <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
+                    <div className="mt-2 text-center">
+                      <Link
+                        href={`/forms/${card.id}`}
+                        className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
+                      >
+                        Open full page
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                      </Link>
+                    </div>
                   </DialogHeader>
                   <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
                     {renderForm(card.id, () => setOpenDialog(null))}

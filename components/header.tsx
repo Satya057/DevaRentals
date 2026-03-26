@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, Phone, Mail, ChevronRight } from "lucide-react"
+import { Menu, Phone, Mail, ChevronRight, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -77,6 +77,8 @@ export function Header() {
     }
   }
 
+  const getFormPath = (formId: string) => `/forms/${formId}`
+
   return (
     <header className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 border-b border-border">
       {/* Top Bar */}
@@ -120,6 +122,15 @@ export function Header() {
                       {getFormTitle(btn.id)}
                     </DialogTitle>
                     <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
+                    <div className="mt-2 text-center">
+                      <Link
+                        href={getFormPath(btn.id)}
+                        className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
+                      >
+                        Open full page
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                      </Link>
+                    </div>
                   </DialogHeader>
                   <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
                     {renderForm(btn.id, () => setOpenDialog(null))}
@@ -233,6 +244,15 @@ export function Header() {
                             {getFormTitle(btn.id)}
                           </DialogTitle>
                           <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
+                          <div className="mt-2 text-center">
+                            <Link
+                              href={getFormPath(btn.id)}
+                              className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
+                            >
+                              Open full page
+                              <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                            </Link>
+                          </div>
                         </DialogHeader>
                         <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
                           {renderForm(btn.id, () => setOpenDialog(null))}

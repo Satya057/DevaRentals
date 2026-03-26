@@ -16,6 +16,8 @@ const aboutIntroBold =
 const aboutBody =
   "For 10+ years, Deva Rentals has delivered rock-solid results for property owners across Edmonton. From single-family homes to condos and apartments, we don't just manage properties, we maximize your investment and protect your peace of mind."
 
+const HERO_HIGHLIGHT_STAGGER_MS = 48
+
 const heroFeatureCardClass =
   "hero-motion-up grid cursor-default grid-cols-[auto_1fr] items-center gap-3 rounded-lg border-2 border-primary/25 bg-card/95 px-3 py-2.5 shadow-lg shadow-black/10 ring-1 ring-white/60 backdrop-blur-md"
 
@@ -137,8 +139,8 @@ export function Hero() {
                 {ownerHighlights.map((line, i) => (
                   <li
                     key={line}
-                    className="hero-motion-up group flex cursor-default items-start gap-2.5 rounded-md border border-[#ebe4e2]/90 bg-[#faf6f5] px-2.5 py-2"
-                    style={{ ["--hero-d" as string]: `${220 + i * 45}ms` }}
+                    className="hero-motion-from-right group flex cursor-default items-start gap-2.5 rounded-md border border-[#ebe4e2]/90 bg-[#faf6f5] px-2.5 py-2"
+                    style={{ ["--hero-d" as string]: `${220 + i * HERO_HIGHLIGHT_STAGGER_MS}ms` }}
                   >
                     <span
                       className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm"
