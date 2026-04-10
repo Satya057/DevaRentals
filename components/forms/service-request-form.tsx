@@ -26,7 +26,10 @@ export function ServiceRequestForm({
 }: ServiceRequestFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [authorization, setAuthorization] = useState<"granted" | "not-granted">("granted")
   const [step, setStep] = useState(0)
+  const formRef = useRef<HTMLFormElement>(null)
   const step0Ref = useRef<HTMLDivElement>(null)
   const step1Ref = useRef<HTMLDivElement>(null)
   const skipScrollOnMount = useRef(true)
@@ -42,21 +45,50 @@ export function ServiceRequestForm({
   }, [step])
 
   const goNext = () => {
+    setSubmitError(null)
     if (!validateStepNativeFields(step0Ref.current)) return
     setStep(1)
   }
 
   const goBack = () => setStep(0)
 
+  /** One primary control stays `type="button"` so it never swaps to a native submit under the cursor (mouseup steal). */
+  const handlePrimaryAction = () => {
+    if (step < 1) {
+      goNext()
+      return
+    }
+    formRef.current?.requestSubmit()
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    /** Step 1 has no required native inputs (Radix radios), so validation alone cannot block submit on step 0. */
+    if (step !== 1) return
+    setSubmitError(null)
+    if (!validateStepNativeFields(step0Ref.current)) return
     if (!validateStepNativeFields(step1Ref.current)) return
+
     setIsSubmitting(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-    if (onSuccess) {
-      setTimeout(onSuccess, 2000)
+    try {
+      const fd = new FormData(e.currentTarget)
+      fd.set("authorization", authorization)
+      const res = await fetch("/api/service-request", { method: "POST", body: fd })
+      const json = (await res.json().catch(() => ({}))) as { error?: string }
+      if (!res.ok) {
+        setSubmitError(
+          typeof json.error === "string" ? json.error : "Could not send your request. Please try again.",
+        )
+        return
+      }
+      setIsSubmitted(true)
+      if (onSuccess) {
+        setTimeout(onSuccess, 2000)
+      }
+    } catch {
+      setSubmitError("Network error. Check your connection and try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -81,7 +113,19 @@ export function ServiceRequestForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      onKeyDown={(ev) => {
+        if (step !== 0 || ev.key !== "Enter" || ev.defaultPrevented) return
+        const t = ev.target as HTMLElement
+        if (t.tagName === "TEXTAREA") return
+        ev.preventDefault()
+        goNext()
+      }}
+      className="space-y-4"
+      noValidate
+    >
       <FormStepProgress
         step={step}
         stepTitles={stepTitles}
@@ -202,7 +246,11 @@ export function ServiceRequestForm({
           <label className={labelClass}>
             Authorization <span className="text-red-600">*</span>
           </label>
-          <RadioGroup defaultValue="granted" name="authorization" className="space-y-3">
+          <RadioGroup
+            value={authorization}
+            onValueChange={(v) => setAuthorization(v as "granted" | "not-granted")}
+            className="space-y-3"
+          >
             <div className="flex items-start gap-2">
               <RadioGroupItem value="granted" id="auth-granted" className="mt-1 shrink-0" />
               <label htmlFor="auth-granted" className={formRadioOptionLabelClass}>
@@ -220,6 +268,12 @@ export function ServiceRequestForm({
         </div>
       </div>
 
+      {submitError && (
+        <p className="text-sm text-red-600" role="alert">
+          {submitError}
+        </p>
+      )}
+
       <div className="flex flex-col-reverse gap-3 pt-4 border-t border-[#d4c5b0]/50 sm:flex-row sm:items-center sm:justify-between">
         <Button
           type="button"
@@ -231,23 +285,14 @@ export function ServiceRequestForm({
           Back
         </Button>
         <div className="flex justify-center gap-3 sm:justify-end">
-          {step < 1 ? (
-            <Button
-              type="button"
-              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
-              onClick={goNext}
-            >
-              Next
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
-            >
-              {isSubmitting ? "Submitting..." : "Submit Request"}
-            </Button>
-          )}
+          <Button
+            type="button"
+            disabled={isSubmitting}
+            className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
+            onClick={handlePrimaryAction}
+          >
+            {step < 1 ? "Next" : isSubmitting ? "Submitting..." : "Submit Request"}
+          </Button>
         </div>
       </div>
     </form>

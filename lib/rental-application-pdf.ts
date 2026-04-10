@@ -21,6 +21,26 @@ const COL_W = (CONTENT_W - COL_GAP) / 2
 const LEFT_X = MARGIN
 const RIGHT_X = MARGIN + COL_W + COL_GAP
 
+/** Slightly larger type for readability (labels vs values vs headings). */
+const SZ_GRID_LABEL = 9
+const SZ_GRID_VALUE = 10
+const SZ_SECTION = 12
+/** Main PDF title — prominent like print reference */
+const SZ_MAIN_TITLE = 19
+const SZ_TERMS = 9
+const SZ_NOTE_TITLE = 9
+const SZ_NOTE_BODY = 8
+const SZ_UPLOAD = 9
+const SZ_ATTACH_TITLE = 11
+const SZ_ATTACH_META = 9
+const SZ_SIG_TITLE = 9
+const SZ_SIG_LEGAL_LABEL = 8
+const SZ_SIG_VALUE = 10
+const SZ_SIG_PLACEHOLDER = 8
+const SZ_FALLBACK_DEVA = 10
+const SZ_FALLBACK_DEVA_SUB = 7
+const SZ_FALLBACK_MAX = 12
+
 function yn(v: string): string {
   if (v === "yes") return "Yes"
   if (v === "no") return "No"
@@ -80,26 +100,26 @@ function rowPair(
   const lv = val(leftVal)
   const rv = val(rightVal)
 
-  doc.font("Helvetica-Bold").fontSize(8)
-  const lh1 = Math.max(doc.heightOfString(leftLabel, { width: COL_W }), 10)
-  doc.font("Helvetica").fontSize(9)
-  const lh2 = Math.max(doc.heightOfString(lv, { width: COL_W }), 12)
+  doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL)
+  const lh1 = Math.max(doc.heightOfString(leftLabel, { width: COL_W }), 11)
+  doc.font("Helvetica").fontSize(SZ_GRID_VALUE)
+  const lh2 = Math.max(doc.heightOfString(lv, { width: COL_W }), 13)
   const leftH = lh1 + 2 + lh2
 
-  doc.font("Helvetica-Bold").fontSize(8)
-  const rh1 = Math.max(doc.heightOfString(rightLabel, { width: COL_W }), 10)
-  doc.font("Helvetica").fontSize(9)
-  const rh2 = Math.max(doc.heightOfString(rv, { width: COL_W }), 12)
+  doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL)
+  const rh1 = Math.max(doc.heightOfString(rightLabel, { width: COL_W }), 11)
+  doc.font("Helvetica").fontSize(SZ_GRID_VALUE)
+  const rh2 = Math.max(doc.heightOfString(rv, { width: COL_W }), 13)
   const rightH = rh1 + 2 + rh2
 
   const rowH = Math.max(leftH, rightH) + 10
   ensureSpace(doc, rowH)
   const startY = doc.y
 
-  doc.font("Helvetica-Bold").fontSize(8).text(leftLabel, LEFT_X, startY, { width: COL_W })
-  doc.font("Helvetica").fontSize(9).text(lv, LEFT_X, startY + lh1 + 2, { width: COL_W })
-  doc.font("Helvetica-Bold").fontSize(8).text(rightLabel, RIGHT_X, startY, { width: COL_W })
-  doc.font("Helvetica").fontSize(9).text(rv, RIGHT_X, startY + rh1 + 2, { width: COL_W })
+  doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL).text(leftLabel, LEFT_X, startY, { width: COL_W })
+  doc.font("Helvetica").fontSize(SZ_GRID_VALUE).text(lv, LEFT_X, startY + lh1 + 2, { width: COL_W })
+  doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL).text(rightLabel, RIGHT_X, startY, { width: COL_W })
+  doc.font("Helvetica").fontSize(SZ_GRID_VALUE).text(rv, RIGHT_X, startY + rh1 + 2, { width: COL_W })
 
   doc.y = startY + Math.max(leftH, rightH) + 10
   doc.x = LEFT_X
@@ -109,28 +129,28 @@ function sectionTitle(doc: PdfDoc, title: string) {
   doc.x = LEFT_X
   const gapTop = 8
   const gapBot = 8
-  doc.font("Helvetica-Bold").fontSize(11)
-  const titleH = Math.max(doc.heightOfString(title, { width: CONTENT_W }), 12)
+  doc.font("Helvetica-Bold").fontSize(SZ_SECTION)
+  const titleH = Math.max(doc.heightOfString(title, { width: CONTENT_W }), 13)
   ensureSpace(doc, gapTop + titleH + gapBot)
   const startY = doc.y + gapTop
   doc.fillColor("#000000").text(title, LEFT_X, startY, { width: CONTENT_W })
   doc.y = startY + titleH + gapBot
-  doc.fillColor("#000000").font("Helvetica").fontSize(9)
+  doc.fillColor("#000000").font("Helvetica").fontSize(SZ_GRID_VALUE)
   doc.x = LEFT_X
 }
 
 function fullWidthLabelValue(doc: PdfDoc, label: string, value: string) {
   doc.x = LEFT_X
   const v = val(value)
-  doc.font("Helvetica-Bold").fontSize(8)
-  const lh = Math.max(doc.heightOfString(label, { width: CONTENT_W }), 10)
-  doc.font("Helvetica").fontSize(9)
-  const vh = Math.max(doc.heightOfString(v, { width: CONTENT_W }), 12)
+  doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL)
+  const lh = Math.max(doc.heightOfString(label, { width: CONTENT_W }), 11)
+  doc.font("Helvetica").fontSize(SZ_GRID_VALUE)
+  const vh = Math.max(doc.heightOfString(v, { width: CONTENT_W }), 13)
   const blockH = lh + 2 + vh + 8
   ensureSpace(doc, blockH)
   const startY = doc.y
-  doc.font("Helvetica-Bold").fontSize(8).text(label, LEFT_X, startY, { width: CONTENT_W })
-  doc.font("Helvetica").fontSize(9).text(v, LEFT_X, startY + lh + 2, { width: CONTENT_W })
+  doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL).text(label, LEFT_X, startY, { width: CONTENT_W })
+  doc.font("Helvetica").fontSize(SZ_GRID_VALUE).text(v, LEFT_X, startY + lh + 2, { width: CONTENT_W })
   doc.y = startY + lh + 2 + vh + 8
   doc.x = LEFT_X
 }
@@ -145,14 +165,13 @@ function drawHeaderLogos(doc: PdfDoc, startY: number): number {
   const maxBuf =
     readOptionalPublicFile(RENTAL_PDF_LOGO_MAXWELL) ??
     readOptionalPublicFile("rental-maxwell-logo.png")
-  /** Match reference layout: logos clearly visible (~18% page height cap). */
-  const boxH = 58
+  /** Reference: logos at left/right content edges, tall enough to read clearly. */
+  const boxH = 68
   const halfW = (CONTENT_W - COL_GAP) / 2
-  /** Nudge both logos slightly toward center (keeps a small gap between them). */
-  const logoInward = 12
-  const logoW = halfW - logoInward
-  const leftLogoX = LEFT_X + logoInward
-  const rightLogoX = RIGHT_X - logoInward
+  const logoInward = 0
+  const logoW = halfW
+  const leftLogoX = LEFT_X
+  const rightLogoX = RIGHT_X
 
   if (devaBuf) {
     try {
@@ -174,16 +193,16 @@ function drawHeaderLogos(doc: PdfDoc, startY: number): number {
     drawMaxwellFallback(doc, rightLogoX, startY, logoW, boxH)
   }
 
-  return startY + boxH + 18
+  return startY + boxH + 22
 }
 
 function drawDevaFallback(doc: PdfDoc, x: number, y: number, w: number, h: number) {
   doc.save()
   doc.rect(x, y, w, h).fill(MAROON)
-  doc.fillColor("#f5e6c8").font("Helvetica-Bold").fontSize(9).text("DEVA RENTALS", x + 6, y + 8, {
+  doc.fillColor("#f5e6c8").font("Helvetica-Bold").fontSize(SZ_FALLBACK_DEVA).text("DEVA RENTALS", x + 6, y + 8, {
     width: w - 12,
   })
-  doc.font("Helvetica").fontSize(6).text("PROPERTY MANAGEMENT · EDMONTON", x + 6, y + 22, {
+  doc.font("Helvetica").fontSize(SZ_FALLBACK_DEVA_SUB).text("PROPERTY MANAGEMENT · EDMONTON", x + 6, y + 22, {
     width: w - 12,
   })
   doc.restore()
@@ -194,7 +213,7 @@ function drawMaxwellFallback(doc: PdfDoc, x: number, y: number, w: number, h: nu
   doc.rect(x, y, w, h).stroke("#cccccc")
   const tx = x + 8
   const ty = y + 10
-  doc.font("Helvetica-Bold").fontSize(11)
+  doc.font("Helvetica-Bold").fontSize(SZ_FALLBACK_MAX)
   doc.fillColor(MAROON).text("MaxWell", tx, ty, { lineBreak: false })
   const w1 = doc.widthOfString("MaxWell")
   doc.fillColor("#1e40af").text(" Excel Realty", tx + w1, ty, { lineBreak: false })
@@ -211,8 +230,8 @@ function drawSignatureCell(
   legalName: string,
   png?: Buffer,
 ) {
-  doc.font("Helvetica-Bold").fontSize(8).text(title, x, y, { width: w })
-  const innerY = y + 14
+  doc.font("Helvetica-Bold").fontSize(SZ_SIG_TITLE).text(title, x, y, { width: w })
+  const innerY = y + 16
   doc.lineWidth(1).strokeColor("#000000").rect(x, innerY, w, h).stroke()
   if (png?.length) {
     try {
@@ -221,12 +240,12 @@ function drawSignatureCell(
         fit: [w - pad * 2, h - pad * 2],
       })
     } catch {
-      doc.font("Helvetica").fontSize(7).fillColor("#666666").text("(signature)", x + 6, innerY + h / 2 - 4)
+      doc.font("Helvetica").fontSize(SZ_SIG_PLACEHOLDER).fillColor("#666666").text("(signature)", x + 6, innerY + h / 2 - 4)
       doc.fillColor("#000000")
     }
   }
-  doc.font("Helvetica-Bold").fontSize(7).text("Legal Name", x, innerY + h + 4, { width: w })
-  doc.font("Helvetica").fontSize(9).text(val(legalName), x, innerY + h + 14, { width: w })
+  doc.font("Helvetica-Bold").fontSize(SZ_SIG_LEGAL_LABEL).text("Legal Name", x, innerY + h + 4, { width: w })
+  doc.font("Helvetica").fontSize(SZ_SIG_VALUE).text(val(legalName), x, innerY + h + 15, { width: w })
 }
 
 function appendAttachmentPages(doc: PdfDoc, pages: RentalPdfEmbedPage[]) {
@@ -235,11 +254,11 @@ function appendAttachmentPages(doc: PdfDoc, pages: RentalPdfEmbedPage[]) {
     doc.addPage()
     doc.x = MARGIN
     doc.y = MARGIN
-    doc.font("Helvetica-Bold").fontSize(10).fillColor(MAROON).text(`Attachment ${p.slot}`, MARGIN, MARGIN)
-    doc.fillColor("#333333").font("Helvetica").fontSize(8).text(p.filename, MARGIN, MARGIN + 16, {
+    doc.font("Helvetica-Bold").fontSize(SZ_ATTACH_TITLE).fillColor(MAROON).text(`Attachment ${p.slot}`, MARGIN, MARGIN)
+    doc.fillColor("#333333").font("Helvetica").fontSize(SZ_ATTACH_META).text(p.filename, MARGIN, MARGIN + 18, {
       width: CONTENT_W,
     })
-    const top = MARGIN + 36
+    const top = MARGIN + 38
     const bottom = PAGE_H - MARGIN
     const innerH = bottom - top
 
@@ -251,7 +270,7 @@ function appendAttachmentPages(doc: PdfDoc, pages: RentalPdfEmbedPage[]) {
           valign: "center",
         })
       } catch {
-        doc.font("Helvetica").fontSize(9).text(
+        doc.font("Helvetica").fontSize(SZ_GRID_VALUE).text(
           "Image could not be embedded in this PDF. See the separate file in the email.",
           MARGIN,
           top,
@@ -259,7 +278,7 @@ function appendAttachmentPages(doc: PdfDoc, pages: RentalPdfEmbedPage[]) {
         )
       }
     } else {
-      doc.font("Helvetica").fontSize(9).text(
+      doc.font("Helvetica").fontSize(SZ_GRID_VALUE).text(
         `This file is not embedded here (${p.contentType || "unknown type"}). Open the separate "${p.filename}" attachment from the email.`,
         MARGIN,
         top,
@@ -302,24 +321,28 @@ export async function buildRentalApplicationPdf(opts: {
     doc.y = y
 
     const titleY = doc.y
+    doc.font("Helvetica-Bold").fontSize(SZ_MAIN_TITLE)
+    const titleBlockH = Math.max(
+      doc.heightOfString("Rental Application Form", { width: CONTENT_W, align: "center" }),
+      22,
+    )
     doc
-      .font("Helvetica-Bold")
-      .fontSize(16)
-      .fillColor("#000000")
+      .fillColor(MAROON)
       .text("Rental Application Form", MARGIN, titleY, {
         width: CONTENT_W,
         align: "center",
         underline: true,
       })
-    doc.fillColor("#000000").font("Helvetica").fontSize(9)
+    doc.fillColor("#000000").font("Helvetica").fontSize(SZ_GRID_VALUE)
     doc.x = LEFT_X
-    doc.y = titleY + 30
+    doc.y = titleY + titleBlockH + 14
 
+    sectionTitle(doc, "Your Personal Information")
     sectionTitle(doc, "Terms & Conditions")
     for (const p of RENTAL_PRIVACY_TERMS_PARAGRAPHS) {
       doc.x = LEFT_X
-      doc.font("Helvetica").fontSize(8).fillColor("#333333")
-      const ph = Math.max(doc.heightOfString(p, { width: CONTENT_W }), 12)
+      doc.font("Helvetica").fontSize(SZ_TERMS).fillColor("#333333")
+      const ph = Math.max(doc.heightOfString(p, { width: CONTENT_W }), 13)
       ensureSpace(doc, ph + 5)
       const y0 = doc.y
       doc.text(p, LEFT_X, y0, { width: CONTENT_W, align: "justify" })
@@ -366,10 +389,10 @@ export async function buildRentalApplicationPdf(opts: {
     fullWidthLabelValue(doc, "If you have other sources of income that you would like us to consider, please list income, source and amount", t.otherIncomeSources)
 
     doc.x = LEFT_X
-    doc.font("Helvetica-Bold").fontSize(8)
+    doc.font("Helvetica-Bold").fontSize(SZ_UPLOAD)
     const uploadLabel = "Upload Pictures"
-    const uploadLabelH = Math.max(doc.heightOfString(uploadLabel, { width: CONTENT_W }), 10)
-    const tripRowH = 14
+    const uploadLabelH = Math.max(doc.heightOfString(uploadLabel, { width: CONTENT_W }), 11)
+    const tripRowH = 16
     ensureSpace(doc, uploadLabelH + 4 + tripRowH)
     const yUploadLbl = doc.y
     doc.text(uploadLabel, LEFT_X, yUploadLbl, { width: CONTENT_W })
@@ -378,7 +401,7 @@ export async function buildRentalApplicationPdf(opts: {
     const slotsEmp = [3, 4, 5] as const
     for (let i = 0; i < 3; i++) {
       const sx = LEFT_X + i * (tripW + 8)
-      doc.font("Helvetica").fontSize(8).text(attRef(slotPresent, slotsEmp[i]), sx, tripY, { width: tripW })
+      doc.font("Helvetica").fontSize(SZ_UPLOAD).text(attRef(slotPresent, slotsEmp[i]), sx, tripY, { width: tripW })
     }
     doc.y = tripY + tripRowH
     doc.x = LEFT_X
@@ -390,9 +413,9 @@ export async function buildRentalApplicationPdf(opts: {
     fullWidthLabelValue(doc, "Job Position", t.coJobPosition)
 
     doc.x = LEFT_X
-    doc.font("Helvetica-Bold").fontSize(8)
+    doc.font("Helvetica-Bold").fontSize(SZ_UPLOAD)
     const uploadLabel2 = "Upload Pictures"
-    const uploadLabel2H = Math.max(doc.heightOfString(uploadLabel2, { width: CONTENT_W }), 10)
+    const uploadLabel2H = Math.max(doc.heightOfString(uploadLabel2, { width: CONTENT_W }), 11)
     ensureSpace(doc, uploadLabel2H + 4 + tripRowH)
     const yUploadLbl2 = doc.y
     doc.text(uploadLabel2, LEFT_X, yUploadLbl2, { width: CONTENT_W })
@@ -400,7 +423,7 @@ export async function buildRentalApplicationPdf(opts: {
     const slotsCo = [6, 7, 8] as const
     for (let i = 0; i < 3; i++) {
       const sx = LEFT_X + i * (tripW + 8)
-      doc.font("Helvetica").fontSize(8).text(attRef(slotPresent, slotsCo[i]), sx, tripY2, { width: tripW })
+      doc.font("Helvetica").fontSize(SZ_UPLOAD).text(attRef(slotPresent, slotsCo[i]), sx, tripY2, { width: tripW })
     }
     doc.y = tripY2 + tripRowH
     doc.x = LEFT_X
@@ -421,16 +444,16 @@ export async function buildRentalApplicationPdf(opts: {
     )
 
     doc.x = LEFT_X
-    doc.font("Helvetica-Bold").fontSize(8)
+    doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL)
     const crLine =
       "Please upload if you have current credit report:"
-    const crLineH = Math.max(doc.heightOfString(crLine, { width: CONTENT_W }), 10)
+    const crLineH = Math.max(doc.heightOfString(crLine, { width: CONTENT_W }), 11)
     ensureSpace(doc, crLineH + 4 + 16)
     const yCrPrompt = doc.y
     doc.text(crLine, LEFT_X, yCrPrompt, { width: CONTENT_W })
     const crY = yCrPrompt + crLineH + 4
     const half = (CONTENT_W - 8) / 2
-    doc.font("Helvetica").fontSize(8).text(attRef(slotPresent, 9), LEFT_X, crY, { width: half })
+    doc.font("Helvetica").fontSize(SZ_GRID_LABEL).text(attRef(slotPresent, 9), LEFT_X, crY, { width: half })
     doc.text(attRef(slotPresent, 10), LEFT_X + half + 8, crY, { width: half })
     doc.y = crY + 16
     doc.x = LEFT_X
@@ -443,14 +466,14 @@ export async function buildRentalApplicationPdf(opts: {
     const noteTitle = "NOTE"
     const notePara =
       "The Landlord is not responsible for possessions of the Tenant(s) or damages to same. Tenant(s) are encouraged to obtain tenant insurance for their belongings and for third party liability."
-    doc.font("Helvetica-Bold").fontSize(8)
-    const noteTitleH = Math.max(doc.heightOfString(noteTitle, { width: CONTENT_W }), 10)
-    doc.font("Helvetica").fontSize(7)
-    const noteParaH = Math.max(doc.heightOfString(notePara, { width: CONTENT_W }), 16)
+    doc.font("Helvetica-Bold").fontSize(SZ_NOTE_TITLE)
+    const noteTitleH = Math.max(doc.heightOfString(noteTitle, { width: CONTENT_W }), 11)
+    doc.font("Helvetica").fontSize(SZ_NOTE_BODY)
+    const noteParaH = Math.max(doc.heightOfString(notePara, { width: CONTENT_W }), 18)
     ensureSpace(doc, noteTitleH + 4 + noteParaH + 6)
     const yNote = doc.y
-    doc.font("Helvetica-Bold").fontSize(8).text(noteTitle, LEFT_X, yNote, { width: CONTENT_W })
-    doc.font("Helvetica").fontSize(7).text(notePara, LEFT_X, yNote + noteTitleH + 4, {
+    doc.font("Helvetica-Bold").fontSize(SZ_NOTE_TITLE).text(noteTitle, LEFT_X, yNote, { width: CONTENT_W })
+    doc.font("Helvetica").fontSize(SZ_NOTE_BODY).text(notePara, LEFT_X, yNote + noteTitleH + 4, {
       width: CONTENT_W,
       align: "justify",
     })
@@ -469,8 +492,8 @@ export async function buildRentalApplicationPdf(opts: {
     sectionTitle(doc, "Terms & Conditions")
     for (const p of RENTAL_FINAL_TERMS_PARAGRAPHS) {
       doc.x = LEFT_X
-      doc.font("Helvetica").fontSize(8).fillColor("#333333")
-      const ph = Math.max(doc.heightOfString(p, { width: CONTENT_W }), 12)
+      doc.font("Helvetica").fontSize(SZ_TERMS).fillColor("#333333")
+      const ph = Math.max(doc.heightOfString(p, { width: CONTENT_W }), 13)
       ensureSpace(doc, ph + 5)
       const yp = doc.y
       doc.text(p, LEFT_X, yp, { width: CONTENT_W, align: "justify" })
@@ -484,20 +507,20 @@ export async function buildRentalApplicationPdf(opts: {
     const sigBoxH = 64
     const sigGap = 12
     const sigW = (CONTENT_W - sigGap) / 2
-    const sigBlockH = 14 + sigBoxH + 28 + 8
+    const sigBlockH = 16 + sigBoxH + 30 + 8
     ensureSpace(doc, sigBlockH)
     const sigTop = doc.y
     drawSignatureCell(doc, LEFT_X, sigTop, sigW, sigBoxH, "Signature", t.legalName, applicantSignaturePng)
     drawSignatureCell(doc, RIGHT_X, sigTop, sigW, sigBoxH, "Co-Applicant's Signature", t.coLegalName, coApplicantSignaturePng)
-    doc.y = sigTop + 14 + sigBoxH + 28 + 8
+    doc.y = sigTop + 16 + sigBoxH + 30 + 8
     doc.x = LEFT_X
 
     if (embedPages.length > 0) {
       doc.x = LEFT_X
-      doc.font("Helvetica").fontSize(8).fillColor("#555555")
+      doc.font("Helvetica").fontSize(SZ_ATTACH_META).fillColor("#555555")
       const intro =
         "The following pages contain uploaded documents (Attachments) in numbered order."
-      const introH = Math.max(doc.heightOfString(intro, { width: CONTENT_W }), 12)
+      const introH = Math.max(doc.heightOfString(intro, { width: CONTENT_W }), 13)
       ensureSpace(doc, introH + 10)
       const yi = doc.y
       doc.text(intro, LEFT_X, yi, { width: CONTENT_W })
@@ -506,10 +529,10 @@ export async function buildRentalApplicationPdf(opts: {
       appendAttachmentPages(doc, embedPages)
     } else {
       doc.x = LEFT_X
-      doc.font("Helvetica").fontSize(8).fillColor("#555555")
+      doc.font("Helvetica").fontSize(SZ_ATTACH_META).fillColor("#555555")
       const noEmb =
         "No supporting document images were uploaded; see email attachments if any files were sent separately."
-      const nh = Math.max(doc.heightOfString(noEmb, { width: CONTENT_W }), 12)
+      const nh = Math.max(doc.heightOfString(noEmb, { width: CONTENT_W }), 13)
       ensureSpace(doc, nh + 4)
       doc.text(noEmb, LEFT_X, doc.y, { width: CONTENT_W })
       doc.y += nh + 4
