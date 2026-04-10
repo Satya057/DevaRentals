@@ -1,8 +1,24 @@
+const STEP_FIELD_SELECTOR =
+  "input:not([type=hidden]), textarea" as const
+
+/** True if every required native field in the step subtree is valid (no UI). */
+export function stepFieldsAreValid(root: HTMLElement | null): boolean {
+  if (!root) return true
+  const candidates = root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+    STEP_FIELD_SELECTOR,
+  )
+  for (const el of candidates) {
+    if (!el.required) continue
+    if (!el.checkValidity()) return false
+  }
+  return true
+}
+
 /** Validates required native inputs/textareas inside a step container (multi-step forms). */
 export function validateStepNativeFields(root: HTMLElement | null): boolean {
   if (!root) return true
   const candidates = root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
-    "input:not([type=hidden]), textarea",
+    STEP_FIELD_SELECTOR,
   )
   for (const el of candidates) {
     if (!el.required) continue

@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { LandlordInquiryForm } from "@/components/forms/landlord-inquiry-form"
 import { ScheduleViewingForm } from "@/components/forms/schedule-viewing-form"
 import { RentalApplicationForm } from "@/components/forms/rental-application-form"
@@ -94,8 +93,8 @@ export function Contact() {
                     </div>
                   </button>
                 </DialogTrigger>
-                <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-4xl max-h-[90vh] p-0 bg-[#f5f0e8]">
-                  <DialogHeader className="px-6 pt-6 pb-0">
+                <DialogContent className="flex w-full max-w-[calc(100%-2rem)] sm:max-w-4xl flex-col gap-0 overflow-hidden p-0 bg-[#f5f0e8] max-h-[90vh]">
+                  <DialogHeader className="shrink-0 px-6 pt-6 pb-3">
                     <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
                       {card.title}
                     </DialogTitle>
@@ -111,9 +110,9 @@ export function Contact() {
                       </Link>
                     </div>
                   </DialogHeader>
-                  <ScrollArea className="max-h-[calc(90vh-100px)] px-6 pb-6">
+                  <div className="max-h-[calc(90vh-10.5rem)] min-h-[min(40vh,320px)] overflow-y-auto overscroll-contain px-6 pb-10 pt-1 [scrollbar-gutter:stable]">
                     {renderForm(card.id, () => setOpenDialog(null))}
-                  </ScrollArea>
+                  </div>
                 </DialogContent>
               </Dialog>
             )

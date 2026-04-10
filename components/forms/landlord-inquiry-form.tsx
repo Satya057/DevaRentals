@@ -20,36 +20,12 @@ import {
   formFieldLabelClass as labelForm,
   formRadioOptionLabelClass as radioOptionLabel,
 } from "@/components/forms/form-label-styles"
+import { BATHROOM_OPTIONS, BEDROOM_OPTIONS } from "@/lib/landlord-inquiry-labels"
 
 const labelPrimary = labelForm
 const labelSecondary = labelForm
 const labelAccent = labelForm
 const labelMaroon = labelForm
-
-const BEDROOM_OPTIONS: { value: string; label: string }[] = [
-  { value: "1", label: "1" },
-  { value: "2", label: "2" },
-  { value: "2-den", label: "2+Den" },
-  { value: "3", label: "3" },
-  { value: "3-den", label: "3+Den" },
-  { value: "4", label: "4" },
-  { value: "4-den", label: "4+Den" },
-  { value: "5", label: "5" },
-  { value: "5-den", label: "5+Den" },
-  { value: "other", label: "Other" },
-]
-
-const BATHROOM_OPTIONS: { value: string; label: string }[] = [
-  { value: "1", label: "1" },
-  { value: "1.5", label: "1.5" },
-  { value: "2", label: "2" },
-  { value: "2.5", label: "2.5" },
-  { value: "3", label: "3" },
-  { value: "3.5", label: "3.5" },
-  { value: "4", label: "4" },
-  { value: "4.5", label: "4.5" },
-  { value: "other", label: "Other" },
-]
 
 interface LandlordInquiryFormProps {
   onSuccess?: () => void
@@ -62,6 +38,17 @@ export function LandlordInquiryForm({
 }: LandlordInquiryFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [propertyType, setPropertyType] = useState("front-attach")
+  const [petsAllowed, setPetsAllowed] = useState("no")
+  const [parking, setParking] = useState("single")
+  const [hearAboutUs, setHearAboutUs] = useState("google")
+  const [bedrooms, setBedrooms] = useState("1")
+  const [bathrooms, setBathrooms] = useState("1")
+  const [furnishing, setFurnishing] = useState("unfurnished")
+  const [backyard, setBackyard] = useState("yes")
+  const [preferredLeaseTerm, setPreferredLeaseTerm] = useState("1-year")
+  const [contractTerm, setContractTerm] = useState("1-year")
   const [step, setStep] = useState(0)
   const step0Ref = useRef<HTMLDivElement>(null)
   const step1Ref = useRef<HTMLDivElement>(null)
@@ -77,22 +64,78 @@ export function LandlordInquiryForm({
   }, [step])
 
   const goNext = () => {
+    setSubmitError(null)
     const root = step === 0 ? step0Ref.current : step1Ref.current
     if (!validateStepNativeFields(root)) return
     setStep((s) => Math.min(s + 1, 2))
   }
 
-  const goBack = () => setStep((s) => Math.max(s - 1, 0))
+  const goBack = () => {
+    setSubmitError(null)
+    setStep((s) => Math.max(s - 1, 0))
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!validateStepNativeFields(step2Ref.current)) return
     setIsSubmitting(true)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-    if (onSuccess) {
-      setTimeout(onSuccess, 2000)
+    setSubmitError(null)
+    const form = e.currentTarget
+    const fd = new FormData(form)
+    const payload = {
+      fullName: String(fd.get("fullName") ?? ""),
+      secondOwnerName: String(fd.get("secondOwnerName") ?? ""),
+      phone: String(fd.get("phone") ?? ""),
+      secondOwnerPhone: String(fd.get("secondOwnerPhone") ?? ""),
+      email: String(fd.get("email") ?? ""),
+      secondOwnerEmail: String(fd.get("secondOwnerEmail") ?? ""),
+      propertyAddress: String(fd.get("propertyAddress") ?? ""),
+      secondPropertyAddress: String(fd.get("secondPropertyAddress") ?? ""),
+      availableDate: String(fd.get("availableDate") ?? ""),
+      rentExpectation: String(fd.get("rentExpectation") ?? ""),
+      squareFootage: String(fd.get("squareFootage") ?? ""),
+      buildYear: String(fd.get("buildYear") ?? ""),
+      bedrooms,
+      bedroomsOther: String(fd.get("bedroomsOther") ?? ""),
+      bathrooms,
+      bathroomsOther: String(fd.get("bathroomsOther") ?? ""),
+      furnishing,
+      backyard,
+      preferredLeaseTerm,
+      contractTerm,
+      propertyType,
+      petsAllowed,
+      petRestrictions: String(fd.get("petRestrictions") ?? ""),
+      parking,
+      comments: String(fd.get("comments") ?? ""),
+      tourDate: String(fd.get("tourDate") ?? ""),
+      hearAboutUs,
+      hearAboutSpecify: String(fd.get("hearAboutSpecify") ?? ""),
+      friendName: String(fd.get("friendName") ?? ""),
+    }
+    try {
+      const res = await fetch("/api/landlord-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+      const data = (await res.json().catch(() => ({}))) as { error?: string }
+      if (!res.ok) {
+        setSubmitError(
+          typeof data.error === "string"
+            ? data.error
+            : "Something went wrong. Please try again.",
+        )
+        return
+      }
+      setIsSubmitted(true)
+      if (onSuccess) {
+        setTimeout(onSuccess, 2000)
+      }
+    } catch {
+      setSubmitError("Network error. Please check your connection and try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -128,6 +171,12 @@ export function LandlordInquiryForm({
         stepTitles={stepTitles}
         ariaLabel="Landlord inquiry form progress"
       />
+
+      {submitError ? (
+        <p className="text-sm text-red-600" role="alert">
+          {submitError}
+        </p>
+      ) : null}
 
       <div ref={step0Ref} className={step === 0 ? "space-y-4" : "hidden"} aria-hidden={step !== 0}>
         <div className="min-w-0">
@@ -184,6 +233,16 @@ export function LandlordInquiryForm({
             name="propertyAddress"
             placeholder="Property Address"
             required
+            autoComplete="street-address"
+            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+          />
+        </div>
+
+        <div className="min-w-0">
+          <label className={labelPrimary}>2nd Property Address</label>
+          <Input
+            name="secondPropertyAddress"
+            placeholder="2nd Property Address (optional)"
             autoComplete="street-address"
             className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
           />
@@ -275,7 +334,11 @@ export function LandlordInquiryForm({
           <label className={labelPrimary}>
             Number of Bedrooms <span className="text-red-600">*</span>
           </label>
-          <Select name="bedrooms" defaultValue="1" required>
+          <Select
+            value={bedrooms}
+            onValueChange={setBedrooms}
+            required
+          >
             <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder="1" />
             </SelectTrigger>
@@ -292,7 +355,11 @@ export function LandlordInquiryForm({
           <label className={labelAccent}>
             Number of Bathrooms <span className="text-red-600">*</span>
           </label>
-          <Select name="bathrooms" defaultValue="1" required>
+          <Select
+            value={bathrooms}
+            onValueChange={setBathrooms}
+            required
+          >
             <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder="1" />
             </SelectTrigger>
@@ -307,12 +374,38 @@ export function LandlordInquiryForm({
         </div>
       </div>
 
+      {bedrooms === "other" ? (
+        <div>
+          <label className={labelAccent}>Specify Other Bedrooms</label>
+          <Input
+            name="bedroomsOther"
+            placeholder="Describe bedrooms (e.g. 3+loft)"
+            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+          />
+        </div>
+      ) : null}
+
+      {bathrooms === "other" ? (
+        <div>
+          <label className={labelAccent}>Specify Other Bathrooms</label>
+          <Input
+            name="bathroomsOther"
+            placeholder="Describe bathrooms (e.g. 2 full + powder)"
+            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+          />
+        </div>
+      ) : null}
+
       <div className="grid md:grid-cols-2 gap-3">
         <div>
           <label className={labelPrimary}>
             Furnishing Type <span className="text-red-600">*</span>
           </label>
-          <Select name="furnishing" defaultValue="unfurnished" required>
+          <Select
+            value={furnishing}
+            onValueChange={setFurnishing}
+            required
+          >
             <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder="Unfurnished" />
             </SelectTrigger>
@@ -327,7 +420,7 @@ export function LandlordInquiryForm({
           <label className={labelAccent}>
             Backyard Availability <span className="text-red-600">*</span>
           </label>
-          <Select name="backyard" defaultValue="yes" required>
+          <Select value={backyard} onValueChange={setBackyard} required>
             <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder="Yes" />
             </SelectTrigger>
@@ -344,7 +437,11 @@ export function LandlordInquiryForm({
           <label className={labelMaroon}>
             Preferred Tenant Lease Term <span className="text-red-600">*</span>
           </label>
-          <Select name="preferredLeaseTerm" defaultValue="1-year" required>
+          <Select
+            value={preferredLeaseTerm}
+            onValueChange={setPreferredLeaseTerm}
+            required
+          >
             <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder="1 Year" />
             </SelectTrigger>
@@ -360,7 +457,11 @@ export function LandlordInquiryForm({
           <label className={labelPrimary}>
             Contract Term Period <span className="text-red-600">*</span>
           </label>
-          <Select name="contractTerm" defaultValue="1-year" required>
+          <Select
+            value={contractTerm}
+            onValueChange={setContractTerm}
+            required
+          >
             <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder="1 Year" />
             </SelectTrigger>
@@ -378,7 +479,11 @@ export function LandlordInquiryForm({
         <label className={labelPrimary}>
           Property Type <span className="text-red-600">*</span>
         </label>
-        <RadioGroup defaultValue="front-attach" className="flex flex-wrap gap-x-4 gap-y-2">
+        <RadioGroup
+          value={propertyType}
+          onValueChange={setPropertyType}
+          className="flex flex-wrap gap-x-4 gap-y-2"
+        >
           <div className="flex items-center gap-2">
             <RadioGroupItem value="front-attach" id="front-attach" />
             <label htmlFor="front-attach" className={radioOptionLabel}>
@@ -434,7 +539,11 @@ export function LandlordInquiryForm({
         <label className={labelPrimary}>
           Are Pets Allowed? <span className="text-red-600">*</span>
         </label>
-        <RadioGroup defaultValue="no" className="flex flex-wrap gap-3">
+        <RadioGroup
+          value={petsAllowed}
+          onValueChange={setPetsAllowed}
+          className="flex flex-wrap gap-3"
+        >
           <div className="flex items-center gap-2">
             <RadioGroupItem value="yes" id="pets-yes" />
             <label htmlFor="pets-yes" className={radioOptionLabel}>
@@ -475,7 +584,11 @@ export function LandlordInquiryForm({
         <label className={labelPrimary}>
           Parking Availability <span className="text-red-600">*</span>
         </label>
-        <RadioGroup defaultValue="single" className="flex flex-wrap gap-x-4 gap-y-2">
+        <RadioGroup
+          value={parking}
+          onValueChange={setParking}
+          className="flex flex-wrap gap-x-4 gap-y-2"
+        >
           <div className="flex items-center gap-2">
             <RadioGroupItem value="single" id="parking-single" />
             <label htmlFor="parking-single" className={radioOptionLabel}>
@@ -539,7 +652,11 @@ export function LandlordInquiryForm({
         <label className={labelMaroon}>
           How did you hear about us? <span className="text-red-600">*</span>
         </label>
-        <RadioGroup defaultValue="google" className="flex flex-wrap gap-x-4 gap-y-2">
+        <RadioGroup
+          value={hearAboutUs}
+          onValueChange={setHearAboutUs}
+          className="flex flex-wrap gap-x-4 gap-y-2"
+        >
           <div className="flex items-center gap-2">
             <RadioGroupItem value="facebook" id="hear-facebook" />
             <label htmlFor="hear-facebook" className={radioOptionLabel}>
@@ -577,6 +694,26 @@ export function LandlordInquiryForm({
             </label>
           </div>
         </RadioGroup>
+        {hearAboutUs === "others" ? (
+          <div className="mt-3 min-w-0">
+            <label className={labelMaroon}>Please specify</label>
+            <Input
+              name="hearAboutSpecify"
+              placeholder="How did you hear about us?"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+        ) : null}
+        {hearAboutUs === "referral" ? (
+          <div className="mt-3 min-w-0">
+            <label className={labelMaroon}>Friend{"'"}s Name</label>
+            <Input
+              name="friendName"
+              placeholder="Friend's name"
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+        ) : null}
       </div>
       </div>
 
