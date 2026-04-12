@@ -25,7 +25,7 @@ const heroFeatureCardClass =
 export function Hero() {
   return (
     <section id="home" className="relative flex min-h-[min(54vh,620px)] items-center overflow-hidden py-3 md:py-4">
-      {/* Background video: public/video/Hero.mp4 (+ optional Hero.webm) */}
+      {/* Background video: public/video/Hero.mp4 (lowercase folder for Vercel/Linux) */}
       <div className="absolute inset-0 z-0">
         <HeroVideoBackground />
         {/* Improve text contrast and visual focus */}
