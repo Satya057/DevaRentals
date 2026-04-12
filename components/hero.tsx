@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { HeroVideoBackground } from "@/components/hero-video-background"
 import { ArrowRight, Shield, TrendingUp, Clock, Check } from "lucide-react"
 
 const ownerHighlights = [
@@ -24,15 +25,9 @@ const heroFeatureCardClass =
 export function Hero() {
   return (
     <section id="home" className="relative flex min-h-[min(54vh,620px)] items-center overflow-hidden py-3 md:py-4">
-      {/* Background image (no color wash — photo stays natural) */}
+      {/* Background video: public/video/Hero.mp4 (+ optional Hero.webm) */}
       <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop')",
-          }}
-        />
+        <HeroVideoBackground />
         {/* Improve text contrast and visual focus */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/58 via-black/34 to-black/18" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.14),transparent_45%)]" />
