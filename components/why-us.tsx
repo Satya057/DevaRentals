@@ -75,20 +75,18 @@ export function WhyUs() {
             </Button>
           </div>
 
-          {/* Solutions Grid */}
-          <div className="grid sm:grid-cols-2 gap-6">
-            {solutions.map((solution, index) => (
+          {/* Solutions Grid — equal-size cells on sm+ */}
+          <div className="grid sm:grid-cols-2 sm:grid-rows-2 gap-6 sm:min-h-[20rem] md:min-h-[22rem] sm:[grid-template-rows:repeat(2,minmax(0,1fr))]">
+            {solutions.map((solution) => (
               <div
                 key={solution.title}
-                className={`bg-card p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow ${
-                  index % 2 === 1 ? "sm:mt-8" : ""
-                }`}
+                className="bg-card p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow h-full min-h-0 flex flex-col"
               >
-                <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4 shrink-0">
                   <solution.icon className="h-7 w-7 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">{solution.title}</h3>
-                <p className="text-muted-foreground">{solution.description}</p>
+                <p className="text-muted-foreground flex-1 text-pretty">{solution.description}</p>
               </div>
             ))}
           </div>
