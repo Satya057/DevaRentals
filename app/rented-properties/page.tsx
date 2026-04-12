@@ -55,7 +55,7 @@ export default function RentedPropertiesPage() {
           Back to Home
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#8B2332] text-center mb-2">
+        <h1 className="text-3xl md:text-4xl font-serif font-semibold text-[#8B2332] text-center mb-2">
           Rented Properties
         </h1>
         <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-2">

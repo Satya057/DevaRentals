@@ -43,7 +43,7 @@ export function WhyUs() {
               Why Choose Us
             </div>
             
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-foreground mb-6 text-balance">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-foreground mb-6 text-balance">
               Why Deva Rentals
             </h2>
             

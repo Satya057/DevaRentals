@@ -84,7 +84,7 @@ export function Services() {
                 For Property Owners
               </div>
               
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-foreground mb-6 text-balance">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-foreground mb-6 text-balance">
                 For Landlords
               </h2>
               
@@ -129,7 +129,7 @@ export function Services() {
                 For Renters
               </div>
               
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-6 text-balance">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold mb-6 text-balance">
                 For Tenants
               </h2>
               

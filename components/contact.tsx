@@ -67,7 +67,7 @@ export function Contact() {
   return (
     <section id="contact" className="py-20 md:py-28 bg-card">
       <div className="w-[90%] mx-auto">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-8 text-balance">
+        <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-8 text-balance">
           Forms & Applications
         </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

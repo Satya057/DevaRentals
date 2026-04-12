@@ -35,7 +35,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-6">
               <BrandLogoMark />
               <div className="flex flex-col">
-                <span className="text-xl font-serif font-bold tracking-tight text-background">
+                <span className="text-xl font-serif font-semibold tracking-tight text-background">
                   DEVA RENTALS
                 </span>
                 <span className="text-[10px] text-background/60 tracking-widest uppercase">Property Management</span>
@@ -61,7 +61,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-serif font-bold mb-6">Quick Links</h4>
+            <h4 className="text-lg font-serif font-semibold mb-6">Quick Links</h4>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.href}>
@@ -78,7 +78,7 @@ export function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="text-lg font-serif font-bold mb-6">Our Services</h4>
+            <h4 className="text-lg font-serif font-semibold mb-6">Our Services</h4>
             <ul className="space-y-3">
               {services.map((service) => (
                 <li key={service}>
@@ -90,7 +90,7 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-serif font-bold mb-6">Contact Info</h4>
+            <h4 className="text-lg font-serif font-semibold mb-6">Contact Info</h4>
             <ul className="space-y-4">
               <li>
                 <a

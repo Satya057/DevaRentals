@@ -20,7 +20,7 @@ export function CTA() {
 
       <div className="w-[90%] max-w-7xl mx-auto relative z-10">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground mb-3 text-balance">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-semibold text-foreground mb-3 text-balance">
             Ready to Experience Stress-Free Property Management?
           </h2>
           
@@ -65,10 +65,10 @@ export function CTA() {
               We proudly partner or are affiliated with the following organizations
             </p>
             <div className="flex flex-wrap justify-center items-center gap-5 md:gap-6 opacity-60">
-              <div className="text-lg md:text-xl font-bold text-foreground">RECA</div>
-              <div className="text-lg md:text-xl font-bold text-foreground">AREA</div>
-              <div className="text-lg md:text-xl font-bold text-foreground">BBB</div>
-              <div className="text-lg md:text-xl font-bold text-foreground">NARPM</div>
+              <div className="text-lg md:text-xl font-semibold text-foreground">RECA</div>
+              <div className="text-lg md:text-xl font-semibold text-foreground">AREA</div>
+              <div className="text-lg md:text-xl font-semibold text-foreground">BBB</div>
+              <div className="text-lg md:text-xl font-semibold text-foreground">NARPM</div>
             </div>
           </div>
         </div>

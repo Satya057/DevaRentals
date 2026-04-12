@@ -50,7 +50,7 @@ export function Hero() {
             </div>
 
             <h1
-              className="hero-motion-up mb-3 text-balance font-serif text-4xl font-bold leading-tight md:text-5xl lg:text-[3.15rem] lg:leading-[1.05]"
+              className="hero-motion-up mb-3 text-balance font-serif text-4xl font-semibold leading-tight md:text-5xl lg:text-[3.15rem] lg:leading-[1.05]"
               style={{ ["--hero-d" as string]: "90ms" }}
             >
               Find the Perfect Property for Your Lifestyle
@@ -104,21 +104,21 @@ export function Hero() {
             >
               <div className="grid grid-cols-3 gap-3 sm:gap-6 md:gap-10">
                 <div className="text-center sm:text-left">
-                  <div className="font-serif text-2xl font-bold md:text-3xl">10+</div>
+                  <div className="font-serif text-2xl font-semibold md:text-3xl">10+</div>
                   <div className="mt-1 text-xs opacity-90 sm:text-sm">Years Experience</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-serif text-2xl font-bold md:text-3xl">500+</div>
+                  <div className="font-serif text-2xl font-semibold md:text-3xl">500+</div>
                   <div className="mt-1 text-xs opacity-90 sm:text-sm">Properties Managed</div>
                 </div>
                 <div className="text-center sm:text-right">
-                  <div className="font-serif text-2xl font-bold md:text-3xl">98%</div>
+                  <div className="font-serif text-2xl font-semibold md:text-3xl">98%</div>
                   <div className="mt-1 text-xs opacity-90 sm:text-sm">Client Satisfaction</div>
                 </div>
               </div>
               <p className="mt-3 text-center text-[10px] font-medium uppercase tracking-wide text-white/85 sm:text-xs sm:text-left">
                 Certified ·{" "}
-                <span className="font-serif font-bold normal-case tracking-normal">Licensed Property Management</span>
+                <span className="font-serif font-semibold normal-case tracking-normal">Licensed Property Management</span>
               </p>
             </div>
           </div>
@@ -134,7 +134,7 @@ export function Hero() {
                 Owner Benefits
               </div>
 
-              <p className="mb-2 border-l-4 border-[#8B2332]/75 pl-3 text-pretty text-base font-bold leading-snug tracking-tight text-[#1c1917] md:text-lg md:leading-snug">
+              <p className="mb-2 border-l-4 border-[#8B2332]/75 pl-3 text-pretty text-base font-normal leading-snug tracking-tight text-[#1c1917] md:text-lg md:leading-snug">
                 {aboutIntroBold}
               </p>
 

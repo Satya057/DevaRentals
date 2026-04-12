@@ -1,13 +1,14 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { Josefin_Sans } from 'next/font/google'
+import { Work_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const josefinSans = Josefin_Sans({
+/** Body copy: Work Sans 400 (global default). */
+const workSans = Work_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-sans",
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
 })
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${josefinSans.variable} font-sans antialiased`}
+        className={`${workSans.variable} font-sans font-normal antialiased`}
         suppressHydrationWarning
       >
         {children}
