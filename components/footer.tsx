@@ -35,12 +35,10 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-6">
               <BrandLogoMark />
               <div className="flex flex-col">
-                <span className="text-xl font-sans font-semibold tracking-tight text-background">
+                <span className="text-xl font-serif font-semibold tracking-tight text-background">
                   DEVA RENTALS
                 </span>
-                <span className="text-[11px] font-sans font-normal uppercase tracking-[0.22em] text-background/60">
-                  Property Management
-                </span>
+                <span className="text-[10px] text-background/60 tracking-widest uppercase">Property Management</span>
               </div>
             </Link>
             <p className="text-background/70 text-sm leading-relaxed mb-6">
