@@ -6,7 +6,8 @@ const POSTER =
   "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop"
 
 /**
- * Full-bleed hero background: `public/video/Hero.mp4` (optional `Hero.webm`).
+ * Full-bleed hero background: `public/Video/Hero.mp4` (optional `Hero.webm`).
+ * Path must match folder casing — Vercel (Linux) is case-sensitive (`/Video/` not `/video/`).
  * Falls back to poster image when `prefers-reduced-motion: reduce`.
  */
 export function HeroVideoBackground() {
@@ -41,8 +42,8 @@ export function HeroVideoBackground() {
       poster={POSTER}
       aria-hidden
     >
-      <source src="/video/Hero.mp4" type="video/mp4" />
-      <source src="/video/Hero.webm" type="video/webm" />
+      <source src="/Video/Hero.mp4" type="video/mp4" />
+      <source src="/Video/Hero.webm" type="video/webm" />
     </video>
   )
 }
