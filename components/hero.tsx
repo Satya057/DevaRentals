@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { HeroBackgroundVideo } from "@/components/hero-background-video"
 import { ArrowRight, Shield, TrendingUp, Clock, Check } from "lucide-react"
 
 const ownerHighlights = [
@@ -24,20 +25,9 @@ const heroFeatureCardClass =
 export function Hero() {
   return (
     <section id="home" className="relative flex min-h-[min(54vh,620px)] items-center overflow-hidden py-3 md:py-4">
-      {/* Background video (place file at public/video/hero-video.mp4) */}
+      {/* Video: public/video/hero-video.mp4 (or hero.mp4), or NEXT_PUBLIC_HERO_VIDEO_URL */}
       <div className="absolute inset-0 z-0">
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070&auto=format&fit=crop"
-          aria-hidden
-        >
-          <source src="/video/hero-video.mp4" type="video/mp4" />
-        </video>
+        <HeroBackgroundVideo />
         {/* Improve text contrast and visual focus */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/58 via-black/34 to-black/18" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.14),transparent_45%)]" />
