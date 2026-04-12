@@ -18,9 +18,9 @@ function StaticHeroBg() {
 
 /**
  * Full-bleed hero: `public/video/Hero.mp4` (optional `Hero.webm`).
- * - Uses lowercase `video/` so URLs match Linux/Vercel (case-sensitive).
- * - If the file 404s, codec fails, or autoplay is blocked → poster image.
- * - `prefers-reduced-motion: reduce` → poster only (accessibility).
+ * - Remote Desktop (RDP) often skips GPU video decode → `<video>` may show only the
+ *   **poster** (same house image as before). Test on the physical PC with a local browser.
+ * - `prefers-reduced-motion: reduce` → poster only.
  */
 export function HeroVideoBackground() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -40,15 +40,32 @@ export function HeroVideoBackground() {
     const v = videoRef.current
     if (!v) return
 
-    const tryPlay = () => {
-      void v.play().catch(() => {
-        /* Autoplay blocked or not ready — poster stays visible until video plays */
-      })
+    v.muted = true
+    v.defaultMuted = true
+    v.setAttribute("muted", "")
+    v.setAttribute("playsinline", "")
+
+    const kick = () => {
+      void v.play().catch(() => {})
     }
 
-    tryPlay()
-    v.addEventListener("canplay", tryPlay, { once: true })
-    return () => v.removeEventListener("canplay", tryPlay)
+    kick()
+    v.addEventListener("canplay", kick, { once: true })
+    v.addEventListener("loadeddata", kick, { once: true })
+
+    /* RDP / weak GPU: short play retries (poster matches old design, so “no video” is easy to mistake). */
+    let n = 0
+    const t = window.setInterval(() => {
+      if (v.paused && v.readyState >= 2) kick()
+      n += 1
+      if (n >= 8) window.clearInterval(t)
+    }, 500)
+
+    return () => {
+      window.clearInterval(t)
+      v.removeEventListener("canplay", kick)
+      v.removeEventListener("loadeddata", kick)
+    }
   }, [reduceMotion, videoFailed])
 
   if (reduceMotion || videoFailed) {
@@ -58,7 +75,7 @@ export function HeroVideoBackground() {
   return (
     <video
       ref={videoRef}
-      className="absolute inset-0 h-full min-h-full w-full min-w-full object-cover"
+      className="absolute inset-0 h-full min-h-full w-full min-w-full object-cover [transform:translateZ(0)]"
       autoPlay
       muted
       loop
@@ -68,7 +85,8 @@ export function HeroVideoBackground() {
       aria-hidden
       onError={() => setVideoFailed(true)}
     >
-      <source src="/video/Hero.mp4" type="video/mp4" />
+      {/* #t=0.001 helps some browsers paint the first frame quickly */}
+      <source src="/video/Hero.mp4#t=0.001" type="video/mp4" />
       <source src="/video/Hero.webm" type="video/webm" />
     </video>
   )
