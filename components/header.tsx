@@ -121,9 +121,9 @@ export function Header() {
   const getFormPath = (formId: string) => `/forms/${formId}`
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-teal-500/25 bg-gradient-to-br from-sky-100 via-cyan-50 to-indigo-100 shadow-[0_12px_40px_-14px_rgba(8,145,178,0.2),inset_0_1px_0_rgba(255,255,255,0.85)]">
+    <header className="sticky top-0 z-50 w-full border-b border-primary/[0.14] bg-gradient-to-b from-[#fdf9f4] via-[#f6ece2] to-[#ecdfd2] shadow-[0_10px_36px_-16px_rgba(45,18,22,0.2),inset_0_1px_0_rgba(255,255,255,0.75)]">
       {/* Top Bar */}
-      <div className="hidden lg:block border-b border-teal-950/25 bg-gradient-to-r from-teal-800 via-cyan-800 to-indigo-800 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
+      <div className="hidden lg:block border-b border-black/20 bg-gradient-to-r from-primary via-[#8B2332] to-[#5a1216] text-primary-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
         <div className="mx-auto flex w-[90%] items-center justify-between py-2.5">
           <div className="flex items-center gap-8">
             <a
@@ -152,7 +152,7 @@ export function Header() {
                   <DialogTrigger asChild>
                     <button
                       type="button"
-                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-cyan-200/50 bg-gradient-to-b from-cyan-400 via-teal-500 to-teal-700 px-4 py-2 text-sm font-semibold tracking-wide text-white shadow-md ring-1 ring-teal-950/20 transition-[background-color,box-shadow,filter] hover:brightness-110 hover:shadow-lg"
+                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-amber-200/35 bg-gradient-to-b from-secondary via-secondary to-[#b8732f] px-4 py-2 text-sm font-medium tracking-wide text-secondary-foreground shadow-md ring-1 ring-amber-900/15 transition-[background-color,box-shadow,filter] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:brightness-105 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
                     >
                       <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
                       {btn.label}
@@ -184,7 +184,7 @@ export function Header() {
                 <button
                   key={btn.id}
                   type="button"
-                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-cyan-200/50 bg-gradient-to-b from-cyan-400 via-teal-500 to-teal-700 px-4 py-2 text-sm font-semibold tracking-wide text-white shadow-md ring-1 ring-teal-950/20"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-amber-200/35 bg-gradient-to-b from-secondary via-secondary to-[#b8732f] px-4 py-2 text-sm font-medium tracking-wide text-secondary-foreground shadow-md ring-1 ring-amber-900/15"
                 >
                   <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
                   {btn.label}
@@ -201,10 +201,10 @@ export function Header() {
           <Link href="/" className="flex shrink-0 items-center gap-3">
             <BrandLogoMark priority />
             <div className="flex flex-col">
-              <span className="text-xl font-sans font-semibold tracking-tight text-teal-900">
+              <span className="text-xl font-sans font-normal tracking-tight text-primary">
                 DEVA RENTALS
               </span>
-              <span className="inline-block bg-gradient-to-r from-teal-600 via-cyan-600 to-indigo-700 bg-clip-text text-[10px] font-semibold uppercase tracking-[0.2em] text-transparent">
+              <span className="inline-block bg-gradient-to-r from-secondary to-primary bg-clip-text text-[10px] font-semibold uppercase tracking-[0.2em] text-transparent">
                 Property Management
               </span>
             </div>
@@ -224,10 +224,10 @@ export function Header() {
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
                         "inline-flex items-center justify-center whitespace-nowrap rounded-full border px-3 py-2 text-[0.8125rem] font-semibold tracking-tight transition-[color,background-color,border-color,box-shadow,transform,filter] duration-200 sm:px-3.5 sm:text-[0.9rem]",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-sky-50",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2",
                         isActive
-                          ? "border-transparent bg-gradient-to-r from-teal-600 via-cyan-600 to-indigo-600 text-white shadow-[0_4px_20px_-4px_rgba(13,148,136,0.45),0_0_0_1px_rgba(165,243,252,0.4)] hover:brightness-105"
-                          : "border-cyan-400/50 bg-gradient-to-br from-white via-sky-50/95 to-cyan-50/85 text-slate-800 shadow-sm hover:border-teal-500/55 hover:from-sky-100 hover:via-cyan-50 hover:to-indigo-50/90 hover:text-teal-900 hover:shadow-md active:scale-[0.98]",
+                          ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-[0_4px_18px_-4px_rgba(108,21,23,0.55),0_0_0_1px_rgba(251,191,36,0.25)] hover:brightness-105"
+                          : "border-secondary/40 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/70 text-[#3d2a26] shadow-sm hover:border-primary/45 hover:from-rose-50/90 hover:via-amber-50/50 hover:to-orange-100/80 hover:text-primary hover:shadow-md active:scale-[0.98]",
                       )}
                     >
                       {link.label}
@@ -241,7 +241,7 @@ export function Header() {
           <div className="hidden shrink-0 lg:block">
             <Button
               asChild
-              className="rounded-lg border border-cyan-200/60 bg-gradient-to-r from-teal-600 via-cyan-500 to-indigo-600 px-5 text-white shadow-md ring-2 ring-cyan-400/35 transition-[transform,box-shadow,filter] hover:brightness-105 hover:shadow-lg active:scale-[0.98]"
+              className="rounded-lg border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary px-5 text-primary-foreground shadow-md ring-2 ring-secondary/35 transition-[transform,box-shadow,filter] hover:brightness-105 hover:shadow-lg active:scale-[0.98]"
             >
               <Link href="#contact" className="inline-flex items-center gap-1.5 font-normal">
                 Get Started
@@ -253,11 +253,7 @@ export function Header() {
           {/* Mobile Navigation */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="ml-auto lg:hidden">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-teal-900 hover:bg-cyan-200/50 hover:text-teal-950"
-              >
+              <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
@@ -279,8 +275,8 @@ export function Header() {
                         "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
                         "animate-in fade-in slide-in-from-right-6 fill-mode-backwards duration-300 ease-out",
                         isActive
-                          ? "border-transparent bg-gradient-to-r from-teal-600 via-cyan-600 to-indigo-600 text-white shadow-md ring-1 ring-cyan-200/40"
-                          : "border-cyan-400/50 bg-gradient-to-br from-white via-sky-50/95 to-cyan-50/85 text-slate-800 shadow-sm hover:border-teal-500/55 hover:from-sky-100 hover:to-cyan-100 hover:text-teal-900 hover:shadow",
+                          ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-md ring-1 ring-amber-200/30"
+                          : "border-secondary/40 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/70 text-[#3d2a26] shadow-sm hover:border-primary/45 hover:from-rose-50/80 hover:to-amber-50/60 hover:text-primary hover:shadow",
                       )}
                     >
                       {link.label}
@@ -352,7 +348,7 @@ export function Header() {
                 <Button
                   asChild
                   className={cn(
-                    "mt-4 w-full justify-center border border-cyan-200/60 bg-gradient-to-r from-teal-600 via-cyan-500 to-indigo-600 font-normal text-white shadow-md ring-2 ring-cyan-400/35 transition-[filter] hover:brightness-105",
+                    "mt-4 w-full justify-center border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary font-normal text-primary-foreground shadow-md ring-2 ring-secondary/30 transition-[filter] hover:brightness-105",
                     "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
                     "animate-in fade-in slide-in-from-right-5 zoom-in-95 fill-mode-backwards duration-300 ease-out",
                   )}
