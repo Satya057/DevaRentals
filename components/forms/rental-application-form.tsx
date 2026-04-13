@@ -1,6 +1,13 @@
 "use client"
 
-import { useEffect, useRef, useState, type ComponentProps } from "react"
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ComponentProps,
+  type FormEvent,
+} from "react"
 import Link from "next/link"
 import { ArrowLeft, CheckCircle } from "lucide-react"
 import { Input as UiInput } from "@/components/ui/input"
@@ -73,6 +80,39 @@ function RentalInput({ autoComplete, ...props }: ComponentProps<typeof UiInput>)
 
 function RentalTextarea({ autoComplete, ...props }: ComponentProps<typeof UiTextarea>) {
   return <UiTextarea {...props} autoComplete={autoComplete ?? "off"} />
+}
+
+type RentalPhoneInputProps = Omit<
+  ComponentProps<typeof RentalInput>,
+  "type" | "inputMode" | "maxLength" | "minLength" | "onChange" | "pattern" | "title"
+> & {
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
+}
+
+/** Numbers only, max 10 digits (North American style). Optional fields must be empty or exactly 10 digits. */
+function RentalPhoneInput({ required, onChange, ...props }: RentalPhoneInputProps) {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const el = e.target
+    const digits = el.value.replace(/\D/g, "").slice(0, 10)
+    if (el.value !== digits) {
+      el.value = digits
+    }
+    onChange?.(e)
+  }
+  return (
+    <RentalInput
+      {...props}
+      type="text"
+      inputMode="numeric"
+      autoComplete="off"
+      maxLength={10}
+      minLength={required ? 10 : undefined}
+      pattern={required ? "[0-9]{10}" : "([0-9]{10})?"}
+      title="Exactly 10 digits, numbers only"
+      required={required}
+      onChange={handleChange}
+    />
+  )
 }
 
 export function RentalApplicationForm({ onSuccess, className }: RentalApplicationFormProps) {
@@ -165,7 +205,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     setStep((s) => Math.max(s - 1, 0))
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (step < 2) {
       goNext()
@@ -241,14 +281,16 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     fd.set("smokeAnswer", smokeAnswer)
     fd.set("jointCreditAnswer", jointCreditAnswer)
     fd.set("tenantInsuranceAnswer", tenantInsuranceAnswer)
-    const applicantSigBlob = await applicantSigRef.current.getPngBlob()
+    const [applicantSigBlob, coSigBlob] = await Promise.all([
+      applicantSigRef.current.getPngBlob(),
+      coApplicantSigRef.current?.getPngBlob() ?? Promise.resolve(null),
+    ])
     if (!applicantSigBlob) {
       setSubmitError("Could not capture applicant signature. Please draw again and submit.")
       setIsSubmitting(false)
       return
     }
     fd.append("signature_applicant", applicantSigBlob, "applicant-signature.png")
-    const coSigBlob = await coApplicantSigRef.current?.getPngBlob()
     if (coSigBlob) {
       fd.append("signature_co_applicant", coSigBlob, "co-applicant-signature.png")
     }
@@ -491,22 +533,16 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Phone 1 <span className="text-red-600">*</span>
                 </label>
-                <RentalInput
+                <RentalPhoneInput
                   name="applicantPhone1"
-                  type="tel"
-                  placeholder="Phone 1"
+                  placeholder="10-digit number"
                   required
                   className={fieldInputClass}
                 />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone 2</label>
-                <RentalInput
-                  name="applicantPhone2"
-                  type="tel"
-                  placeholder="Phone 2"
-                  className={fieldInputClass}
-                />
+                <RentalPhoneInput name="applicantPhone2" placeholder="Phone 2 (optional)" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>
@@ -566,21 +602,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone 1</label>
-                <RentalInput
-                  name="coApplicantPhone1"
-                  type="tel"
-                  placeholder="Phone 1"
-                  className={fieldInputClass}
-                />
+                <RentalPhoneInput name="coApplicantPhone1" placeholder="Phone 1 (optional)" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone 2</label>
-                <RentalInput
-                  name="coApplicantPhone2"
-                  type="tel"
-                  placeholder="Phone 2"
-                  className={fieldInputClass}
-                />
+                <RentalPhoneInput name="coApplicantPhone2" placeholder="Phone 2 (optional)" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Date of Birth</label>
@@ -642,13 +668,12 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Landlord{"'"}s Phone <span className="text-red-600">*</span>
                 </label>
-                <RentalInput
+                <RentalPhoneInput
                   name="prevLandlordPhone"
-                  type="tel"
-                  placeholder="Landlord's Phone"
+                  placeholder="10 digits (optional if not applicable)"
                   className={fieldInputClass}
                 />
-                <p className="text-xs text-[#666] mt-1">Only numbers and phone characters (#, -, *, etc)</p>
+                <p className="text-xs text-[#666] mt-1">Numbers only — exactly 10 digits, or leave blank.</p>
               </div>
             </div>
 
@@ -773,12 +798,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Phone <span className="text-red-600">*</span>
                 </label>
-                <RentalInput
-                  name="employerPhone"
-                  type="tel"
-                  placeholder="Phone"
-                  className={fieldInputClass}
-                />
+                <RentalPhoneInput name="employerPhone" placeholder="10-digit number" className={fieldInputClass} />
               </div>
             </div>
 
@@ -901,12 +921,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone</label>
-                <RentalInput
-                  name="coEmployerPhone"
-                  type="tel"
-                  placeholder="Phone"
-                  className={fieldInputClass}
-                />
+                <RentalPhoneInput name="coEmployerPhone" placeholder="Phone (optional)" className={fieldInputClass} />
               </div>
             </div>
 
@@ -1243,12 +1258,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Phone <span className="text-red-600">*</span>
                 </label>
-                <RentalInput
-                  name="emergencyContactPhone"
-                  type="tel"
-                  placeholder="Phone"
-                  className={fieldInputClass}
-                />
+                <RentalPhoneInput name="emergencyContactPhone" placeholder="10-digit number" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>
@@ -1337,34 +1347,44 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
       </div>
 
-      <div className="flex flex-col-reverse gap-3 pt-4 border-t border-[#d4c5b0]/50 sm:flex-row sm:items-center sm:justify-between">
-        <Button
-          type="button"
-          variant="outline"
-          className="border-[#8B2332] text-[#8B2332] hover:bg-[#8B2332]/10 sm:min-w-[100px]"
-          disabled={step === 0}
-          onClick={goBack}
-        >
-          Back
-        </Button>
-        <div className="flex justify-center gap-3 sm:justify-end">
-          {step < 2 ? (
-            <Button
-              type="button"
-              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-h-12 min-w-[120px]"
-              onClick={goNext}
-            >
-              Next
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3 text-lg min-h-12"
-            >
-              {isSubmitting ? "Submitting..." : "Submit Application"}
-            </Button>
-          )}
+      <div className="space-y-2 border-t border-[#d4c5b0]/50 pt-4">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            className="border-[#8B2332] text-[#8B2332] hover:bg-[#8B2332]/10 sm:min-w-[100px]"
+            disabled={step === 0}
+            onClick={goBack}
+          >
+            Back
+          </Button>
+          <div className="flex flex-col items-center gap-1 sm:items-end">
+            <div className="flex justify-center gap-3 sm:justify-end">
+              {step < 2 ? (
+                <Button
+                  type="button"
+                  className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-h-12 min-w-[120px]"
+                  onClick={goNext}
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3 text-lg min-h-12"
+                >
+                  {isSubmitting ? "Submitting…" : "Submit Application"}
+                </Button>
+              )}
+            </div>
+            {isSubmitting && step === 2 ? (
+              <p className="max-w-md text-center text-xs text-[#57534e] sm:text-right">
+                Creating the PDF and sending your application. Large uploads can take a little while — please keep this
+                page open.
+              </p>
+            ) : null}
+          </div>
         </div>
       </div>
     </form>

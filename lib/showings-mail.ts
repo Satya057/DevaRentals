@@ -1,5 +1,21 @@
 import nodemailer from "nodemailer"
 
+let showingsTransport: nodemailer.Transporter | null = null
+
+function getShowingsTransport(): nodemailer.Transporter {
+  if (!showingsTransport) {
+    const user = process.env.SCHEDULE_GMAIL_USER!.trim()
+    const pass = process.env.SCHEDULE_GMAIL_APP_PASSWORD!.trim()
+    showingsTransport = nodemailer.createTransport({
+      service: "gmail",
+      pool: true,
+      maxConnections: 1,
+      auth: { user, pass },
+    })
+  }
+  return showingsTransport
+}
+
 export type ShowingsAttachment = {
   filename: string
   content: Buffer
@@ -36,17 +52,13 @@ export async function sendShowingsEmail(opts: {
   attachments?: ShowingsAttachment[]
 }): Promise<void> {
   const user = process.env.SCHEDULE_GMAIL_USER!.trim()
-  const pass = process.env.SCHEDULE_GMAIL_APP_PASSWORD!.trim()
   const to =
     opts.to?.trim() ||
     recipientForScheduleOrRental(opts.recipientKind ?? "schedule")
   const fromName =
     process.env.SCHEDULE_EMAIL_FROM_NAME?.trim() || "Deva Rentals"
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: { user, pass },
-  })
+  const transporter = getShowingsTransport()
 
   await transporter.sendMail({
     from: `"${fromName}" <${user}>`,

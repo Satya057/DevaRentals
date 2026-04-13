@@ -96,10 +96,11 @@ export const SignaturePadField = forwardRef<
     isEmpty: () => padRef.current?.isEmpty() ?? true,
     getPngBlob: async () => {
       const pad = padRef.current
-      if (!pad || pad.isEmpty()) return null
-      const dataUrl = pad.toDataURL("image/png")
-      const res = await fetch(dataUrl)
-      return res.blob()
+      const canvas = canvasRef.current
+      if (!pad || !canvas || pad.isEmpty()) return null
+      return new Promise<Blob | null>((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), "image/png", 0.88)
+      })
     },
     clear: () => padRef.current?.clear(),
   }))

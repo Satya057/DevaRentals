@@ -23,6 +23,17 @@ export const runtime = "nodejs"
 
 const str = z.string().optional().default("")
 const req = z.string().trim().min(1)
+const TEN_DIGITS = /^\d{10}$/
+const reqPhone10 = z
+  .string()
+  .trim()
+  .regex(TEN_DIGITS, "Must be exactly 10 digits (numbers only)")
+const optPhone10 = z
+  .string()
+  .trim()
+  .refine((s) => s.length === 0 || TEN_DIGITS.test(s), {
+    message: "Phone must be exactly 10 digits (numbers only), or leave blank",
+  })
 
 const textSchema = z.object({
   propertyAddress: req,
@@ -32,21 +43,21 @@ const textSchema = z.object({
   applicantName: req,
   applicantAddress: req,
   applicantEmail: z.string().trim().email(),
-  applicantPhone1: req,
-  applicantPhone2: str,
+  applicantPhone1: reqPhone10,
+  applicantPhone2: optPhone10,
   applicantDob: req,
   coApplicantName: str,
   coApplicantAddress: str,
   coApplicantEmail: str,
-  coApplicantPhone1: str,
-  coApplicantPhone2: str,
+  coApplicantPhone1: optPhone10,
+  coApplicantPhone2: optPhone10,
   coApplicantDob: str,
   minorName1: str,
   minorName2: str,
   minorName3: str,
   minorName4: str,
   prevLandlordName: str,
-  prevLandlordPhone: str,
+  prevLandlordPhone: optPhone10,
   prevPresentAddress: str,
   prevTimeAtLocation: str,
   prevMonthlyRent: str,
@@ -55,7 +66,7 @@ const textSchema = z.object({
   employerName: str,
   employerAddress: str,
   supervisorName: str,
-  employerPhone: str,
+  employerPhone: optPhone10,
   lengthEmployment: str,
   monthlyWage: str,
   jobPosition: str,
@@ -63,7 +74,7 @@ const textSchema = z.object({
   coEmployerName: str,
   coEmployerAddress: str,
   coSupervisorName: str,
-  coEmployerPhone: str,
+  coEmployerPhone: optPhone10,
   coLengthEmployment: str,
   coMonthlyWage: str,
   coJobPosition: str,
@@ -80,7 +91,7 @@ const textSchema = z.object({
   additionalComments: str,
   emergencyContactName: str,
   emergencyContactAddress: str,
-  emergencyContactPhone: str,
+  emergencyContactPhone: optPhone10,
   emergencyContactRelationship: str,
   legalName: req,
   coLegalName: str,
