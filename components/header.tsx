@@ -42,13 +42,50 @@ const ctaButtons = [
   { id: "service", label: "Service Request" },
 ]
 
+const NAV_SCROLL_OFFSET_PX = 112
+
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [openDialog, setOpenDialog] = useState<string | null>(null)
   const [isClient, setIsClient] = useState(false)
+  const [activeNavHash, setActiveNavHash] = useState<string>(navLinks[0].href)
 
   useEffect(() => {
     setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    const pickFromScroll = () => {
+      let active = navLinks[0].href
+      for (const { href } of navLinks) {
+        const id = href.slice(1)
+        const el = document.getElementById(id)
+        if (!el) continue
+        if (el.getBoundingClientRect().top <= NAV_SCROLL_OFFSET_PX) active = href
+      }
+      return active
+    }
+
+    const applyHashIfAny = () => {
+      const h = window.location.hash
+      if (h && navLinks.some((l) => l.href === h)) setActiveNavHash(h)
+      else setActiveNavHash(pickFromScroll())
+    }
+
+    const onHashChange = () => applyHashIfAny()
+    const onScrollOrResize = () => setActiveNavHash(pickFromScroll())
+
+    applyHashIfAny()
+    requestAnimationFrame(() => applyHashIfAny())
+
+    window.addEventListener("hashchange", onHashChange)
+    window.addEventListener("scroll", onScrollOrResize, { passive: true })
+    window.addEventListener("resize", onScrollOrResize)
+    return () => {
+      window.removeEventListener("hashchange", onHashChange)
+      window.removeEventListener("scroll", onScrollOrResize)
+      window.removeEventListener("resize", onScrollOrResize)
+    }
   }, [])
 
   const renderForm = (formId: string, onClose: () => void) => {
@@ -177,17 +214,28 @@ export function Header() {
             className="hidden min-w-0 flex-1 items-center justify-center lg:flex"
             aria-label="Main"
           >
-            <ul className="flex flex-wrap items-center justify-center gap-x-6 xl:gap-x-9">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="relative whitespace-nowrap py-2 text-[0.9375rem] font-medium text-foreground/65 transition-colors duration-200 after:absolute after:inset-x-0 after:bottom-1 after:h-[2px] after:origin-center after:scale-x-0 after:rounded-full after:bg-primary after:transition-transform after:duration-200 hover:text-primary hover:after:scale-x-100"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+            <ul className="flex flex-wrap items-center justify-center gap-x-5 xl:gap-x-8">
+              {navLinks.map((link) => {
+                const isActive = activeNavHash === link.href
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={isActive ? "true" : undefined}
+                      className={cn(
+                        "relative whitespace-nowrap rounded-md px-2 py-2 text-[0.98rem] font-semibold tracking-tight transition-colors duration-200",
+                        "after:absolute after:inset-x-2 after:bottom-0.5 after:h-[3px] after:origin-center after:rounded-full after:bg-primary after:transition-transform after:duration-200",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2",
+                        isActive
+                          ? "text-primary after:scale-x-100"
+                          : "text-foreground after:scale-x-0 hover:text-primary hover:after:scale-x-100",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </nav>
 
@@ -214,21 +262,28 @@ export function Header() {
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <SheetTitle className="sr-only">Main navigation</SheetTitle>
               <nav className="mt-8 flex flex-col items-stretch gap-4 px-1 text-center">
-                {navLinks.map((link, i) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    style={{ animationDelay: `${i * MOBILE_NAV_STAGGER_MS}ms` }}
-                    className={cn(
-                      "block w-full border-b border-border/80 py-3.5 text-center text-lg font-medium text-foreground/80 transition-colors duration-200 hover:text-primary",
-                      "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
-                      "animate-in fade-in slide-in-from-right-6 fill-mode-backwards duration-300 ease-out",
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link, i) => {
+                  const isActive = activeNavHash === link.href
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      aria-current={isActive ? "true" : undefined}
+                      style={{ animationDelay: `${i * MOBILE_NAV_STAGGER_MS}ms` }}
+                      className={cn(
+                        "block w-full border-b border-border/80 py-3.5 text-center text-lg font-semibold transition-colors duration-200",
+                        "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
+                        "animate-in fade-in slide-in-from-right-6 fill-mode-backwards duration-300 ease-out",
+                        isActive
+                          ? "bg-primary/[0.06] text-primary"
+                          : "text-foreground hover:bg-muted/60 hover:text-primary",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                })}
                 <div className="mt-4 flex flex-col gap-2">
                   {ctaButtons.map((btn, i) => (
                     isClient ? (

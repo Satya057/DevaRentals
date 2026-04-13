@@ -46,7 +46,7 @@ export function Hero() {
             </div>
 
             <h1
-              className="hero-motion-up mb-2 text-balance font-sans text-[1.65rem] font-normal leading-[1.1] tracking-[-0.02em] sm:mb-2.5 sm:text-3xl sm:leading-[1.12] md:text-[2.35rem] md:leading-[1.1] lg:text-5xl lg:leading-[1.06]"
+              className="hero-motion-up mb-2 text-balance font-sans text-[1.65rem] font-bold leading-[1.1] tracking-[-0.02em] sm:mb-2.5 sm:text-3xl sm:leading-[1.12] md:text-[2.35rem] md:leading-[1.1] lg:text-5xl lg:leading-[1.06]"
               style={{ ["--hero-d" as string]: "90ms" }}
             >
               Find the Perfect Property for Your Lifestyle
@@ -99,21 +99,21 @@ export function Hero() {
             >
               <div className="grid grid-cols-3 gap-2 sm:gap-5 md:gap-8">
                 <div className="text-center sm:text-left">
-                  <div className="font-sans text-xl font-normal sm:text-2xl md:text-3xl">10+</div>
-                  <div className="mt-0.5 text-[10px] opacity-90 sm:mt-1 sm:text-xs md:text-sm">Years Experience</div>
+                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">10+</div>
+                  <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Years Experience</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-sans text-xl font-normal sm:text-2xl md:text-3xl">500+</div>
-                  <div className="mt-0.5 text-[10px] opacity-90 sm:mt-1 sm:text-xs md:text-sm">Properties Managed</div>
+                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">500+</div>
+                  <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Properties Managed</div>
                 </div>
                 <div className="text-center sm:text-right">
-                  <div className="font-sans text-xl font-normal sm:text-2xl md:text-3xl">98%</div>
-                  <div className="mt-0.5 text-[10px] opacity-90 sm:mt-1 sm:text-xs md:text-sm">Client Satisfaction</div>
+                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">98%</div>
+                  <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Client Satisfaction</div>
                 </div>
               </div>
-              <p className="mt-1.5 text-center text-[9px] font-medium uppercase leading-tight tracking-wide text-white/85 sm:mt-2 sm:text-[10px] sm:text-left md:text-xs">
+              <p className="mt-1.5 text-center text-[9px] font-semibold uppercase leading-tight tracking-wide text-white/90 sm:mt-2 sm:text-[10px] sm:text-left md:text-xs">
                 Certified ·{" "}
-                <span className="font-sans font-normal normal-case tracking-normal">Licensed Property Management</span>
+                <span className="font-sans font-medium normal-case tracking-normal">Licensed Property Management</span>
               </p>
             </div>
           </div>
