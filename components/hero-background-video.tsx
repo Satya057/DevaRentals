@@ -8,13 +8,13 @@ const POSTER =
 /**
  * Video source order:
  * 1) `NEXT_PUBLIC_HERO_VIDEO_URL` — best for production (HTTPS URL on your CDN / storage; no large file in git).
- * 2) `/Video/Hero.mp4` — place the file at `public/Video/Hero.mp4` and deploy it with the site.
+ * 2) `/video/hero.mp4` — place the file at `public/video/hero.mp4` and deploy it with the site (lowercase path works on Linux hosts).
  * If the URL 404s or fails, the poster image is shown instead.
  */
 function heroVideoSrc(): string {
   const fromEnv = process.env.NEXT_PUBLIC_HERO_VIDEO_URL?.trim()
   if (fromEnv) return fromEnv
-  return "/Video/Hero.mp4"
+  return "/video/hero.mp4"
 }
 
 function useHeroVisibilityPlay(videoRef: RefObject<HTMLVideoElement | null>) {
