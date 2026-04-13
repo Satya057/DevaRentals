@@ -46,7 +46,7 @@ export function Hero() {
             </div>
 
             <h1
-              className="hero-motion-up mb-2 text-balance font-sans text-[1.65rem] font-bold leading-[1.1] tracking-[-0.02em] sm:mb-2.5 sm:text-3xl sm:leading-[1.12] md:text-[2.35rem] md:leading-[1.1] lg:text-5xl lg:leading-[1.06]"
+              className="hero-motion-up mb-2 text-balance font-sans text-[1.65rem] font-medium leading-[1.1] tracking-[-0.02em] sm:mb-2.5 sm:text-3xl sm:leading-[1.12] md:text-[2.35rem] md:leading-[1.1] lg:text-5xl lg:leading-[1.06]"
               style={{ ["--hero-d" as string]: "90ms" }}
             >
               Find the Perfect Property for Your Lifestyle

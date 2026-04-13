@@ -24,8 +24,6 @@ import { RentalApplicationForm } from "@/components/forms/rental-application-for
 import { ServiceRequestForm } from "@/components/forms/service-request-form"
 import { cn } from "@/lib/utils"
 
-const MOBILE_NAV_STAGGER_MS = 48
-
 const navLinks = [
   { href: "#home", label: "Home" },
   { href: "#why-us", label: "Why Deva Rentals" },
@@ -121,21 +119,21 @@ export function Header() {
   const getFormPath = (formId: string) => `/forms/${formId}`
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-primary/[0.14] bg-gradient-to-b from-[#fdf9f4] via-[#f6ece2] to-[#ecdfd2] shadow-[0_10px_36px_-16px_rgba(45,18,22,0.2),inset_0_1px_0_rgba(255,255,255,0.75)]">
+    <header className="sticky top-0 z-50 w-full">
       {/* Top Bar */}
       <div className="hidden lg:block border-b border-black/20 bg-gradient-to-r from-primary via-[#8B2332] to-[#5a1216] text-primary-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
         <div className="mx-auto flex w-[90%] items-center justify-between py-2.5">
           <div className="flex items-center gap-8">
             <a
               href="mailto:info@devarentals.com"
-              className="flex items-center gap-2.5 text-base font-medium tracking-tight transition-opacity hover:opacity-85 sm:text-[1.0625rem]"
+              className="flex items-center gap-2.5 text-base font-medium tracking-tight hover:opacity-90 sm:text-[1.0625rem]"
             >
               <Mail className="h-5 w-5 shrink-0 opacity-95" aria-hidden />
               info@devarentals.com
             </a>
             <a
               href="tel:780-984-1996"
-              className="flex items-center gap-2.5 text-base font-medium tracking-tight transition-opacity hover:opacity-85 sm:text-[1.0625rem]"
+              className="flex items-center gap-2.5 text-base font-medium tracking-tight hover:opacity-90 sm:text-[1.0625rem]"
             >
               <Phone className="h-5 w-5 shrink-0 opacity-95" aria-hidden />
               780-984-1996
@@ -152,7 +150,7 @@ export function Header() {
                   <DialogTrigger asChild>
                     <button
                       type="button"
-                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-amber-200/35 bg-gradient-to-b from-secondary via-secondary to-[#b8732f] px-4 py-2 text-sm font-medium tracking-wide text-secondary-foreground shadow-md ring-1 ring-amber-900/15 transition-[background-color,box-shadow,filter] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:brightness-105 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
+                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-amber-200/35 bg-gradient-to-b from-secondary via-secondary to-[#b8732f] px-4 py-2 text-sm font-medium tracking-wide text-secondary-foreground shadow-md ring-1 ring-amber-900/15 [text-shadow:0_0_12px_rgba(255,250,240,0.3)] hover:shadow-md"
                     >
                       <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
                       {btn.label}
@@ -195,8 +193,9 @@ export function Header() {
         </div>
       </div>
 
-      {/* Main Nav — logo | centered links | CTA */}
-      <div className="mx-auto w-[92%] max-w-7xl">
+      {/* Main Nav — full-width strip so background color is obvious (not washed out) */}
+      <div className="w-full border-b border-[#6c1517]/12 bg-gradient-to-b from-[#faf6f1] via-[#f3e9df] to-[#e8dfd4] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+        <div className="mx-auto w-[92%] max-w-7xl">
         <div className="flex h-[4.25rem] w-full items-center gap-4 lg:gap-6">
           <Link href="/" className="flex shrink-0 items-center gap-3">
             <BrandLogoMark priority />
@@ -223,11 +222,11 @@ export function Header() {
                       href={link.href}
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
-                        "inline-flex items-center justify-center whitespace-nowrap rounded-full border px-3 py-2 text-[0.8125rem] font-semibold tracking-tight transition-[color,background-color,border-color,box-shadow,transform,filter] duration-200 sm:px-3.5 sm:text-[0.9rem]",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2",
+                        "inline-flex items-center justify-center whitespace-nowrap rounded-full border px-3 py-2 text-[0.8125rem] font-semibold tracking-tight sm:px-3.5 sm:text-[0.9rem]",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f3e9df]",
                         isActive
-                          ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-[0_4px_18px_-4px_rgba(108,21,23,0.55),0_0_0_1px_rgba(251,191,36,0.25)] hover:brightness-105"
-                          : "border-secondary/40 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/70 text-[#3d2a26] shadow-sm hover:border-primary/45 hover:from-rose-50/90 hover:via-amber-50/50 hover:to-orange-100/80 hover:text-primary hover:shadow-md active:scale-[0.98]",
+                          ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-[0_2px_12px_-4px_rgba(108,21,23,0.4),0_0_0_1px_rgba(212,175,55,0.2)]"
+                          : "border-secondary/45 bg-white/90 text-[#3d2a26] shadow-sm hover:border-primary/50 hover:bg-[#fffefb] hover:text-primary",
                       )}
                     >
                       {link.label}
@@ -241,7 +240,7 @@ export function Header() {
           <div className="hidden shrink-0 lg:block">
             <Button
               asChild
-              className="rounded-lg border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary px-5 text-primary-foreground shadow-md ring-2 ring-secondary/35 transition-[transform,box-shadow,filter] hover:brightness-105 hover:shadow-lg active:scale-[0.98]"
+              className="rounded-lg border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary px-5 text-primary-foreground shadow-md ring-2 ring-secondary/35 hover:shadow-lg"
             >
               <Link href="#contact" className="inline-flex items-center gap-1.5 font-normal">
                 Get Started
@@ -253,7 +252,7 @@ export function Header() {
           {/* Mobile Navigation */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="ml-auto lg:hidden">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
@@ -261,7 +260,7 @@ export function Header() {
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <SheetTitle className="sr-only">Main navigation</SheetTitle>
               <nav className="mt-8 flex flex-col items-stretch gap-4 px-1 text-center">
-                {navLinks.map((link, i) => {
+                {navLinks.map((link) => {
                   const isActive = activeNavHash === link.href
                   return (
                     <Link
@@ -269,14 +268,11 @@ export function Header() {
                       href={link.href}
                       onClick={() => setIsOpen(false)}
                       aria-current={isActive ? "true" : undefined}
-                      style={{ animationDelay: `${i * MOBILE_NAV_STAGGER_MS}ms` }}
                       className={cn(
-                        "block w-full rounded-xl border px-4 py-3.5 text-center text-base font-semibold transition-[color,background-color,border-color,box-shadow,filter] duration-200",
-                        "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
-                        "animate-in fade-in slide-in-from-right-6 fill-mode-backwards duration-300 ease-out",
+                        "block w-full rounded-xl border px-4 py-3.5 text-center text-base font-semibold",
                         isActive
                           ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-md ring-1 ring-amber-200/30"
-                          : "border-secondary/40 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/70 text-[#3d2a26] shadow-sm hover:border-primary/45 hover:from-rose-50/80 hover:to-amber-50/60 hover:text-primary hover:shadow",
+                          : "border-secondary/40 bg-white/95 text-[#3d2a26] shadow-sm hover:border-primary/45 hover:bg-[#fffefb] hover:text-primary",
                       )}
                     >
                       {link.label}
@@ -284,7 +280,7 @@ export function Header() {
                   )
                 })}
                 <div className="mt-4 flex flex-col gap-2">
-                  {ctaButtons.map((btn, i) => (
+                  {ctaButtons.map((btn) => (
                     isClient ? (
                       <Dialog
                         key={btn.id}
@@ -297,14 +293,7 @@ export function Header() {
                         <DialogTrigger asChild>
                           <Button
                             variant="outline"
-                            style={{
-                              animationDelay: `${(navLinks.length + i) * MOBILE_NAV_STAGGER_MS}ms`,
-                            }}
-                            className={cn(
-                              "w-full cursor-pointer justify-center bg-transparent text-center",
-                              "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
-                              "animate-in fade-in slide-in-from-right-5 fill-mode-backwards duration-300 ease-out",
-                            )}
+                            className="w-full cursor-pointer justify-center bg-transparent text-center"
                           >
                             {btn.label}
                           </Button>
@@ -347,14 +336,7 @@ export function Header() {
                 </div>
                 <Button
                   asChild
-                  className={cn(
-                    "mt-4 w-full justify-center border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary font-normal text-primary-foreground shadow-md ring-2 ring-secondary/30 transition-[filter] hover:brightness-105",
-                    "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
-                    "animate-in fade-in slide-in-from-right-5 zoom-in-95 fill-mode-backwards duration-300 ease-out",
-                  )}
-                  style={{
-                    animationDelay: `${(navLinks.length + ctaButtons.length) * MOBILE_NAV_STAGGER_MS}ms`,
-                  }}
+                  className="mt-4 w-full justify-center border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary font-normal text-primary-foreground shadow-md ring-2 ring-secondary/30 hover:shadow-lg"
                 >
                   <Link
                     href="#contact"
@@ -368,6 +350,7 @@ export function Header() {
               </nav>
             </SheetContent>
           </Sheet>
+        </div>
         </div>
       </div>
     </header>
