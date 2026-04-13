@@ -13,17 +13,26 @@ const workSans = Work_Sans({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://devarentals.com",
+  ),
   title: 'Deva Rentals | Property Management Edmonton',
   description: 'Edmonton\'s trusted property management company. 10+ years of delivering rock-solid results for property owners. Expert tenant management, maintenance, and rental law compliance.',
   icons: {
     icon: [
       {
-        url: "/pic/Rental%20DV%20Logo.jpeg?v=1",
+        url: "/pic/Rental%20DV%20Logo.jpeg?v=3",
         type: "image/jpeg",
+        sizes: "192x192",
+      },
+      {
+        url: "/pic/Rental%20DV%20Logo.jpeg?v=3",
+        type: "image/jpeg",
+        sizes: "512x512",
       },
     ],
-    shortcut: "/pic/Rental%20DV%20Logo.jpeg?v=1",
-    apple: "/pic/Rental%20DV%20Logo.jpeg?v=1",
+    shortcut: "/pic/Rental%20DV%20Logo.jpeg?v=3",
+    apple: "/pic/Rental%20DV%20Logo.jpeg?v=3",
   },
 }
 
