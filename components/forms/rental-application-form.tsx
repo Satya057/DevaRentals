@@ -7,6 +7,7 @@ import {
   type ChangeEvent,
   type ComponentProps,
   type FormEvent,
+  type KeyboardEvent,
 } from "react"
 import Link from "next/link"
 import { ArrowLeft, CheckCircle } from "lucide-react"
@@ -35,6 +36,22 @@ import { cn } from "@/lib/utils"
 
 const RENTFASTER_LISTINGS_URL =
   "https://www.rentfaster.ca/ab/edmonton/rentals/?l=11,53.5249,-113.47&user_ID=2236644"
+
+const EMPLOYMENT_STATUS_VALUES = [
+  "full-time",
+  "part-time",
+  "student",
+  "unemployed",
+  "retired",
+] as const
+
+function isEmploymentStatusChosen(v: string): boolean {
+  return (EMPLOYMENT_STATUS_VALUES as readonly string[]).includes(v)
+}
+
+function isYesNoAnswer(v: string): boolean {
+  return v === "yes" || v === "no"
+}
 
 /** Matches form cream/white UI; kills Chrome autofill blue; softer focus than default primary ring. */
 const fieldInputClass = cn(
@@ -121,15 +138,15 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitFieldIssues, setSubmitFieldIssues] = useState<string[]>([])
   const submitFeedbackRef = useRef<HTMLDivElement>(null)
-  const [employmentStatus, setEmploymentStatus] = useState("full-time")
-  const [bankruptcyAnswer, setBankruptcyAnswer] = useState("no")
-  const [evictedAnswer, setEvictedAnswer] = useState("no")
-  const [lateRentAnswer, setLateRentAnswer] = useState("no")
-  const [refusedRentAnswer, setRefusedRentAnswer] = useState("no")
-  const [bringPetsAnswer, setBringPetsAnswer] = useState("no")
-  const [smokeAnswer, setSmokeAnswer] = useState("no")
-  const [jointCreditAnswer, setJointCreditAnswer] = useState("yes")
-  const [tenantInsuranceAnswer, setTenantInsuranceAnswer] = useState("yes")
+  const [employmentStatus, setEmploymentStatus] = useState("")
+  const [bankruptcyAnswer, setBankruptcyAnswer] = useState("")
+  const [evictedAnswer, setEvictedAnswer] = useState("")
+  const [lateRentAnswer, setLateRentAnswer] = useState("")
+  const [refusedRentAnswer, setRefusedRentAnswer] = useState("")
+  const [bringPetsAnswer, setBringPetsAnswer] = useState("")
+  const [smokeAnswer, setSmokeAnswer] = useState("")
+  const [jointCreditAnswer, setJointCreditAnswer] = useState("")
+  const [tenantInsuranceAnswer, setTenantInsuranceAnswer] = useState("")
   const [step, setStep] = useState(0)
   const step0Ref = useRef<HTMLDivElement>(null)
   const step1Ref = useRef<HTMLDivElement>(null)
@@ -196,6 +213,13 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       scrollRentalFeedbackIntoView()
       return
     }
+    if (step === 1 && !isEmploymentStatusChosen(employmentStatus)) {
+      setSubmitFieldIssues([
+        "Employment — choose your status (Full-Time, Part-Time, Student, Unemployed, or Retired).",
+      ])
+      scrollRentalFeedbackIntoView()
+      return
+    }
     setStep((s) => Math.min(s + 1, 2))
   }
 
@@ -239,6 +263,48 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       )
       setSubmitError("Section 2 is incomplete.")
       setTimeout(() => validateStepNativeFields(step1Ref.current), 0)
+      scrollRentalFeedbackIntoView()
+      return
+    }
+    if (!isEmploymentStatusChosen(employmentStatus)) {
+      setStep(1)
+      setSubmitFieldIssues([
+        "Employment — choose your status (Full-Time, Part-Time, Student, Unemployed, or Retired).",
+      ])
+      setSubmitError("Section 2 is incomplete.")
+      scrollRentalFeedbackIntoView()
+      return
+    }
+    const section3Unanswered: string[] = []
+    if (!isYesNoAnswer(bankruptcyAnswer)) {
+      section3Unanswered.push("Have you declared bankruptcy in the past seven (7) years?")
+    }
+    if (!isYesNoAnswer(evictedAnswer)) {
+      section3Unanswered.push("Have you ever been evicted from a rental residence?")
+    }
+    if (!isYesNoAnswer(lateRentAnswer)) {
+      section3Unanswered.push("Have you had two or more late rental payments in the past 12 months?")
+    }
+    if (!isYesNoAnswer(refusedRentAnswer)) {
+      section3Unanswered.push("Have you ever refused to pay rent when due?")
+    }
+    if (!isYesNoAnswer(bringPetsAnswer)) {
+      section3Unanswered.push("Do you wish to bring a pet(s) to the rental premises?")
+    }
+    if (!isYesNoAnswer(smokeAnswer)) {
+      section3Unanswered.push("Do you, or any proposed occupant, smoke?")
+    }
+    if (!isYesNoAnswer(jointCreditAnswer)) {
+      section3Unanswered.push("If you are co-applicants, do you consent to a joint credit report?")
+    }
+    if (!isYesNoAnswer(tenantInsuranceAnswer)) {
+      section3Unanswered.push(
+        "Tenant's insurance — below the yellow note, choose Yes or No (I/We presently insure our belongings).",
+      )
+    }
+    if (section3Unanswered.length > 0) {
+      setSubmitFieldIssues(section3Unanswered)
+      setSubmitError("Section 3 is incomplete.")
       scrollRentalFeedbackIntoView()
       return
     }
@@ -331,6 +397,23 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     }
   }
 
+  /** Section 3: Enter in a text field otherwise triggers full form submit and shows errors for fields below the fold. */
+  const suppressAccidentalSubmitOnEnterInSection3 = (e: KeyboardEvent<HTMLFormElement>) => {
+    if (e.key !== "Enter") return
+    if (step < 2) return
+    const target = e.target
+    if (target instanceof HTMLTextAreaElement) return
+    if (target instanceof HTMLInputElement) {
+      const t = target.type
+      if (t === "submit") return
+      if (t === "checkbox" || t === "radio") return
+      e.preventDefault()
+      return
+    }
+    if (target instanceof HTMLButtonElement) return
+    e.preventDefault()
+  }
+
   if (isSubmitted) {
     return (
       <div className="text-center py-8 px-2">
@@ -356,6 +439,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     <form
       ref={formRef}
       onSubmit={handleSubmit}
+      onKeyDown={suppressAccidentalSubmitOnEnterInSection3}
       autoComplete="off"
       className={cn("w-full max-w-none space-y-5", className)}
       noValidate
@@ -420,7 +504,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 </div>
               </div>
               <div className="mt-3 flex items-start gap-2.5">
-                <Checkbox id="rental-app-privacy-accept" required className="mt-0.5 border-[#d4c5b0]" />
+                <Checkbox id="rental-app-privacy-accept" className="mt-0.5 border-[#d4c5b0]" />
                 <label htmlFor="rental-app-privacy-accept" className={cn(formRadioOptionLabelClass, "text-sm leading-snug")}>
                   I have read and accept the terms above <span className="text-red-600">*</span>
                 </label>
@@ -733,7 +817,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 Status <span className="text-red-600">*</span>
               </label>
               <RadioGroup
-                value={employmentStatus}
+                value={employmentStatus || undefined}
                 onValueChange={setEmploymentStatus}
                 className="flex flex-wrap gap-4"
               >
@@ -1001,7 +1085,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   Have you declared bankruptcy in the past seven (7) years? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup
-                  value={bankruptcyAnswer}
+                  value={bankruptcyAnswer || undefined}
                   onValueChange={setBankruptcyAnswer}
                   className="flex gap-4"
                 >
@@ -1021,7 +1105,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   Have you ever been evicted from a rental residence? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup
-                  value={evictedAnswer}
+                  value={evictedAnswer || undefined}
                   onValueChange={setEvictedAnswer}
                   className="flex gap-4"
                 >
@@ -1041,7 +1125,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   Have you had two or more late rental payments in the past 12 months? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup
-                  value={lateRentAnswer}
+                  value={lateRentAnswer || undefined}
                   onValueChange={setLateRentAnswer}
                   className="flex gap-4"
                 >
@@ -1061,7 +1145,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   Have you ever refused to pay rent when due? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup
-                  value={refusedRentAnswer}
+                  value={refusedRentAnswer || undefined}
                   onValueChange={setRefusedRentAnswer}
                   className="flex gap-4"
                 >
@@ -1124,7 +1208,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   Do you wish to bring a pet(s) to the rental premises? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup
-                  value={bringPetsAnswer}
+                  value={bringPetsAnswer || undefined}
                   onValueChange={setBringPetsAnswer}
                   className="flex gap-4"
                 >
@@ -1156,7 +1240,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   Do you, or any proposed occupant, smoke? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup
-                  value={smokeAnswer}
+                  value={smokeAnswer || undefined}
                   onValueChange={setSmokeAnswer}
                   className="flex gap-4"
                 >
@@ -1176,7 +1260,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   If you are co-applicants, do you consent to a joint credit report? <span className="text-red-600">*</span>
                 </label>
                 <RadioGroup
-                  value={jointCreditAnswer}
+                  value={jointCreditAnswer || undefined}
                   onValueChange={setJointCreditAnswer}
                   className="flex gap-4"
                 >
@@ -1197,7 +1281,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
               <div>
                 <RadioGroup
-                  value={tenantInsuranceAnswer}
+                  value={tenantInsuranceAnswer || undefined}
                   onValueChange={setTenantInsuranceAnswer}
                   className="flex gap-4"
                 >
@@ -1292,7 +1376,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             </div>
 
             <div className="flex items-center space-x-2 mb-4">
-              <Checkbox id="rental-app-terms" required />
+              <Checkbox id="rental-app-terms" />
               <label htmlFor="rental-app-terms" className={formRadioOptionLabelClass}>
                 Agree with terms and conditions <span className="text-red-600">*</span>
               </label>
