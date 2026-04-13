@@ -12,6 +12,11 @@ import {
 } from "@/lib/rental-pdf-attachments"
 import { rentalApplicationIssuesFromZodFlat } from "@/lib/rental-application-field-labels"
 import {
+  RENTAL_MAX_BYTES_PER_FILE,
+  RENTAL_MAX_MULTIPART_TOTAL_BYTES,
+  rentalUploadSizeErrorMessage,
+} from "@/lib/rental-application-upload-limits"
+import {
   recipientForScheduleOrRental,
   sendShowingsEmail,
   showingsSmtpConfigured,
@@ -112,8 +117,8 @@ const FILE_FIELDS = [
   { key: "signature_co_applicant", label: "Co-applicant signature (drawn)" },
 ] as const
 
-const MAX_FILE_BYTES = 22 * 1024 * 1024
-const MAX_TOTAL_ATTACH_BYTES = 24 * 1024 * 1024
+/** Gmail / SMTP practical cap for PDF + all files (after ingest). */
+const MAX_EMAIL_BYTES = 24 * 1024 * 1024
 
 function formDataToTextRecord(fd: FormData): Record<string, string> {
   const out: Record<string, string> = {}
@@ -181,16 +186,19 @@ export async function POST(request: Request) {
     const entry = fd.get(key)
     if (!entry || typeof entry === "string") continue
     if (entry.size <= 0) continue
-    if (entry.size > MAX_FILE_BYTES) {
+    if (entry.size > RENTAL_MAX_BYTES_PER_FILE) {
       return NextResponse.json(
-        { error: `File too large: ${entry.name}. Max ${MAX_FILE_BYTES / 1024 / 1024} MB per file.` },
+        {
+          error: `“${entry.name}” is too large. Each file can be up to about ${Math.round((RENTAL_MAX_BYTES_PER_FILE / 1024 / 1024) * 10) / 10} MB.`,
+          issues: [rentalUploadSizeErrorMessage()],
+        },
         { status: 400 },
       )
     }
     totalBytes += entry.size
-    if (totalBytes > MAX_TOTAL_ATTACH_BYTES) {
+    if (totalBytes > RENTAL_MAX_MULTIPART_TOTAL_BYTES) {
       return NextResponse.json(
-        { error: "Total attachment size too large for email. Please use smaller files." },
+        { error: "Together, your uploads are too large to send in one go.", issues: [rentalUploadSizeErrorMessage()] },
         { status: 400 },
       )
     }
@@ -239,7 +247,7 @@ export async function POST(request: Request) {
     )
   }
 
-  if (totalBytes + pdfBuffer.length > MAX_TOTAL_ATTACH_BYTES) {
+  if (totalBytes + pdfBuffer.length > MAX_EMAIL_BYTES) {
     return NextResponse.json(
       {
         error:

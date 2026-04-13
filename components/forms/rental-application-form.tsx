@@ -23,6 +23,10 @@ import {
   validateStepNativeFields,
 } from "@/lib/form-wizard"
 import {
+  rentalUploadSizeErrorMessage,
+  validateRentalUploadSizes,
+} from "@/lib/rental-application-upload-limits"
+import {
   formFieldLabelClass,
   formFieldLabelClassMb3,
   formRadioOptionLabelClass,
@@ -351,6 +355,13 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       scrollRentalFeedbackIntoView()
       return
     }
+    const uploadSizeErrEarly = validateRentalUploadSizes(form)
+    if (uploadSizeErrEarly) {
+      setSubmitError(uploadSizeErrEarly)
+      setSubmitFieldIssues([rentalUploadSizeErrorMessage()])
+      scrollRentalFeedbackIntoView()
+      return
+    }
     setIsSubmitting(true)
     setSubmitError(null)
     setSubmitFieldIssues([])
@@ -377,6 +388,15 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     if (coSigBlob) {
       fd.append("signature_co_applicant", coSigBlob, "co-applicant-signature.png")
     }
+    const sigBytes = applicantSigBlob.size + (coSigBlob?.size ?? 0)
+    const uploadSizeErrFinal = validateRentalUploadSizes(form, sigBytes)
+    if (uploadSizeErrFinal) {
+      setSubmitError(uploadSizeErrFinal)
+      setSubmitFieldIssues([rentalUploadSizeErrorMessage()])
+      setIsSubmitting(false)
+      scrollRentalFeedbackIntoView()
+      return
+    }
     try {
       const res = await fetch("/api/rental-application", {
         method: "POST",
@@ -387,14 +407,19 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
         issues?: string[]
       }
       if (!res.ok) {
-        setSubmitError(
-          typeof data.error === "string"
-            ? data.error
-            : "Submission failed. Please try again.",
-        )
-        setSubmitFieldIssues(
-          Array.isArray(data.issues) ? data.issues.filter(Boolean) : [],
-        )
+        if (res.status === 413) {
+          setSubmitError(rentalUploadSizeErrorMessage())
+          setSubmitFieldIssues([])
+        } else {
+          setSubmitError(
+            typeof data.error === "string"
+              ? data.error
+              : "Submission failed. Please try again.",
+          )
+          setSubmitFieldIssues(
+            Array.isArray(data.issues) ? data.issues.filter(Boolean) : [],
+          )
+        }
         setTimeout(() => {
           submitFeedbackRef.current?.scrollIntoView({
             behavior: "smooth",
