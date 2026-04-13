@@ -193,8 +193,8 @@ export function Header() {
         </div>
       </div>
 
-      {/* Main Nav — full-width strip so background color is obvious (not washed out) */}
-      <div className="w-full border-b border-[#6c1517]/12 bg-gradient-to-b from-[#faf6f1] via-[#f3e9df] to-[#e8dfd4] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+      {/* Main Nav — transparent glass over hero (backdrop blur for readability) */}
+      <div className="w-full border-b border-white/15 bg-black/25 backdrop-blur-lg supports-[backdrop-filter]:bg-black/20">
         <div className="mx-auto w-[92%] max-w-7xl">
         <div className="flex h-[4.25rem] w-full items-center gap-4 lg:gap-6">
           <Link href="/" className="flex shrink-0 items-center gap-3">
@@ -223,7 +223,7 @@ export function Header() {
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
                         "inline-flex items-center justify-center whitespace-nowrap rounded-full border px-3 py-2 text-[0.8125rem] font-semibold tracking-tight sm:px-3.5 sm:text-[0.9rem]",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f3e9df]",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/30",
                         isActive
                           ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-[0_2px_12px_-4px_rgba(108,21,23,0.4),0_0_0_1px_rgba(212,175,55,0.2)]"
                           : "border-secondary/45 bg-white/90 text-[#3d2a26] shadow-sm hover:border-primary/50 hover:bg-[#fffefb] hover:text-primary",

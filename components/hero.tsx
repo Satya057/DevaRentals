@@ -103,7 +103,7 @@ export function Hero() {
                   <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Years Experience</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">500+</div>
+                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">50+</div>
                   <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Properties Managed</div>
                 </div>
                 <div className="text-center sm:text-right">
