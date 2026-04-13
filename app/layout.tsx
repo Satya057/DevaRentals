@@ -18,21 +18,29 @@ export const metadata: Metadata = {
   ),
   title: 'Deva Rentals | Property Management Edmonton',
   description: 'Edmonton\'s trusted property management company. 10+ years of delivering rock-solid results for property owners. Expert tenant management, maintenance, and rental law compliance.',
+  manifest: "/site.webmanifest",
   icons: {
     icon: [
       {
-        url: "/pic/Rental%20DV%20Logo.jpeg?v=4",
+        url: "/favicon.jpg?v=9",
+        type: "image/jpeg",
+        sizes: "48x48",
+      },
+      {
+        url: "/favicon.jpg?v=9",
         type: "image/jpeg",
         sizes: "192x192",
       },
       {
-        url: "/pic/Rental%20DV%20Logo.jpeg?v=4",
+        url: "/favicon.jpg?v=9",
         type: "image/jpeg",
         sizes: "512x512",
       },
     ],
-    shortcut: "/pic/Rental%20DV%20Logo.jpeg?v=4",
-    apple: "/pic/Rental%20DV%20Logo.jpeg?v=4",
+    shortcut: "/favicon.jpg?v=9",
+    apple: [
+      { url: "/favicon.jpg?v=9", sizes: "180x180", type: "image/jpeg" },
+    ],
   },
 }
 
