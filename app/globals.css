@@ -163,17 +163,6 @@
   }
 }
 
-/** Hero video: subtle breathing zoom (object-cover fills frame; no off-center crop). */
-@keyframes hero-video-drift {
-  0%,
-  100% {
-    transform: scale(1.02);
-  }
-  50% {
-    transform: scale(1.06);
-  }
-}
-
 @layer utilities {
   .hero-motion-up {
     opacity: 0;
@@ -194,12 +183,6 @@
     animation-delay: var(--hero-d, 0s);
   }
 
-  .hero-bg-video-drift {
-    transform-origin: center center;
-    animation: hero-video-drift 52s ease-in-out infinite;
-    will-change: transform;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .hero-motion-up {
       animation: none;
@@ -213,9 +196,5 @@
       transform: none;
     }
 
-    .hero-bg-video-drift {
-      animation: none;
-      transform: scale(1.03);
-    }
   }
 }

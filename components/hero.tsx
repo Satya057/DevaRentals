@@ -1,7 +1,9 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { HeroBackgroundVideo } from "@/components/hero-background-video"
 import { ArrowRight, Shield, TrendingUp, Clock } from "lucide-react"
+
+/** Full-res asset from `public/pic/` — served as-is (no resize/compress) for a sharp 4K-class photo. */
+const HERO_BG_SRC = "/pic/heroimg.jpg"
 
 const heroFeatureCardClass =
   "hero-motion-up grid cursor-default grid-cols-[auto_1fr] items-center gap-3 rounded-xl border border-white/25 bg-black/50 px-3 py-3 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.55)] ring-1 ring-white/15 backdrop-blur-md md:px-3.5 md:py-2.5"
@@ -12,13 +14,20 @@ export function Hero() {
       {/* Clip only the media stack — content below can extend without being cut off */}
       <div className="absolute inset-0 z-0 min-h-[100dvh] overflow-hidden">
         <div className="absolute inset-0 min-h-[100dvh]">
-          <HeroBackgroundVideo />
+          {/* Native img: full file bytes, no transform animation (avoids GPU softening). */}
+          <img
+            src={HERO_BG_SRC}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full min-h-[100dvh] object-cover object-center"
+          />
         </div>
-        <div className="absolute inset-0 min-h-[100dvh] bg-black/22" />
-        <div className="absolute inset-0 min-h-[100dvh] bg-gradient-to-r from-black/78 via-black/52 to-black/30" />
-        <div className="absolute inset-0 min-h-[100dvh] bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.08),transparent_42%)]" />
+        <div className="absolute inset-0 min-h-[100dvh] bg-black/10" />
+        <div className="absolute inset-0 min-h-[100dvh] bg-gradient-to-r from-black/55 via-black/38 to-black/18" />
+        <div className="absolute inset-0 min-h-[100dvh] bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.06),transparent_42%)]" />
         <div
-          className="pointer-events-none absolute inset-0 min-h-[100dvh] bg-[radial-gradient(ellipse_95%_90%_at_50%_42%,transparent_25%,rgba(0,0,0,0.45)_100%)]"
+          className="pointer-events-none absolute inset-0 min-h-[100dvh] bg-[radial-gradient(ellipse_95%_90%_at_50%_42%,transparent_25%,rgba(0,0,0,0.28)_100%)]"
           aria-hidden
         />
       </div>
