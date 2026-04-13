@@ -55,7 +55,7 @@ export default function RentedPropertiesPage() {
           Back to Home
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-serif font-semibold text-[#8B2332] text-center mb-2">
+        <h1 className="text-3xl md:text-4xl font-sans font-normal text-[#8B2332] text-center mb-2">
           Rented Properties
         </h1>
         <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-2">
@@ -74,7 +74,7 @@ export default function RentedPropertiesPage() {
                   <Home className="h-5 w-5 text-[#8B2332]" />
                 </div>
                 <div className="min-w-0">
-                  <p className="font-semibold text-foreground leading-snug flex items-start gap-1.5">
+                  <p className="font-normal text-foreground leading-snug flex items-start gap-1.5">
                     <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-[#8B2332]" />
                     <span>{item.address}</span>
                   </p>

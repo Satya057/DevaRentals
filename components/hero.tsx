@@ -1,43 +1,33 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { HeroBackgroundVideo } from "@/components/hero-background-video"
-import { ArrowRight, Shield, TrendingUp, Clock, Check } from "lucide-react"
-
-const ownerHighlights = [
-  "Attack vacancy problems head-on",
-  "Streamline rent collection",
-  "Jump on maintenance issues before they escalate",
-  "Maximize your investment",
-  "Protect your peace of mind",
-]
-
-const aboutIntroBold =
-  "Transform your Edmonton rental property into a stress-free investment."
-
-const aboutBody =
-  "For 10+ years, Deva Rentals has delivered rock-solid results for property owners across Edmonton. From single-family homes to condos and apartments, we don't just manage properties, we maximize your investment and protect your peace of mind."
-
-const HERO_HIGHLIGHT_STAGGER_MS = 48
+import { ArrowRight, Shield, TrendingUp, Clock } from "lucide-react"
 
 const heroFeatureCardClass =
-  "hero-motion-up grid cursor-default grid-cols-[auto_1fr] items-center gap-3 rounded-lg border-2 border-primary/25 bg-card/95 px-3 py-2.5 shadow-lg shadow-black/10 ring-1 ring-white/60 backdrop-blur-md"
+  "hero-motion-up grid cursor-default grid-cols-[auto_1fr] items-center gap-3 rounded-xl border border-white/25 bg-black/50 px-3 py-3 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.55)] ring-1 ring-white/15 backdrop-blur-md md:px-3.5 md:py-2.5"
 
 export function Hero() {
   return (
-    <section id="home" className="relative flex min-h-[min(54vh,620px)] items-center overflow-hidden py-3 md:py-4">
-      {/* Video: public/video/hero-video.mp4 (or hero.mp4), or NEXT_PUBLIC_HERO_VIDEO_URL */}
-      <div className="absolute inset-0 z-0">
-        <HeroBackgroundVideo />
-        {/* Improve text contrast and visual focus */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/58 via-black/34 to-black/18" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.14),transparent_45%)]" />
+    <section id="home" className="relative min-h-[100dvh] w-full flex-col">
+      {/* Clip only the media stack — content below can extend without being cut off */}
+      <div className="absolute inset-0 z-0 min-h-[100dvh] overflow-hidden">
+        <div className="absolute inset-0 min-h-[100dvh]">
+          <HeroBackgroundVideo />
+        </div>
+        <div className="absolute inset-0 min-h-[100dvh] bg-black/22" />
+        <div className="absolute inset-0 min-h-[100dvh] bg-gradient-to-r from-black/78 via-black/52 to-black/30" />
+        <div className="absolute inset-0 min-h-[100dvh] bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.08),transparent_42%)]" />
+        <div
+          className="pointer-events-none absolute inset-0 min-h-[100dvh] bg-[radial-gradient(ellipse_95%_90%_at_50%_42%,transparent_25%,rgba(0,0,0,0.45)_100%)]"
+          aria-hidden
+        />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-[90%] max-w-7xl flex-col">
-        <div className="grid items-start gap-5 lg:grid-cols-2 lg:gap-7 xl:gap-9">
+      <div className="relative z-10 mx-auto flex w-[90%] max-w-7xl flex-col gap-8 py-8 pb-12 pt-12 md:gap-10 md:py-12 md:pb-14 md:pt-16">
+        <div className="w-full">
           <div className="text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.55),0_1px_3px_rgba(0,0,0,0.7)] lg:max-w-3xl">
             <div
-              className="hero-motion-up mb-3 inline-flex items-center gap-2 rounded-full bg-black/35 px-4 py-1.5 text-sm backdrop-blur-sm"
+              className="hero-motion-up mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-4 py-1.5 text-sm shadow-sm backdrop-blur-md"
               style={{ ["--hero-d" as string]: "40ms" }}
             >
               <Shield className="h-4 w-4" />
@@ -45,14 +35,14 @@ export function Hero() {
             </div>
 
             <h1
-              className="hero-motion-up mb-3 text-balance font-serif text-4xl font-semibold leading-tight md:text-5xl lg:text-[3.15rem] lg:leading-[1.05]"
+              className="hero-motion-up mb-4 text-balance font-sans text-4xl font-normal leading-[1.12] tracking-[-0.02em] md:text-5xl lg:text-[3.15rem] lg:leading-[1.06]"
               style={{ ["--hero-d" as string]: "90ms" }}
             >
               Find the Perfect Property for Your Lifestyle
             </h1>
 
             <p
-              className="hero-motion-up mb-4 max-w-2xl text-base leading-relaxed opacity-95 md:text-lg"
+              className="hero-motion-up mb-5 max-w-2xl text-base leading-relaxed text-white/92 md:mb-6 md:text-lg md:leading-relaxed"
               style={{ ["--hero-d" as string]: "140ms" }}
             >
               Transform your Edmonton rental property into a stress-free investment. 10+ years of delivering rock-solid
@@ -60,13 +50,13 @@ export function Hero() {
             </p>
 
             <div
-              className="hero-motion-up mb-4 flex flex-wrap gap-3 lg:mb-0"
+              className="hero-motion-up mb-5 flex flex-wrap gap-3 md:gap-4"
               style={{ ["--hero-d" as string]: "190ms" }}
             >
               <Button
                 asChild
                 size="lg"
-                className="border-2 border-white/35 bg-secondary px-8 text-base font-semibold text-secondary-foreground shadow-lg ring-2 ring-black/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/50 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99]"
+                className="rounded-lg border-2 border-white/40 bg-secondary px-8 text-base font-normal text-secondary-foreground shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)] ring-1 ring-white/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/55 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99]"
               >
                 <Link
                   href="https://www.rentfaster.ca/ab/edmonton/rentals/?l=11,53.5249,-113.47&user_ID=2236644"
@@ -81,7 +71,7 @@ export function Hero() {
               <Button
                 asChild
                 size="lg"
-                className="border-2 border-white/35 bg-secondary px-8 text-base font-semibold text-secondary-foreground shadow-lg ring-2 ring-black/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/50 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99]"
+                className="rounded-lg border-2 border-white/40 bg-secondary px-8 text-base font-normal text-secondary-foreground shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)] ring-1 ring-white/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/55 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99]"
               >
                 <Link href="/rented-properties" className="inline-flex items-center">
                   Rented Property
@@ -90,105 +80,64 @@ export function Hero() {
               </Button>
             </div>
 
-            {/* Stats — mobile / tablet: under buttons; desktop: stays in left column */}
             <div
-              className="hero-motion-up mt-1 w-full max-w-4xl border-t border-white/35 pt-4 text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.65),0_1px_3px_rgba(0,0,0,0.8)] lg:mt-5"
+              className="hero-motion-up mt-2 w-full max-w-4xl border-t border-white/30 pt-5 text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.65),0_1px_3px_rgba(0,0,0,0.8)] lg:mt-6"
               style={{ ["--hero-d" as string]: "240ms" }}
               role="region"
               aria-label="Company statistics"
             >
               <div className="grid grid-cols-3 gap-3 sm:gap-6 md:gap-10">
                 <div className="text-center sm:text-left">
-                  <div className="font-serif text-2xl font-semibold md:text-3xl">10+</div>
+                  <div className="font-sans text-2xl font-normal md:text-3xl">10+</div>
                   <div className="mt-1 text-xs opacity-90 sm:text-sm">Years Experience</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-serif text-2xl font-semibold md:text-3xl">500+</div>
+                  <div className="font-sans text-2xl font-normal md:text-3xl">500+</div>
                   <div className="mt-1 text-xs opacity-90 sm:text-sm">Properties Managed</div>
                 </div>
                 <div className="text-center sm:text-right">
-                  <div className="font-serif text-2xl font-semibold md:text-3xl">98%</div>
+                  <div className="font-sans text-2xl font-normal md:text-3xl">98%</div>
                   <div className="mt-1 text-xs opacity-90 sm:text-sm">Client Satisfaction</div>
                 </div>
               </div>
               <p className="mt-3 text-center text-[10px] font-medium uppercase tracking-wide text-white/85 sm:text-xs sm:text-left">
                 Certified ·{" "}
-                <span className="font-serif font-semibold normal-case tracking-normal">Licensed Property Management</span>
+                <span className="font-sans font-normal normal-case tracking-normal">Licensed Property Management</span>
               </p>
-            </div>
-          </div>
-
-          {/* Top-right: About card — premium warm style */}
-          <div className="lg:justify-self-end lg:w-full lg:max-w-md xl:max-w-xl">
-            <div
-              className="hero-motion-up rounded-2xl border border-[#e8ddd4] bg-[#fffdfb] p-5 text-[#1c1917] shadow-[0_20px_46px_-16px_rgba(15,10,10,0.3),0_8px_16px_-8px_rgba(15,10,10,0.12)] md:p-6 xl:p-7"
-              style={{ ["--hero-d" as string]: "160ms" }}
-            >
-              <h2 className="sr-only">About Deva Rentals</h2>
-              <div className="mb-2 inline-flex items-center rounded-full border border-[#edd8d1] bg-[#f8efec] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#8B2332]">
-                Owner Benefits
-              </div>
-
-              <p className="mb-2 border-l-4 border-[#8B2332]/75 pl-3 text-pretty text-base font-normal leading-snug tracking-tight text-[#1c1917] md:text-lg md:leading-snug">
-                {aboutIntroBold}
-              </p>
-
-              <p className="mb-4 max-w-prose text-sm leading-[1.62] text-[#44403c] md:text-[0.95rem] md:leading-[1.65]">
-                {aboutBody}
-              </p>
-
-              <ul className="flex flex-col gap-1.5">
-                {ownerHighlights.map((line, i) => (
-                  <li
-                    key={line}
-                    className="hero-motion-from-right group flex cursor-default items-start gap-2.5 rounded-lg border border-[#e9dcd7] bg-[#fff7f3] px-3 py-2.5 transition-[background-color,border-color,transform] duration-200 hover:border-[#d8c6bf] hover:bg-[#fff2ec] hover:translate-x-[1px]"
-                    style={{ ["--hero-d" as string]: `${220 + i * HERO_HIGHLIGHT_STAGGER_MS}ms` }}
-                  >
-                    <span
-                      className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm"
-                      aria-hidden
-                    >
-                      <Check className="h-3 w-3" strokeWidth={3} />
-                    </span>
-                    <span className="pt-px text-[0.84rem] leading-snug text-[#2b2422] md:text-[0.9rem]">{line}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
         </div>
 
-        {/* Three feature strips — alag-alag box, stats ke neeche, patli strip */}
-        <div className="mt-4 grid w-full grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-2 lg:mt-5 lg:gap-2.5">
+        <div className="grid w-full grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:gap-3">
           <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "320ms" }}>
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
-              <TrendingUp className="h-4 w-4 text-primary" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-white/15 text-white">
+              <TrendingUp className="h-4 w-4" aria-hidden />
             </div>
             <div className="min-w-0 text-left">
-              <h3 className="text-sm font-semibold leading-snug text-foreground">Maximize ROI</h3>
-              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <h3 className="text-sm font-normal leading-snug text-white">Maximize ROI</h3>
+              <p className="mt-0.5 text-[11px] leading-snug text-white/80 sm:text-xs">
                 Expert tenant management that boosts your rental income
               </p>
             </div>
           </div>
           <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "380ms" }}>
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
-              <Clock className="h-4 w-4 text-primary" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-white/15 text-white">
+              <Clock className="h-4 w-4" aria-hidden />
             </div>
             <div className="min-w-0 text-left">
-              <h3 className="text-sm font-semibold leading-snug text-foreground">Fast Response</h3>
-              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <h3 className="text-sm font-normal leading-snug text-white">Fast Response</h3>
+              <p className="mt-0.5 text-[11px] leading-snug text-white/80 sm:text-xs">
                 Lightning-fast maintenance through our trusted vendor network
               </p>
             </div>
           </div>
           <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "440ms" }}>
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10">
-              <Shield className="h-4 w-4 text-primary" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-white/15 text-white">
+              <Shield className="h-4 w-4" aria-hidden />
             </div>
             <div className="min-w-0 text-left">
-              <h3 className="text-sm font-semibold leading-snug text-foreground">Legal Compliance</h3>
-              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+              <h3 className="text-sm font-normal leading-snug text-white">Legal Compliance</h3>
+              <p className="mt-0.5 text-[11px] leading-snug text-white/80 sm:text-xs">
                 Stay bulletproof with Alberta rental law expertise
               </p>
             </div>

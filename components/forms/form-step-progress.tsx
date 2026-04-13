@@ -50,7 +50,7 @@ export function FormStepProgress({
             <span
               className={cn(
                 "hyphens-auto text-center text-[10px] leading-snug sm:text-xs",
-                i === step && "font-semibold text-[#1c1917]",
+                i === step && "font-normal text-[#1c1917]",
                 i < step && "text-muted-foreground line-through decoration-muted-foreground/40",
                 i > step && "text-muted-foreground",
               )}

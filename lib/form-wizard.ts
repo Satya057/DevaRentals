@@ -31,6 +31,50 @@ export function validateStepNativeFields(root: HTMLElement | null): boolean {
   return true
 }
 
+/** Human-readable labels for invalid required native fields (for summary UI). */
+export function collectInvalidRequiredFieldLabels(root: HTMLElement | null): string[] {
+  if (!root) return []
+  const out: string[] = []
+  const seen = new Set<string>()
+
+  const labelForControl = (el: HTMLInputElement | HTMLTextAreaElement): string => {
+    if (el.id) {
+      try {
+        const forLab = root.querySelector(`label[for="${CSS.escape(el.id)}"]`)
+        const t = forLab?.textContent?.replace(/\s*\*+\s*/g, "").trim()
+        if (t) return t
+      } catch {
+        /* ignore invalid id selector */
+      }
+    }
+    const wrap = el.parentElement
+    if (wrap) {
+      const lab = wrap.querySelector(":scope > label")
+      const t = lab?.textContent?.replace(/\s*\*+\s*/g, "").trim()
+      if (t) return t
+    }
+    const ph = el.getAttribute("placeholder")?.trim()
+    if (ph) return ph
+    if (el.name) return el.name.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase()).trim()
+    return "Required field"
+  }
+
+  const candidates = root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+    STEP_FIELD_SELECTOR,
+  )
+  for (const el of candidates) {
+    if (!el.required) continue
+    if (!el.checkValidity()) {
+      const text = labelForControl(el)
+      if (!seen.has(text)) {
+        seen.add(text)
+        out.push(text)
+      }
+    }
+  }
+  return out
+}
+
 /** Radix Checkbox: must be checked (e.g. terms agreement). */
 export function validateRadixCheckboxChecked(
   root: HTMLElement | null,

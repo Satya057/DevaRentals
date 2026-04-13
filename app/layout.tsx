@@ -4,11 +4,12 @@ import { Work_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-/** Body copy: Work Sans 400 (global default). */
+/** Global UI font: Work Sans; 400 is default (see globals.css base). */
 const workSans = Work_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-body",
+  display: "swap",
 })
 
 export const metadata: Metadata = {

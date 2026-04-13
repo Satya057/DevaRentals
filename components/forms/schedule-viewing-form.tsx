@@ -79,7 +79,7 @@ export function ScheduleViewingForm({
     return (
       <div className="text-center py-8">
         <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-        <h2 className="text-2xl font-serif text-[#8B2332] mb-2">Thank You!</h2>
+        <h2 className="text-2xl font-sans text-[#8B2332] mb-2">Thank You!</h2>
         <p className="text-[#333]">
           Your viewing request has been submitted. We will contact you to confirm
           the viewing date.

@@ -84,7 +84,7 @@ export function Header() {
   const getFormPath = (formId: string) => `/forms/${formId}`
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 border-b border-border">
+    <header className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       {/* Top Bar */}
       <div className="hidden lg:block bg-primary text-primary-foreground">
         <div className="mx-auto flex w-[90%] items-center justify-between py-2.5">
@@ -115,7 +115,7 @@ export function Header() {
                   <DialogTrigger asChild>
                     <button
                       type="button"
-                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-semibold tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10 transition-[background-color,box-shadow] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:bg-secondary/88 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
+                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-normal tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10 transition-[background-color,box-shadow] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:bg-secondary/88 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
                     >
                       <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
                       {btn.label}
@@ -123,7 +123,7 @@ export function Header() {
                   </DialogTrigger>
                   <DialogContent className="flex w-full max-w-[calc(100%-2rem)] sm:max-w-4xl flex-col gap-0 overflow-hidden p-0 bg-[#f5f0e8] max-h-[90vh]">
                     <DialogHeader className="shrink-0 px-6 pt-6 pb-3">
-                      <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
+                      <DialogTitle className="text-2xl font-sans text-[#8B2332] text-center">
                         {getFormTitle(btn.id)}
                       </DialogTitle>
                       <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
@@ -147,7 +147,7 @@ export function Header() {
                 <button
                   key={btn.id}
                   type="button"
-                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-semibold tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-normal tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10"
                 >
                   <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
                   {btn.label}
@@ -164,7 +164,7 @@ export function Header() {
           <Link href="/" className="flex shrink-0 items-center gap-3">
             <BrandLogoMark />
             <div className="flex flex-col">
-              <span className="text-xl font-serif font-semibold tracking-tight text-primary">
+              <span className="text-xl font-sans font-normal tracking-tight text-primary">
                 DEVA RENTALS
               </span>
               <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -196,7 +196,7 @@ export function Header() {
               asChild
               className="rounded-lg border border-primary-foreground/25 bg-primary px-5 text-primary-foreground shadow-md ring-2 ring-primary/30 transition-[transform,box-shadow] hover:bg-primary/90 hover:shadow-lg active:scale-[0.98]"
             >
-              <Link href="#contact" className="inline-flex items-center gap-1.5 font-semibold">
+              <Link href="#contact" className="inline-flex items-center gap-1.5 font-normal">
                 Get Started
                 <ChevronRight className="h-4 w-4 opacity-90" aria-hidden />
               </Link>
@@ -257,7 +257,7 @@ export function Header() {
                         </DialogTrigger>
                         <DialogContent className="flex w-full max-w-[calc(100%-2rem)] sm:max-w-4xl flex-col gap-0 overflow-hidden p-0 bg-[#f5f0e8] max-h-[90vh]">
                           <DialogHeader className="shrink-0 px-6 pt-6 pb-3">
-                            <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
+                            <DialogTitle className="text-2xl font-sans text-[#8B2332] text-center">
                               {getFormTitle(btn.id)}
                             </DialogTitle>
                             <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
@@ -294,7 +294,7 @@ export function Header() {
                 <Button
                   asChild
                   className={cn(
-                    "mt-4 w-full justify-center border border-primary-foreground/20 bg-primary font-semibold shadow-md ring-1 ring-primary/25 hover:bg-primary/90",
+                    "mt-4 w-full justify-center border border-primary-foreground/20 bg-primary font-normal shadow-md ring-1 ring-primary/25 hover:bg-primary/90",
                     "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
                     "animate-in fade-in slide-in-from-right-5 zoom-in-95 fill-mode-backwards duration-300 ease-out",
                   )}

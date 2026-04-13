@@ -43,11 +43,11 @@ export function WhyUs() {
               Why Choose Us
             </div>
             
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-foreground mb-6 text-balance">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans font-normal text-foreground mb-6 text-balance">
               Why Deva Rentals
             </h2>
             
-            <p className="text-lg font-semibold text-foreground mb-4">
+            <p className="text-lg font-normal text-foreground mb-4">
               Stop struggling with these landlord nightmares
             </p>
             
@@ -85,7 +85,7 @@ export function WhyUs() {
                 <div className="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4 shrink-0">
                   <solution.icon className="h-7 w-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{solution.title}</h3>
+                <h3 className="text-xl font-normal text-foreground mb-2">{solution.title}</h3>
                 <p className="text-muted-foreground flex-1 text-pretty">{solution.description}</p>
               </div>
             ))}

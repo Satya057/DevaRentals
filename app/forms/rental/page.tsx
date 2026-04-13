@@ -15,7 +15,7 @@ export default function RentalApplicationPage() {
           <ArrowLeft className="h-4 w-4" /> Back to Home
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-serif text-[#8B2332] text-center mb-2">Rental Application</h1>
+        <h1 className="text-3xl md:text-4xl font-sans text-[#8B2332] text-center mb-2">Rental Application</h1>
         <div className="w-16 h-0.5 bg-[#333] mx-auto mb-6" />
 
         <RentalApplicationForm />

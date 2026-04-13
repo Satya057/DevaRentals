@@ -1,14 +1,15 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type ComponentProps } from "react"
 import Link from "next/link"
 import { ArrowLeft, CheckCircle } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { Input as UiInput } from "@/components/ui/input"
+import { Textarea as UiTextarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
+  collectInvalidRequiredFieldLabels,
   stepFieldsAreValid,
   validateRadixCheckboxChecked,
   validateStepNativeFields,
@@ -42,7 +43,7 @@ const fieldInputClass = cn(
 
 const fieldFileInputClass = cn(
   fieldInputClass,
-  "py-1.5 text-[#57534e] file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-[#d4c5b0] file:bg-[#faf8f5] file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-[#44403c] file:shadow-none hover:file:bg-[#ede8de]",
+  "py-1.5 text-[#57534e] file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-[#d4c5b0] file:bg-[#faf8f5] file:px-3 file:py-1.5 file:text-xs file:font-normal file:text-[#44403c] file:shadow-none hover:file:bg-[#ede8de]",
 )
 
 const fieldTextareaClass = cn(
@@ -65,6 +66,14 @@ const stepTitles = [
   "Co-applicant, tenancy & employment",
   "Credit, additional details & agreement",
 ]
+
+function RentalInput({ autoComplete, ...props }: ComponentProps<typeof UiInput>) {
+  return <UiInput {...props} autoComplete={autoComplete ?? "off"} />
+}
+
+function RentalTextarea({ autoComplete, ...props }: ComponentProps<typeof UiTextarea>) {
+  return <UiTextarea {...props} autoComplete={autoComplete ?? "off"} />
+}
 
 export function RentalApplicationForm({ onSuccess, className }: RentalApplicationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -119,12 +128,34 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     return () => cancelAnimationFrame(id)
   }, [step])
 
+  const scrollRentalFeedbackIntoView = () => {
+    requestAnimationFrame(() => {
+      submitFeedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+    })
+  }
+
   const goNext = () => {
     setSubmitError(null)
     setSubmitFieldIssues([])
     const root = step === 0 ? step0Ref.current : step1Ref.current
-    if (!validateStepNativeFields(root)) return
-    if (step === 0 && !validateRadixCheckboxChecked(step0Ref.current, "rental-app-privacy-accept")) return
+    if (!stepFieldsAreValid(root)) {
+      const labels = collectInvalidRequiredFieldLabels(root)
+      setSubmitFieldIssues(
+        labels.length > 0
+          ? labels
+          : ["Fill in every required field on this section before continuing."],
+      )
+      validateStepNativeFields(root)
+      scrollRentalFeedbackIntoView()
+      return
+    }
+    if (step === 0 && !validateRadixCheckboxChecked(step0Ref.current, "rental-app-privacy-accept")) {
+      setSubmitFieldIssues([
+        "Terms & Conditions — check the box: “I have read and accept the terms above”.",
+      ])
+      scrollRentalFeedbackIntoView()
+      return
+    }
     setStep((s) => Math.min(s + 1, 2))
   }
 
@@ -147,28 +178,54 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     // steps, fails silently (reportValidity targets a hidden field), so Submit appears broken.
     if (!stepFieldsAreValid(step0Ref.current)) {
       setStep(0)
-      setSubmitError("Section 1 has a missing or invalid field. Please fix it, then continue.")
+      const labels = collectInvalidRequiredFieldLabels(step0Ref.current)
+      setSubmitFieldIssues(
+        labels.length > 0
+          ? labels
+          : ["Section 1 — complete all required fields before submitting."],
+      )
+      setSubmitError("Section 1 is incomplete.")
       setTimeout(() => validateStepNativeFields(step0Ref.current), 0)
+      scrollRentalFeedbackIntoView()
       return
     }
     if (!stepFieldsAreValid(step1Ref.current)) {
       setStep(1)
-      setSubmitError("Section 2 has a missing or invalid field. Please fix it, then continue.")
+      const labels = collectInvalidRequiredFieldLabels(step1Ref.current)
+      setSubmitFieldIssues(
+        labels.length > 0
+          ? labels
+          : ["Section 2 — complete all required fields before submitting."],
+      )
+      setSubmitError("Section 2 is incomplete.")
       setTimeout(() => validateStepNativeFields(step1Ref.current), 0)
+      scrollRentalFeedbackIntoView()
       return
     }
-    if (!validateStepNativeFields(step2Ref.current)) {
-      setSubmitError("Please complete the highlighted fields on this page.")
+    if (!stepFieldsAreValid(step2Ref.current)) {
+      const labels = collectInvalidRequiredFieldLabels(step2Ref.current)
+      setSubmitFieldIssues(
+        labels.length > 0
+          ? labels
+          : ["Section 3 — complete all required fields on this page."],
+      )
+      setSubmitError("Section 3 is incomplete.")
+      validateStepNativeFields(step2Ref.current)
+      scrollRentalFeedbackIntoView()
       return
     }
     if (!validateRadixCheckboxChecked(form, "rental-app-terms")) {
       form.querySelector<HTMLElement>("#rental-app-terms")?.focus()
-      setSubmitError("Please agree to the terms and conditions.")
+      setSubmitFieldIssues(["Final agreement — check the box to accept the terms and conditions."])
+      setSubmitError(null)
+      scrollRentalFeedbackIntoView()
       return
     }
     if (!applicantSigRef.current || applicantSigRef.current.isEmpty()) {
-      setSubmitError("Please draw your signature in the Applicant signature box.")
+      setSubmitFieldIssues(["Applicant signature — draw your signature in the applicant signature box."])
+      setSubmitError(null)
       form.querySelector<HTMLElement>("[data-signature-applicant]")?.focus()
+      scrollRentalFeedbackIntoView()
       return
     }
     setIsSubmitting(true)
@@ -236,7 +293,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     return (
       <div className="text-center py-8 px-2">
         <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-        <h2 className="text-2xl font-serif text-[#8B2332] mb-2">Thank You!</h2>
+        <h2 className="text-2xl font-sans text-[#8B2332] mb-2">Thank You!</h2>
         <p className="text-[#333] mb-4 max-w-md mx-auto">
           Your rental application has been submitted successfully. We will review your application and contact you
           shortly.
@@ -257,16 +314,10 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     <form
       ref={formRef}
       onSubmit={handleSubmit}
+      autoComplete="off"
       className={cn("w-full max-w-none space-y-5", className)}
       noValidate
     >
-      <FormStepProgress
-        step={step}
-        stepTitles={stepTitles}
-        stepLabel="Section"
-        ariaLabel={`Rental application step ${step + 1} of 3`}
-      />
-
       {submitError || submitFieldIssues.length > 0 ? (
         <div
           ref={submitFeedbackRef}
@@ -280,7 +331,9 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
           {submitFieldIssues.length > 0 ? (
             <div className={submitError ? "mt-2" : ""}>
               <p className="font-medium text-red-800 mb-1.5">
-                Fix these fields (or go back to earlier sections if the field is there):
+                {submitError
+                  ? "Missing or invalid:"
+                  : "These required fields are empty or invalid — please fill them:"}
               </p>
               <ul className="list-disc space-y-1 pl-5 text-red-800">
                 {submitFieldIssues.map((line, i) => (
@@ -292,6 +345,13 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
         </div>
       ) : null}
 
+      <FormStepProgress
+        step={step}
+        stepTitles={stepTitles}
+        stepLabel="Section"
+        ariaLabel={`Rental application step ${step + 1} of 3`}
+      />
+
       <div
         ref={step0Ref}
         className={cn(step === 0 ? "space-y-6" : "hidden")}
@@ -299,10 +359,10 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       >
           {/* Your Personal Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Your Personal Information</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Your Personal Information</h2>
             
             <div className="mb-4">
-              <h3 className="mb-3 text-lg font-semibold text-[#1c1917]">Terms & Conditions</h3>
+              <h3 className="mb-3 text-lg font-normal text-[#1c1917]">Terms & Conditions</h3>
               <div className="overflow-hidden rounded border border-[#d4c5b0] bg-white">
                 <div
                   className="max-h-24 overflow-y-auto overscroll-y-contain p-3 text-sm leading-relaxed text-[#555] sm:max-h-32 [&_p+p]:mt-2.5"
@@ -331,7 +391,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 href={RENTFASTER_LISTINGS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-[#8B2332] underline underline-offset-2 hover:no-underline"
+                className="font-normal text-[#8B2332] underline underline-offset-2 hover:no-underline"
               >
                 View available properties
               </a>{" "}
@@ -343,7 +403,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Address of Property <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="propertyAddress"
                   placeholder="Address of Property"
                   required
@@ -354,7 +414,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Date Occupancy Desired <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="occupancyDate"
                   type="date"
                   required
@@ -368,7 +428,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Adults <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="adults"
                   type="number"
                   placeholder="Adults"
@@ -381,7 +441,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Children <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="children"
                   type="number"
                   placeholder="Children"
@@ -395,20 +455,20 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Personal Information */}
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#1c1917]">Personal Information</h2>
+            <h2 className="mb-3 text-xl font-normal text-[#1c1917]">Personal Information</h2>
 
             <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
               <div className="md:col-span-2">
                 <label className={formFieldLabelClass}>
                   Name <span className="text-red-600">*</span>
                 </label>
-                <Input name="applicantName" placeholder="Name" required className={fieldInputClass} />
+                <RentalInput name="applicantName" placeholder="Name" required className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>
                   Current Address <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="applicantAddress"
                   placeholder="Current Address"
                   required
@@ -419,7 +479,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Email Address <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="applicantEmail"
                   type="email"
                   placeholder="Email Address"
@@ -431,7 +491,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Phone 1 <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="applicantPhone1"
                   type="tel"
                   placeholder="Phone 1"
@@ -441,7 +501,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone 2</label>
-                <Input
+                <RentalInput
                   name="applicantPhone2"
                   type="tel"
                   placeholder="Phone 2"
@@ -452,13 +512,13 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Date of Birth <span className="text-red-600">*</span>
                 </label>
-                <Input name="applicantDob" type="date" required className={fieldInputClass} />
+                <RentalInput name="applicantDob" type="date" required className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>
                   Govt Issued Photo ID <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="file_applicant_id"
                   type="file"
                   accept="image/*,.pdf"
@@ -478,18 +538,18 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       >
           {/* Co-Applicant's Personal Information */}
           <section>
-            <h2 className="mb-3 text-xl font-semibold text-[#1c1917]">
+            <h2 className="mb-3 text-xl font-normal text-[#1c1917]">
               Co-Applicant{"'"}s Personal Information (if applicable)
             </h2>
 
             <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
               <div className="md:col-span-2">
                 <label className={formFieldLabelClass}>Name</label>
-                <Input name="coApplicantName" placeholder="Name" className={fieldInputClass} />
+                <RentalInput name="coApplicantName" placeholder="Name" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Current Address</label>
-                <Input
+                <RentalInput
                   name="coApplicantAddress"
                   placeholder="Current Address"
                   className={fieldInputClass}
@@ -497,7 +557,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Email Address</label>
-                <Input
+                <RentalInput
                   name="coApplicantEmail"
                   type="email"
                   placeholder="Email Address"
@@ -506,7 +566,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone 1</label>
-                <Input
+                <RentalInput
                   name="coApplicantPhone1"
                   type="tel"
                   placeholder="Phone 1"
@@ -515,7 +575,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone 2</label>
-                <Input
+                <RentalInput
                   name="coApplicantPhone2"
                   type="tel"
                   placeholder="Phone 2"
@@ -524,11 +584,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Date of Birth</label>
-                <Input name="coApplicantDob" type="date" className={fieldInputClass} />
+                <RentalInput name="coApplicantDob" type="date" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Govt Issued Photo ID</label>
-                <Input
+                <RentalInput
                   name="file_co_applicant_id"
                   type="file"
                   accept="image/*,.pdf"
@@ -540,31 +600,31 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Co-Applicant's Personal Information who is under 18 */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Co-Applicant{"'"}s Personal Information who is under_18</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Co-Applicant{"'"}s Personal Information who is under_18</h2>
             
             <div className="grid md:grid-cols-4 gap-4">
               <div>
                 <label className={formFieldLabelClass}>Name_1</label>
-                <Input name="minorName1" placeholder="Name" className={fieldInputClass} />
+                <RentalInput name="minorName1" placeholder="Name" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Name_2</label>
-                <Input name="minorName2" placeholder="Name" className={fieldInputClass} />
+                <RentalInput name="minorName2" placeholder="Name" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Name_3</label>
-                <Input name="minorName3" placeholder="Name" className={fieldInputClass} />
+                <RentalInput name="minorName3" placeholder="Name" className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Name_4</label>
-                <Input name="minorName4" placeholder="Name" className={fieldInputClass} />
+                <RentalInput name="minorName4" placeholder="Name" className={fieldInputClass} />
               </div>
             </div>
           </section>
 
           {/* Previous Tenancy */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-2">Previous Tenancy</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-2">Previous Tenancy</h2>
             <p className="text-sm text-[#666] mb-4 italic">If less than 2 years at current location</p>
             
             <div className="grid md:grid-cols-2 gap-4 mb-4">
@@ -572,7 +632,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Landlord{"'"}s Name <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="prevLandlordName"
                   placeholder="Landlord's Name"
                   className={fieldInputClass}
@@ -582,7 +642,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Landlord{"'"}s Phone <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="prevLandlordPhone"
                   type="tel"
                   placeholder="Landlord's Phone"
@@ -596,7 +656,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               <label className={formFieldLabelClass}>
                 Present Address <span className="text-red-600">*</span>
               </label>
-              <Input
+              <RentalInput
                 name="prevPresentAddress"
                 placeholder="Present Address"
                 className={fieldInputClass}
@@ -608,7 +668,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Time at this location <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="prevTimeAtLocation"
                   placeholder="Time at this location"
                   className={fieldInputClass}
@@ -618,7 +678,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Monthly Rent <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="prevMonthlyRent"
                   placeholder="Monthly Rent"
                   className={fieldInputClass}
@@ -630,7 +690,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               <label className={formFieldLabelClass}>
                 Reason for Leaving <span className="text-red-600">*</span>
               </label>
-              <Textarea
+              <RentalTextarea
                 name="prevReasonLeaving"
                 placeholder="Reason for Leaving"
                 rows={3}
@@ -641,7 +701,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Employment Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Employment Information</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Employment Information</h2>
             
             <div className="mb-4">
               <label className={formFieldLabelClassMb3}>
@@ -680,7 +740,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Current Employer <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="employerName"
                   placeholder="Current Employer"
                   className={fieldInputClass}
@@ -690,7 +750,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Address <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="employerAddress"
                   placeholder="Address"
                   className={fieldInputClass}
@@ -703,7 +763,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Supervisor{"'"}s Name <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="supervisorName"
                   placeholder="Supervisor's Name"
                   className={fieldInputClass}
@@ -713,7 +773,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Phone <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="employerPhone"
                   type="tel"
                   placeholder="Phone"
@@ -727,7 +787,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Length of Employment <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="lengthEmployment"
                   placeholder="Length of Employment"
                   className={fieldInputClass}
@@ -737,7 +797,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Monthly Wage <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="monthlyWage"
                   placeholder="Monthly Wage"
                   className={fieldInputClass}
@@ -749,7 +809,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               <label className={formFieldLabelClass}>
                 Job Position <span className="text-red-600">*</span>
               </label>
-              <Input
+              <RentalInput
                 name="jobPosition"
                 placeholder="Job Position"
                 className={fieldInputClass}
@@ -760,7 +820,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               <label className={formFieldLabelClass}>
                 If you have other sources of income that you would like us to consider, please list income, source and person <span className="text-red-600">*</span>
               </label>
-              <Textarea
+              <RentalTextarea
                 name="otherIncomeSources"
                 placeholder="If you have other sources of income that you would like us to consider, please list income, source and person"
                 rows={3}
@@ -773,7 +833,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Upload Pictures <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="file_employment_1"
                   type="file"
                   accept="image/*,.pdf"
@@ -785,7 +845,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Upload Pictures <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="file_employment_2"
                   type="file"
                   accept="image/*,.pdf"
@@ -797,7 +857,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Upload Pictures
                 </label>
-                <Input
+                <RentalInput
                   name="file_employment_3"
                   type="file"
                   accept="image/*,.pdf"
@@ -809,12 +869,12 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Co-Applicant's Employment Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Co-Applicant{"'"}s Employment Information</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Co-Applicant{"'"}s Employment Information</h2>
             
             <div className="grid md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className={formFieldLabelClass}>Current Employer</label>
-                <Input
+                <RentalInput
                   name="coEmployerName"
                   placeholder="Current Employer"
                   className={fieldInputClass}
@@ -822,7 +882,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Address</label>
-                <Input
+                <RentalInput
                   name="coEmployerAddress"
                   placeholder="Address"
                   className={fieldInputClass}
@@ -833,7 +893,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             <div className="grid md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className={formFieldLabelClass}>Supervisor{"'"}s Name</label>
-                <Input
+                <RentalInput
                   name="coSupervisorName"
                   placeholder="Supervisor's Name"
                   className={fieldInputClass}
@@ -841,7 +901,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Phone</label>
-                <Input
+                <RentalInput
                   name="coEmployerPhone"
                   type="tel"
                   placeholder="Phone"
@@ -853,7 +913,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             <div className="grid md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className={formFieldLabelClass}>Length of Employment</label>
-                <Input
+                <RentalInput
                   name="coLengthEmployment"
                   placeholder="Length of Employment"
                   className={fieldInputClass}
@@ -861,7 +921,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Monthly Wage</label>
-                <Input
+                <RentalInput
                   name="coMonthlyWage"
                   placeholder="Monthly Wage"
                   className={fieldInputClass}
@@ -871,7 +931,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
             <div className="mb-4">
               <label className={formFieldLabelClass}>Job Position</label>
-              <Input
+              <RentalInput
                 name="coJobPosition"
                 placeholder="Job Position"
                 className={fieldInputClass}
@@ -881,7 +941,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             <div className="space-y-3">
               <div>
                 <label className={formFieldLabelClass}>Upload Pictures</label>
-                <Input
+                <RentalInput
                   name="file_co_employment_1"
                   type="file"
                   accept="image/*,.pdf"
@@ -890,7 +950,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Upload Pictures</label>
-                <Input
+                <RentalInput
                   name="file_co_employment_2"
                   type="file"
                   accept="image/*,.pdf"
@@ -899,7 +959,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
               <div>
                 <label className={formFieldLabelClass}>Upload Pictures</label>
-                <Input
+                <RentalInput
                   name="file_co_employment_3"
                   type="file"
                   accept="image/*,.pdf"
@@ -918,7 +978,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       >
           {/* Credit History Description */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Credit History Description</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Credit History Description</h2>
             
             <div className="space-y-3">
               <div>
@@ -1005,7 +1065,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   If you have answered YES to any of the above, please state your reasons and/or circumstances
                 </label>
-                <Textarea
+                <RentalTextarea
                   name="creditYesDetails"
                   placeholder="If you have answered YES to any of the above, please state your reasons and/or circumstances"
                   rows={3}
@@ -1017,7 +1077,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Please upload if you have current credit report
                 </label>
-                <Input
+                <RentalInput
                   name="file_credit_1"
                   type="file"
                   accept="image/*,.pdf"
@@ -1029,7 +1089,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Please upload if you have current credit report
                 </label>
-                <Input
+                <RentalInput
                   name="file_credit_2"
                   type="file"
                   accept="image/*,.pdf"
@@ -1041,7 +1101,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Additional Information */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Additional Information</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Additional Information</h2>
             
             <div className="space-y-3">
               <div>
@@ -1068,7 +1128,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   If yes, describe the pets
                 </label>
-                <Textarea
+                <RentalTextarea
                   name="petsDescription"
                   placeholder=""
                   rows={2}
@@ -1141,7 +1201,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Additional Comments by Applicants
                 </label>
-                <Textarea
+                <RentalTextarea
                   name="additionalComments"
                   placeholder="Additional Comments by Applicants"
                   rows={3}
@@ -1153,14 +1213,14 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Emergency Contact */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Emergency Contact</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Emergency Contact</h2>
             
             <div className="grid md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className={formFieldLabelClass}>
                   Name of a person not residing with you <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="emergencyContactName"
                   placeholder="Name of a person not residing with you"
                   className={fieldInputClass}
@@ -1170,7 +1230,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Address <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="emergencyContactAddress"
                   placeholder="Address"
                   className={fieldInputClass}
@@ -1183,7 +1243,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Phone <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="emergencyContactPhone"
                   type="tel"
                   placeholder="Phone"
@@ -1194,7 +1254,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Relationship <span className="text-red-600">*</span>
                 </label>
-                <Input
+                <RentalInput
                   name="emergencyContactRelationship"
                   placeholder="Relationship"
                   className={fieldInputClass}
@@ -1205,7 +1265,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
 
           {/* Terms & Conditions */}
           <section>
-            <h2 className="text-xl font-semibold text-[#1c1917] mb-4">Terms & Conditions</h2>
+            <h2 className="text-xl font-normal text-[#1c1917] mb-4">Terms & Conditions</h2>
             
             <div className="mb-4 overflow-hidden rounded border border-[#d4c5b0] bg-white">
               <div
@@ -1262,11 +1322,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>
                   Legal Name <span className="text-red-600">*</span>
                 </label>
-                <Input name="legalName" placeholder="Legal Name" required className={fieldInputClass} />
+                <RentalInput name="legalName" placeholder="Legal Name" required className={fieldInputClass} />
               </div>
               <div>
                 <label className={formFieldLabelClass}>Co-Applicant{"'"}s Legal Name</label>
-                <Input
+                <RentalInput
                   name="coLegalName"
                   placeholder="Co-Applicant's Legal Name"
                   className={fieldInputClass}

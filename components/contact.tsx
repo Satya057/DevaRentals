@@ -67,7 +67,7 @@ export function Contact() {
   return (
     <section id="contact" className="py-20 md:py-28 bg-card">
       <div className="w-[90%] mx-auto">
-        <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-8 text-balance">
+        <h2 className="text-3xl md:text-4xl font-sans font-normal text-foreground mb-8 text-balance">
           Forms & Applications
         </h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -88,14 +88,14 @@ export function Contact() {
                       <IconComponent className="h-6 w-6 text-primary group-hover:text-primary-foreground" />
                     </div>
                     <div>
-                      <p className="font-semibold text-foreground">{card.label}</p>
+                      <p className="font-normal text-foreground">{card.label}</p>
                       <p className="text-sm text-muted-foreground">{card.description}</p>
                     </div>
                   </button>
                 </DialogTrigger>
                 <DialogContent className="flex w-full max-w-[calc(100%-2rem)] sm:max-w-4xl flex-col gap-0 overflow-hidden p-0 bg-[#f5f0e8] max-h-[90vh]">
                   <DialogHeader className="shrink-0 px-6 pt-6 pb-3">
-                    <DialogTitle className="text-2xl font-serif text-[#8B2332] text-center">
+                    <DialogTitle className="text-2xl font-sans text-[#8B2332] text-center">
                       {card.title}
                     </DialogTitle>
                     <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />

@@ -13,7 +13,7 @@ export default function ServiceRequestPage() {
           <ArrowLeft className="h-4 w-4" /> Back to Home
         </Link>
 
-        <h1 className="text-3xl md:text-4xl font-serif text-[#8B2332] text-center mb-2">
+        <h1 className="text-3xl md:text-4xl font-sans text-[#8B2332] text-center mb-2">
           Service Request
         </h1>
         <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mb-6" />

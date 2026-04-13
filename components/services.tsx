@@ -84,7 +84,7 @@ export function Services() {
                 For Property Owners
               </div>
               
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold text-foreground mb-6 text-balance">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans font-normal text-foreground mb-6 text-balance">
                 For Landlords
               </h2>
               
@@ -100,7 +100,7 @@ export function Services() {
                       <service.icon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">{service.title}</h3>
+                      <h3 className="font-normal text-foreground">{service.title}</h3>
                       <p className="text-sm text-muted-foreground">{service.description}</p>
                     </div>
                   </div>
@@ -129,7 +129,7 @@ export function Services() {
                 For Renters
               </div>
               
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-semibold mb-6 text-balance">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-sans font-normal mb-6 text-balance">
                 For Tenants
               </h2>
               
@@ -150,7 +150,7 @@ export function Services() {
                       <feature.icon className="h-5 w-5 text-secondary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">{feature.title}</h3>
+                      <h3 className="font-normal">{feature.title}</h3>
                       <p className="text-sm opacity-80">{feature.description}</p>
                     </div>
                   </div>

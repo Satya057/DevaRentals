@@ -137,7 +137,7 @@ export function Testimonials() {
             <div className="h-0.5 w-8 bg-secondary" />
           </div>
 
-          <h2 className="mb-6 text-balance font-serif text-3xl font-semibold text-foreground md:text-4xl lg:text-5xl">
+          <h2 className="mb-6 text-balance font-sans text-3xl font-normal text-foreground md:text-4xl lg:text-5xl">
             What Our Happy Clients Are Saying
           </h2>
 
@@ -157,12 +157,12 @@ export function Testimonials() {
                   <div className="mb-4 flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-full text-lg font-semibold text-white ${testimonial.color}`}
+                        className={`flex h-12 w-12 items-center justify-center rounded-full text-lg font-normal text-white ${testimonial.color}`}
                       >
                         {testimonial.initial}
                       </div>
                       <div>
-                        <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
+                        <h4 className="font-normal text-foreground">{testimonial.name}</h4>
                         <p className="text-sm text-muted-foreground">{testimonial.date}</p>
                       </div>
                     </div>
