@@ -1,28 +1,31 @@
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 
-const LOGO_PATH = "/pic/Logo1.png"
+/** Main site logo — `public/pic/Rental DV Logo.jpeg` */
+const LOGO_PATH = "/pic/Rental%20DV%20Logo.jpeg"
 
 type BrandLogoMarkProps = {
   className?: string
+  /** LCP: set on header instance only */
+  priority?: boolean
 }
 
-/** Square brand mark — `public/pic/Logo1.png` on brand background `#6C1517`. */
-export function BrandLogoMark({ className }: BrandLogoMarkProps) {
+export function BrandLogoMark({ className, priority = false }: BrandLogoMarkProps) {
   return (
     <div
       className={cn(
-        "relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#6C1517] shadow-sm",
+        "relative flex h-12 max-h-12 w-auto max-w-[min(15rem,52vw)] shrink-0 items-center justify-center overflow-hidden rounded-md",
         className,
       )}
     >
       <Image
         src={LOGO_PATH}
         alt="Deva Rentals"
-        width={88}
-        height={88}
-        className="h-full w-full origin-top scale-[1.82] object-contain object-top"
+        width={280}
+        height={112}
+        className="h-12 w-auto max-h-12 object-contain object-left"
         unoptimized
+        priority={priority}
       />
     </div>
   )

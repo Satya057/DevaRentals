@@ -21,18 +21,18 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/pic/Rental%20DV%20Logo.jpeg?v=3",
+        url: "/pic/Rental%20DV%20Logo.jpeg?v=4",
         type: "image/jpeg",
         sizes: "192x192",
       },
       {
-        url: "/pic/Rental%20DV%20Logo.jpeg?v=3",
+        url: "/pic/Rental%20DV%20Logo.jpeg?v=4",
         type: "image/jpeg",
         sizes: "512x512",
       },
     ],
-    shortcut: "/pic/Rental%20DV%20Logo.jpeg?v=3",
-    apple: "/pic/Rental%20DV%20Logo.jpeg?v=3",
+    shortcut: "/pic/Rental%20DV%20Logo.jpeg?v=4",
+    apple: "/pic/Rental%20DV%20Logo.jpeg?v=4",
   },
 }
 
