@@ -123,7 +123,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       {/* Top Bar */}
-      <div className="hidden lg:block bg-primary text-primary-foreground">
+      <div className="hidden lg:block bg-gradient-to-r from-primary via-[#8B2332] to-[#5a1216] text-primary-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
         <div className="mx-auto flex w-[90%] items-center justify-between py-2.5">
           <div className="flex items-center gap-8">
             <a
@@ -152,7 +152,7 @@ export function Header() {
                   <DialogTrigger asChild>
                     <button
                       type="button"
-                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-normal tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10 transition-[background-color,box-shadow] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:bg-secondary/88 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
+                      className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-amber-200/35 bg-gradient-to-b from-secondary via-secondary to-[#b8732f] px-4 py-2 text-sm font-medium tracking-wide text-secondary-foreground shadow-md ring-1 ring-amber-900/15 transition-[background-color,box-shadow,filter] [text-shadow:0_0_14px_rgba(255,250,240,0.35)] hover:brightness-105 hover:shadow-lg hover:[text-shadow:0_0_18px_rgba(255,250,240,0.45)]"
                     >
                       <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
                       {btn.label}
@@ -184,7 +184,7 @@ export function Header() {
                 <button
                   key={btn.id}
                   type="button"
-                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-white/25 bg-secondary px-4 py-2 text-sm font-normal tracking-wide text-secondary-foreground shadow-md ring-1 ring-black/10"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-amber-200/35 bg-gradient-to-b from-secondary via-secondary to-[#b8732f] px-4 py-2 text-sm font-medium tracking-wide text-secondary-foreground shadow-md ring-1 ring-amber-900/15"
                 >
                   <ChevronRight className="h-3.5 w-3.5 opacity-80" aria-hidden />
                   {btn.label}
@@ -204,7 +204,7 @@ export function Header() {
               <span className="text-xl font-sans font-normal tracking-tight text-primary">
                 DEVA RENTALS
               </span>
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block bg-gradient-to-r from-secondary to-primary bg-clip-text text-[10px] font-semibold uppercase tracking-[0.2em] text-transparent">
                 Property Management
               </span>
             </div>
@@ -214,7 +214,7 @@ export function Header() {
             className="hidden min-w-0 flex-1 items-center justify-center lg:flex"
             aria-label="Main"
           >
-            <ul className="flex flex-wrap items-center justify-center gap-x-5 xl:gap-x-8">
+            <ul className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 xl:gap-3">
               {navLinks.map((link) => {
                 const isActive = activeNavHash === link.href
                 return (
@@ -223,12 +223,11 @@ export function Header() {
                       href={link.href}
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
-                        "relative whitespace-nowrap rounded-md px-2 py-2 text-[0.98rem] font-semibold tracking-tight transition-colors duration-200",
-                        "after:absolute after:inset-x-2 after:bottom-0.5 after:h-[3px] after:origin-center after:rounded-full after:bg-primary after:transition-transform after:duration-200",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2",
+                        "inline-flex items-center justify-center whitespace-nowrap rounded-full border px-3 py-2 text-[0.8125rem] font-semibold tracking-tight transition-[color,background-color,border-color,box-shadow,transform,filter] duration-200 sm:px-3.5 sm:text-[0.9rem]",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2",
                         isActive
-                          ? "text-primary after:scale-x-100"
-                          : "text-foreground after:scale-x-0 hover:text-primary hover:after:scale-x-100",
+                          ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-[0_4px_18px_-4px_rgba(108,21,23,0.55),0_0_0_1px_rgba(251,191,36,0.25)] hover:brightness-105"
+                          : "border-secondary/40 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/70 text-[#3d2a26] shadow-sm hover:border-primary/45 hover:from-rose-50/90 hover:via-amber-50/50 hover:to-orange-100/80 hover:text-primary hover:shadow-md active:scale-[0.98]",
                       )}
                     >
                       {link.label}
@@ -242,7 +241,7 @@ export function Header() {
           <div className="hidden shrink-0 lg:block">
             <Button
               asChild
-              className="rounded-lg border border-primary-foreground/25 bg-primary px-5 text-primary-foreground shadow-md ring-2 ring-primary/30 transition-[transform,box-shadow] hover:bg-primary/90 hover:shadow-lg active:scale-[0.98]"
+              className="rounded-lg border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary px-5 text-primary-foreground shadow-md ring-2 ring-secondary/35 transition-[transform,box-shadow,filter] hover:brightness-105 hover:shadow-lg active:scale-[0.98]"
             >
               <Link href="#contact" className="inline-flex items-center gap-1.5 font-normal">
                 Get Started
@@ -272,12 +271,12 @@ export function Header() {
                       aria-current={isActive ? "true" : undefined}
                       style={{ animationDelay: `${i * MOBILE_NAV_STAGGER_MS}ms` }}
                       className={cn(
-                        "block w-full border-b border-border/80 py-3.5 text-center text-lg font-semibold transition-colors duration-200",
+                        "block w-full rounded-xl border px-4 py-3.5 text-center text-base font-semibold transition-[color,background-color,border-color,box-shadow,filter] duration-200",
                         "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
                         "animate-in fade-in slide-in-from-right-6 fill-mode-backwards duration-300 ease-out",
                         isActive
-                          ? "bg-primary/[0.06] text-primary"
-                          : "text-foreground hover:bg-muted/60 hover:text-primary",
+                          ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-md ring-1 ring-amber-200/30"
+                          : "border-secondary/40 bg-gradient-to-br from-amber-50/95 via-white to-orange-50/70 text-[#3d2a26] shadow-sm hover:border-primary/45 hover:from-rose-50/80 hover:to-amber-50/60 hover:text-primary hover:shadow",
                       )}
                     >
                       {link.label}
@@ -349,7 +348,7 @@ export function Header() {
                 <Button
                   asChild
                   className={cn(
-                    "mt-4 w-full justify-center border border-primary-foreground/20 bg-primary font-normal shadow-md ring-1 ring-primary/25 hover:bg-primary/90",
+                    "mt-4 w-full justify-center border border-amber-200/40 bg-gradient-to-r from-primary via-[#8B2332] to-secondary font-normal text-primary-foreground shadow-md ring-2 ring-secondary/30 transition-[filter] hover:brightness-105",
                     "motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:translate-x-0",
                     "animate-in fade-in slide-in-from-right-5 zoom-in-95 fill-mode-backwards duration-300 ease-out",
                   )}
