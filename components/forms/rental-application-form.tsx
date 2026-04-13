@@ -154,6 +154,9 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
   const applicantSigRef = useRef<SignaturePadFieldHandle>(null)
   const coApplicantSigRef = useRef<SignaturePadFieldHandle>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  /** Section 3: only run validation after an intentional "Submit Application" activation (not implicit Enter submit). */
+  const explicitFinalSubmitRef = useRef(false)
+  const prevStepForFeedbackRef = useRef<number | null>(null)
   const skipScrollOnMount = useRef(true)
 
   /** Modal/dialog uses an inner overflow-y-auto wrapper; window.scrollTo does not reset it. */
@@ -183,6 +186,15 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       scrollWizardShellToTop()
     })
     return () => cancelAnimationFrame(id)
+  }, [step])
+
+  useEffect(() => {
+    const prev = prevStepForFeedbackRef.current
+    prevStepForFeedbackRef.current = step
+    if (step === 2 && prev !== null && prev !== 2) {
+      setSubmitError(null)
+      setSubmitFieldIssues([])
+    }
   }, [step])
 
   const scrollRentalFeedbackIntoView = () => {
@@ -235,6 +247,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       goNext()
       return
     }
+    if (!explicitFinalSubmitRef.current) {
+      return
+    }
+    explicitFinalSubmitRef.current = false
+
     setSubmitError(null)
     setSubmitFieldIssues([])
     const form = e.currentTarget
@@ -1442,32 +1459,27 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
           >
             Back
           </Button>
-          <div className="flex flex-col items-center gap-1 sm:items-end">
-            <div className="flex justify-center gap-3 sm:justify-end">
-              {step < 2 ? (
-                <Button
-                  type="button"
-                  className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-h-12 min-w-[120px]"
-                  onClick={goNext}
-                >
-                  Next
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3 text-lg min-h-12"
-                >
-                  {isSubmitting ? "Submitting…" : "Submit Application"}
-                </Button>
-              )}
-            </div>
-            {isSubmitting && step === 2 ? (
-              <p className="max-w-md text-center text-xs text-[#57534e] sm:text-right">
-                Creating the PDF and sending your application. Large uploads can take a little while — please keep this
-                page open.
-              </p>
-            ) : null}
+          <div className="flex justify-center gap-3 sm:justify-end">
+            {step < 2 ? (
+              <Button
+                type="button"
+                className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-h-12 min-w-[120px]"
+                onClick={goNext}
+              >
+                Next
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3 text-lg min-h-12"
+                onClick={() => {
+                  explicitFinalSubmitRef.current = true
+                }}
+              >
+                {isSubmitting ? "Submitting…" : "Submit Application"}
+              </Button>
+            )}
           </div>
         </div>
       </div>
