@@ -30,6 +30,7 @@ const inquirySchema = z.object({
   bathroomsOther: optional,
   furnishing: z.string().trim().min(1),
   backyard: z.string().trim().min(1),
+  balcony: z.string().trim().min(1),
   preferredLeaseTerm: z.string().trim().min(1),
   contractTerm: z.string().trim().min(1),
   petsAllowed: z.string().trim().min(1),

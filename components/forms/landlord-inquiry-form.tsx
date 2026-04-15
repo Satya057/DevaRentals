@@ -47,6 +47,7 @@ export function LandlordInquiryForm({
   const [bathrooms, setBathrooms] = useState("1")
   const [furnishing, setFurnishing] = useState("unfurnished")
   const [backyard, setBackyard] = useState("yes")
+  const [balcony, setBalcony] = useState("no")
   const [preferredLeaseTerm, setPreferredLeaseTerm] = useState("1-year")
   const [contractTerm, setContractTerm] = useState("1-year")
   const [step, setStep] = useState(0)
@@ -101,6 +102,7 @@ export function LandlordInquiryForm({
       bathroomsOther: String(fd.get("bathroomsOther") ?? ""),
       furnishing,
       backyard,
+      balcony,
       preferredLeaseTerm,
       contractTerm,
       propertyType,
@@ -423,6 +425,23 @@ export function LandlordInquiryForm({
           <Select value={backyard} onValueChange={setBackyard} required>
             <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder="Yes" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="yes">Yes</SelectItem>
+              <SelectItem value="no">No</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-3">
+        <div>
+          <label className={labelPrimary}>
+            Balcony Availability <span className="text-red-600">*</span>
+          </label>
+          <Select value={balcony} onValueChange={setBalcony} required>
+            <SelectTrigger className={selectTriggerClass}>
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="yes">Yes</SelectItem>

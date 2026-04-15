@@ -23,6 +23,7 @@ export type LandlordInquiryPayload = {
   bathroomsOther: string
   furnishing: string
   backyard: string
+  balcony: string
   preferredLeaseTerm: string
   contractTerm: string
   petsAllowed: string
@@ -131,6 +132,7 @@ export function formatLandlordInquiryEmailBody(d: LandlordInquiryPayload): strin
     ),
     line("Furnishing Type", FURNISHING_LABELS[d.furnishing] ?? d.furnishing),
     line("Backyard Availability", YESNO[d.backyard] ?? d.backyard),
+    line("Balcony Availability", YESNO[d.balcony] ?? d.balcony),
     line(
       "Preferred Tenant Lease Term",
       LEASE_LABELS[d.preferredLeaseTerm] ?? d.preferredLeaseTerm,
