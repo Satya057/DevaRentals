@@ -1,5 +1,5 @@
 import React from "react"
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Work_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
@@ -12,6 +12,12 @@ const workSans = Work_Sans({
   display: "swap",
 })
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#6c1517",
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://devarentals.com",
@@ -22,24 +28,24 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.jpg?v=9",
+        url: "/rental-dv-logo.jpg?v=11",
         type: "image/jpeg",
         sizes: "48x48",
       },
       {
-        url: "/favicon.jpg?v=9",
+        url: "/rental-dv-logo.jpg?v=11",
         type: "image/jpeg",
         sizes: "192x192",
       },
       {
-        url: "/favicon.jpg?v=9",
+        url: "/rental-dv-logo.jpg?v=11",
         type: "image/jpeg",
         sizes: "512x512",
       },
     ],
-    shortcut: "/favicon.jpg?v=9",
+    shortcut: "/rental-dv-logo.jpg?v=11",
     apple: [
-      { url: "/favicon.jpg?v=9", sizes: "180x180", type: "image/jpeg" },
+      { url: "/rental-dv-logo.jpg?v=11", sizes: "180x180", type: "image/jpeg" },
     ],
   },
 }

@@ -1,8 +1,8 @@
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 
-/** Main site logo — `public/pic/Rental DV Logo.jpeg` */
-const LOGO_PATH = "/pic/Rental%20DV%20Logo.jpeg"
+/** Main site logo — same file as favicon (`public/rental-dv-logo.jpg`) */
+const LOGO_PATH = "/rental-dv-logo.jpg"
 
 type BrandLogoMarkProps = {
   className?: string

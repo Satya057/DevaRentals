@@ -3,7 +3,7 @@
   "short_name": "Deva Rentals",
   "icons": [
     {
-      "src": "/favicon.jpg",
+      "src": "/rental-dv-logo.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
