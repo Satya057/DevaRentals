@@ -27,25 +27,26 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
       {
-        url: "/rental-dv-logo.jpg?v=11",
+        url: "/rental-dv-logo.jpg?v=12",
         type: "image/jpeg",
         sizes: "48x48",
       },
       {
-        url: "/rental-dv-logo.jpg?v=11",
+        url: "/rental-dv-logo.jpg?v=12",
         type: "image/jpeg",
         sizes: "192x192",
       },
       {
-        url: "/rental-dv-logo.jpg?v=11",
+        url: "/rental-dv-logo.jpg?v=12",
         type: "image/jpeg",
         sizes: "512x512",
       },
     ],
-    shortcut: "/rental-dv-logo.jpg?v=11",
+    shortcut: "/rental-dv-logo.jpg?v=12",
     apple: [
-      { url: "/rental-dv-logo.jpg?v=11", sizes: "180x180", type: "image/jpeg" },
+      { url: "/rental-dv-logo.jpg?v=12", sizes: "180x180", type: "image/jpeg" },
     ],
   },
 }
