@@ -97,16 +97,12 @@ export function Hero() {
               role="region"
               aria-label="Company statistics"
             >
-              <div className="grid grid-cols-3 gap-2 sm:gap-5 md:gap-8">
+              <div className="grid grid-cols-2 gap-2 sm:gap-8 md:gap-12">
                 <div className="text-center sm:text-left">
                   <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">10+</div>
                   <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Years Experience</div>
                 </div>
-                <div className="text-center">
-                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">50+</div>
-                  <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Properties Managed</div>
-                </div>
-                <div className="text-center sm:text-right">
+                <div className="text-center sm:text-left sm:pl-2 md:pl-6">
                   <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">98%</div>
                   <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Client Satisfaction</div>
                 </div>
