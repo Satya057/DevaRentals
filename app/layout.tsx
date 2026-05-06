@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Work_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { VisitorHelp } from '@/components/visitor-help'
 import './globals.css'
 
 /** Global UI font: Work Sans; 400 is default (see globals.css base). */
@@ -63,6 +64,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <VisitorHelp />
         <Analytics />
       </body>
     </html>
