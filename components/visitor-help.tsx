@@ -1,12 +1,17 @@
 "use client"
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react"
 import Link from "next/link"
 import {
+  BadgeCheck,
   ChevronLeft,
+  Coins,
   Menu,
+  MapPin,
   MessageCircle,
   Paperclip,
+  Phone,
+  ReceiptText,
   Smile,
   Sparkles,
   ThumbsUp,
@@ -260,6 +265,37 @@ function SuggestionChip({ label, onPick }: { label: string; onPick: () => void }
   )
 }
 
+function TopicCard({
+  title,
+  caption,
+  icon,
+  onPick,
+}: {
+  title: string
+  caption: string
+  icon: ReactNode
+  onPick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onPick}
+      className={cn(
+        "group rounded-xl border border-primary/20 bg-gradient-to-br from-primary/[0.08] to-transparent p-3 text-left",
+        "transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md",
+      )}
+    >
+      <div className="mb-2 flex items-center gap-2">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
+          {icon}
+        </span>
+        <p className="text-sm font-semibold text-foreground">{title}</p>
+      </div>
+      <p className="text-xs leading-relaxed text-muted-foreground">{caption}</p>
+    </button>
+  )
+}
+
 /**
  * Launcher: transparent wrap, green circle, arched “We Are Here!” (light blue + white stroke), 👋 on the left.
  */
@@ -280,11 +316,12 @@ function WeAreHereLauncher({
         type="button"
         onClick={onOpen}
         className={cn(
-          "flex h-[4.25rem] w-[4.25rem] shrink-0 items-center justify-center rounded-full bg-[#8B2332] text-white shadow-xl",
+          "relative flex h-[4.25rem] w-[4.25rem] shrink-0 items-center justify-center rounded-full bg-[#8B2332] text-white shadow-xl",
           "transition-transform hover:scale-[1.04] hover:bg-[#7a1f2c]",
         )}
         aria-label="Open support chat"
       >
+        <span className="pointer-events-none absolute inset-0 rounded-full bg-[#8B2332]/60 animate-ping" />
         <MessageCircle className="h-9 w-9" strokeWidth={2} aria-hidden />
       </button>
     )
@@ -356,6 +393,7 @@ function WeAreHereLauncher({
           )}
           aria-label="Open support chat"
         >
+          <span className="pointer-events-none absolute inset-0 rounded-full border border-white/25" />
           <MessageCircle className="h-9 w-9 sm:h-10 sm:w-10" strokeWidth={2.35} aria-hidden />
         </button>
       </div>
@@ -369,6 +407,7 @@ export function VisitorHelp() {
   const [chatOpen, setChatOpen] = useState(false)
   const [launcherMinimized, setLauncherMinimized] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [composerOpen, setComposerOpen] = useState(false)
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -376,6 +415,7 @@ export function VisitorHelp() {
   const closeAll = useCallback(() => {
     setChatOpen(false)
     setMenuOpen(false)
+    setComposerOpen(false)
     setInput("")
     setMessages([])
   }, [])
@@ -454,6 +494,17 @@ export function VisitorHelp() {
     return out
   }, [lastTopicForSuggestions])
 
+  const featuredTopics = useMemo(
+    () => [
+      { id: "fees", caption: "Setup + placement + monthly management", icon: <Coins className="h-4 w-4" /> },
+      { id: "included", caption: "Photos, listings, showings, inspections, rent collection", icon: <ReceiptText className="h-4 w-4" /> },
+      { id: "areas", caption: "Edmonton, Beaumont, Sherwood Park, St. Albert", icon: <MapPin className="h-4 w-4" /> },
+      { id: "contact", caption: "Call, email, or forms in one place", icon: <Phone className="h-4 w-4" /> },
+      { id: "reca", caption: "RECA-licensed support process", icon: <BadgeCheck className="h-4 w-4" /> },
+    ],
+    [],
+  )
+
   const onlyWelcome =
     messages.length === 1 && messages[0]?.role === "support" && !messages[0]?.actions
 
@@ -467,10 +518,10 @@ export function VisitorHelp() {
           className={cn(
             "flex w-[min(100vw-1.25rem,340px)] flex-col overflow-hidden rounded-xl border border-border shadow-2xl",
             "bg-card",
-            "h-[min(460px,calc(100dvh-5rem))] max-h-[560px]",
+            "h-[min(500px,calc(100dvh-5rem))] max-h-[600px]",
           )}
         >
-          <header className="flex shrink-0 items-center gap-1.5 bg-primary px-2 py-2.5 text-primary-foreground">
+          <header className="flex shrink-0 items-center gap-1.5 bg-gradient-to-r from-primary to-[#8B2332] px-2 py-2.5 text-primary-foreground">
             <button
               type="button"
               onClick={closeAll}
@@ -571,18 +622,29 @@ export function VisitorHelp() {
               )}
 
               {onlyWelcome ? (
-                <div className="rounded-xl border border-dashed border-primary/25 bg-primary/[0.05] px-3 py-2.5">
-                  <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-primary">
+                <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/[0.07] to-transparent px-3 py-3">
+                  <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
                     <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                    Auto suggestions — tap to ask
+                    Instant assistant topics
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {quickTopics.map((t) => (
-                      <SuggestionChip
-                        key={t.id}
-                        label={t.title}
-                        onPick={() => sendPreset(t)}
-                      />
+                  <div className="grid grid-cols-1 gap-2.5">
+                    {featuredTopics.map((item) => {
+                      const topic = topicById.get(item.id)
+                      if (!topic) return null
+                      return (
+                        <TopicCard
+                          key={topic.id}
+                          title={topic.title}
+                          caption={item.caption}
+                          icon={item.icon}
+                          onPick={() => sendPreset(topic)}
+                        />
+                      )
+                    })}
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {quickTopics.slice(0, 6).map((t) => (
+                      <SuggestionChip key={t.id} label={t.title} onPick={() => sendPreset(t)} />
                     ))}
                   </div>
                 </div>
@@ -625,41 +687,60 @@ export function VisitorHelp() {
           </div>
 
           <div className="shrink-0 border-t border-border bg-card px-2 py-1.5">
-            <div className="flex items-center gap-1">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault()
-                    sendUserMessage()
-                  }
-                }}
-                placeholder="Ask about fees, areas, what’s included, contact…"
-                className="min-h-10 flex-1 border-0 bg-transparent px-2 text-sm shadow-none focus-visible:ring-0"
-                aria-label="Message"
-              />
-              <span className="flex shrink-0 items-center gap-0.5 text-muted-foreground">
-                <span
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg opacity-50"
-                  title="Reactions"
+            {!composerOpen ? (
+              <button
+                type="button"
+                onClick={() => setComposerOpen(true)}
+                className="flex w-full items-center justify-center rounded-lg border border-primary/25 bg-primary/[0.06] px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/[0.12]"
+              >
+                Ask a custom question
+              </button>
+            ) : (
+              <div className="flex items-center gap-1">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault()
+                      sendUserMessage()
+                    }
+                  }}
+                  placeholder="Ask about fees, areas, what’s included, contact…"
+                  className="min-h-10 flex-1 border-0 bg-transparent px-2 text-sm shadow-none focus-visible:ring-0"
+                  aria-label="Message"
+                />
+                <button
+                  type="button"
+                  onClick={() => setComposerOpen(false)}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
+                  aria-label="Hide custom question box"
+                  title="Hide typing box"
                 >
-                  <ThumbsUp className="h-5 w-5" aria-hidden />
+                  <X className="h-4 w-4" aria-hidden />
+                </button>
+                <span className="flex shrink-0 items-center gap-0.5 text-muted-foreground">
+                  <span
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg opacity-50"
+                    title="Reactions"
+                  >
+                    <ThumbsUp className="h-5 w-5" aria-hidden />
+                  </span>
+                  <span
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg opacity-50"
+                    title="Attachments not available in web chat"
+                  >
+                    <Paperclip className="h-5 w-5" aria-hidden />
+                  </span>
+                  <span
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg opacity-50"
+                    title="Emoji"
+                  >
+                    <Smile className="h-5 w-5" aria-hidden />
+                  </span>
                 </span>
-                <span
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg opacity-50"
-                  title="Attachments not available in web chat"
-                >
-                  <Paperclip className="h-5 w-5" aria-hidden />
-                </span>
-                <span
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg opacity-50"
-                  title="Emoji"
-                >
-                  <Smile className="h-5 w-5" aria-hidden />
-                </span>
-              </span>
-            </div>
+              </div>
+            )}
           </div>
 
           <p className="border-t border-border bg-muted/40 px-2 py-1.5 text-center text-[10px] text-muted-foreground">
