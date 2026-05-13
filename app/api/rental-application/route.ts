@@ -17,11 +17,11 @@ import {
   rentalUploadSizeErrorMessage,
 } from "@/lib/rental-application-upload-limits"
 import {
-  recipientForScheduleOrRental,
-  sendShowingsEmail,
-  showingsSmtpConfigured,
-  type ShowingsAttachment,
-} from "@/lib/showings-mail"
+  rentalApplicationRecipientConfigured,
+  rentalApplicationSmtpConfigured,
+  sendRentalApplicationEmail,
+} from "@/lib/rental-application-mail"
+import type { ShowingsAttachment } from "@/lib/showings-mail"
 
 export const maxDuration = 60
 export const runtime = "nodejs"
@@ -131,19 +131,19 @@ function formDataToTextRecord(fd: FormData): Record<string, string> {
 }
 
 export async function POST(request: Request) {
-  if (!showingsSmtpConfigured()) {
+  if (!rentalApplicationSmtpConfigured()) {
     return NextResponse.json(
       {
         error:
-          "Rental application email is not configured (SCHEDULE_GMAIL_USER + SCHEDULE_GMAIL_APP_PASSWORD).",
+          "Rental application email is not configured (RENTAL_APPLICATION_GMAIL_USER + RENTAL_APPLICATION_GMAIL_APP_PASSWORD). See .env.example.",
       },
       { status: 503 },
     )
   }
 
-  if (!recipientForScheduleOrRental("rental")) {
+  if (!rentalApplicationRecipientConfigured()) {
     return NextResponse.json(
-      { error: "Recipient inbox is not configured." },
+      { error: "Recipient inbox is not configured (RENTAL_APPLICATION_TO_EMAIL or sending account)." },
       { status: 503 },
     )
   }
@@ -271,18 +271,20 @@ export async function POST(request: Request) {
   const subject = `Rental Application Form from ${t.applicantName}`
 
   try {
-    await sendShowingsEmail({
+    await sendRentalApplicationEmail({
       subject,
       text,
       html,
       replyTo: t.applicantEmail,
-      recipientKind: "rental",
       attachments: withPdf,
     })
   } catch (err) {
     console.error("[rental-application]", err)
     return NextResponse.json(
-      { error: "Failed to send email. Try again or contact the office." },
+      {
+        error:
+          "Failed to send email. Check RENTAL_APPLICATION_GMAIL_* App Password and account settings, or try again later.",
+      },
       { status: 502 },
     )
   }

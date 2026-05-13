@@ -54,7 +54,6 @@ export async function POST(request: Request) {
       subject,
       text,
       replyTo: data.email,
-      recipientKind: "schedule",
     })
   } catch (err) {
     console.error("[schedule-viewing] Gmail SMTP", err)

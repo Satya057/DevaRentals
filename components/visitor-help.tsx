@@ -316,33 +316,33 @@ function WeAreHereLauncher({
         type="button"
         onClick={onOpen}
         className={cn(
-          "relative flex h-[4.25rem] w-[4.25rem] shrink-0 items-center justify-center rounded-full bg-[#8B2332] text-white shadow-xl",
+          "relative flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center rounded-full bg-[#8B2332] text-white shadow-xl",
           "transition-transform hover:scale-[1.04] hover:bg-[#7a1f2c]",
         )}
         aria-label="Open support chat"
       >
         <span className="pointer-events-none absolute inset-0 rounded-full bg-[#8B2332]/60 animate-ping" />
-        <MessageCircle className="h-9 w-9" strokeWidth={2} aria-hidden />
+        <MessageCircle className="h-8 w-8" strokeWidth={2} aria-hidden />
       </button>
     )
   }
 
   return (
-    <div className="relative mx-auto w-[min(78vw,228px)] bg-transparent pb-2 pt-8">
+    <div className="relative mx-auto w-[min(70vw,200px)] bg-transparent pb-1.5 pt-6">
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation()
           onMinimize()
         }}
-        className="absolute right-0 top-1 z-30 flex h-7 w-7 items-center justify-center rounded-full bg-black/40 text-white shadow-md hover:bg-black/55 sm:h-8 sm:w-8"
+        className="absolute right-0 top-0.5 z-30 flex h-6 w-6 items-center justify-center rounded-full bg-black/40 text-white shadow-md hover:bg-black/55 sm:h-7 sm:w-7"
         aria-label="Minimize to icon"
       >
-        <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
+        <X className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
       </button>
 
       {/* Round layout: text on circular arc around the launcher; 👋 on the ring */}
-      <div className="relative mx-auto aspect-square w-[min(72vw,200px)] max-w-[200px]">
+      <div className="relative mx-auto aspect-square w-[min(64vw,176px)] max-w-[176px]">
         <svg
           className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
           viewBox="0 0 200 200"
@@ -358,12 +358,12 @@ function WeAreHereLauncher({
           </defs>
           <text
             style={{
-              fontSize: 12.5,
+              fontSize: 11,
               fontWeight: 800,
               fontFamily: "var(--font-body), ui-sans-serif, system-ui, sans-serif",
               fill: BRAND.bubble,
               stroke: "#ffffff",
-              strokeWidth: 2.4,
+              strokeWidth: 2.1,
               paintOrder: "stroke fill",
             }}
           >
@@ -376,8 +376,8 @@ function WeAreHereLauncher({
         {/* Hand on the curve, left side of the ring, tilted toward the button */}
         <span
           className={cn(
-            "pointer-events-none absolute left-[7%] top-[42%] z-[5] select-none text-[2.1rem] leading-none drop-shadow-md",
-            "origin-bottom-right -rotate-[26deg] sm:left-[8%] sm:text-[2.25rem]",
+            "pointer-events-none absolute left-[7%] top-[42%] z-[5] select-none text-[1.85rem] leading-none drop-shadow-md",
+            "origin-bottom-right -rotate-[26deg] sm:left-[8%] sm:text-[2rem]",
           )}
           aria-hidden
         >
@@ -388,13 +388,13 @@ function WeAreHereLauncher({
           type="button"
           onClick={onOpen}
           className={cn(
-            "absolute left-1/2 top-[56%] z-10 flex h-[4.5rem] w-[4.5rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white",
-            "bg-[#8B2332] shadow-[0_10px_26px_-6px_rgba(139,35,50,0.45)] transition hover:scale-[1.05] hover:bg-[#7a1f2c] sm:h-[4.85rem] sm:w-[4.85rem]",
+            "absolute left-1/2 top-[56%] z-10 flex h-[4rem] w-[4rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white",
+            "bg-[#8B2332] shadow-[0_8px_22px_-6px_rgba(139,35,50,0.45)] transition hover:scale-[1.05] hover:bg-[#7a1f2c] sm:h-[4.25rem] sm:w-[4.25rem]",
           )}
           aria-label="Open support chat"
         >
           <span className="pointer-events-none absolute inset-0 rounded-full border border-white/25" />
-          <MessageCircle className="h-9 w-9 sm:h-10 sm:w-10" strokeWidth={2.35} aria-hidden />
+          <MessageCircle className="h-8 w-8 sm:h-9 sm:w-9" strokeWidth={2.35} aria-hidden />
         </button>
       </div>
     </div>
@@ -509,7 +509,7 @@ export function VisitorHelp() {
     messages.length === 1 && messages[0]?.role === "support" && !messages[0]?.actions
 
   return (
-    <div className="fixed bottom-5 right-4 z-40 flex flex-col items-end gap-2 sm:bottom-6 sm:right-6">
+    <div className="fixed bottom-3 right-2 z-40 flex flex-col items-end gap-2 sm:bottom-4 sm:right-4">
       {chatOpen ? (
         <div
           id={panelId}

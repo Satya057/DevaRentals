@@ -29,12 +29,8 @@ export function showingsSmtpConfigured(): boolean {
   )
 }
 
-/** Schedule viewing + rental applications (same inbox by default). */
-export function recipientForScheduleOrRental(kind: "schedule" | "rental"): string {
-  if (kind === "rental") {
-    const only = process.env.RENTAL_APPLICATION_TO_EMAIL?.trim()
-    if (only) return only
-  }
+/** Schedule viewing inbox (SCHEDULE_VIEWING_TO_EMAIL or sending account). */
+export function scheduleViewingRecipient(): string {
   const to = process.env.SCHEDULE_VIEWING_TO_EMAIL?.trim()
   const user = process.env.SCHEDULE_GMAIL_USER?.trim()
   return to || user || ""
@@ -46,15 +42,12 @@ export async function sendShowingsEmail(opts: {
   /** Optional HTML body (e.g. rental application summary). */
   html?: string
   replyTo: string
-  /** Overrides recipientKind / default inbox */
+  /** Overrides default schedule inbox */
   to?: string
-  recipientKind?: "schedule" | "rental"
   attachments?: ShowingsAttachment[]
 }): Promise<void> {
   const user = process.env.SCHEDULE_GMAIL_USER!.trim()
-  const to =
-    opts.to?.trim() ||
-    recipientForScheduleOrRental(opts.recipientKind ?? "schedule")
+  const to = opts.to?.trim() || scheduleViewingRecipient()
   const fromName =
     process.env.SCHEDULE_EMAIL_FROM_NAME?.trim() || "Deva Rentals"
 
