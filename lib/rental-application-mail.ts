@@ -35,8 +35,9 @@ export async function sendRentalApplicationEmail(opts: {
     auth: { user, pass },
   })
 
+  // Structured From so clients get a clear display name (Gmail still shows "me" if to === from).
   await transporter.sendMail({
-    from: `"${fromName}" <${user}>`,
+    from: { name: fromName, address: user },
     to,
     replyTo: opts.replyTo,
     subject: opts.subject,
