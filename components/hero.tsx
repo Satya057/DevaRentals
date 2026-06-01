@@ -79,16 +79,6 @@ export function Hero() {
                   <ArrowRight className="ml-1.5 h-4 w-4 shrink-0 opacity-95 sm:ml-2 sm:h-5 sm:w-5" />
                 </Link>
               </Button>
-              <Button
-                asChild
-                size="default"
-                className="h-10 rounded-lg border-2 border-white/40 bg-secondary px-5 text-sm font-normal text-secondary-foreground shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)] ring-1 ring-white/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/55 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99] sm:h-11 sm:px-7 sm:text-base"
-              >
-                <Link href="/rented-properties" className="inline-flex items-center">
-                  Rented Property
-                  <ArrowRight className="ml-1.5 h-4 w-4 shrink-0 opacity-95 sm:ml-2 sm:h-5 sm:w-5" />
-                </Link>
-              </Button>
             </div>
 
             <div
