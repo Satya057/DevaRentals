@@ -1,143 +1,197 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Shield, TrendingUp, Clock } from "lucide-react"
+import {
+  ArrowRight,
+  Shield,
+  TrendingUp,
+  Zap,
+  Home,
+  Star,
+  ThumbsUp,
+} from "lucide-react"
 
-/** Full-res asset from `public/pic/` — served as-is (no resize/compress) for a sharp 4K-class photo. */
-const HERO_BG_SRC = "/pic/heroimg.jpg"
-
-const heroFeatureCardClass =
-  "hero-motion-up grid cursor-default grid-cols-[auto_1fr] items-center gap-2 rounded-lg border border-white/25 bg-black/50 px-2.5 py-2 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.55)] ring-1 ring-white/15 backdrop-blur-md sm:gap-2.5 sm:px-3 sm:py-2 sm:rounded-xl md:px-3"
+/** Full-res PNG from `public/pic/` — plain img tag, no Next/Image compression. */
+const HERO_BG_SRC = "/pic/heroimg.png"
+const HERO_BG_WIDTH = 1536
+const HERO_BG_HEIGHT = 1024
 
 /** Sticky header: main row h-[4.25rem]; lg adds top bar ~py-2.5 + content (~2.5rem) ≈ +3.25rem */
 const heroViewport =
   "min-h-[calc(100svh-4.25rem)] max-h-[calc(100svh-4.25rem)] lg:min-h-[calc(100svh-7.75rem)] lg:max-h-[calc(100svh-7.75rem)]"
 
+const heroGoldText =
+  "bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 bg-clip-text text-transparent"
+
+const heroFeatures = [
+  {
+    icon: TrendingUp,
+    ringClass: "border-amber-400/45 bg-amber-500/15 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.25)]",
+    title: "Maximize ROI",
+    description: "Expert tenant management that boosts your rental income",
+    delay: "340ms",
+  },
+  {
+    icon: Zap,
+    ringClass: "border-violet-400/40 bg-violet-500/15 text-violet-200 shadow-[0_0_20px_rgba(139,92,246,0.22)]",
+    title: "Fast Response",
+    description: "Lightning-fast maintenance through our trusted vendor network",
+    delay: "400ms",
+  },
+  {
+    icon: Shield,
+    ringClass: "border-sky-400/40 bg-sky-500/15 text-sky-200 shadow-[0_0_20px_rgba(59,130,246,0.22)]",
+    title: "Legal Compliance",
+    description: "Stay bulletproof with Alberta rental law expertise",
+    delay: "460ms",
+  },
+] as const
+
 export function Hero() {
   return (
     <section id="home" className={`relative flex w-full flex-col overflow-hidden ${heroViewport}`}>
-      <div className="absolute inset-0 z-0 h-full overflow-hidden">
-        <div className="absolute inset-0 h-full">
-          <img
-            src={HERO_BG_SRC}
-            alt=""
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover object-[center_42%] sm:object-center"
-          />
-        </div>
-        <div className="absolute inset-0 h-full bg-black/10" />
-        <div className="absolute inset-0 h-full bg-gradient-to-r from-black/55 via-black/38 to-black/18" />
-        <div className="absolute inset-0 h-full bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.06),transparent_42%)]" />
+      <div className="absolute inset-0 z-0 isolate overflow-hidden">
+        {/* Image on its own layer — no blur, filter, or backdrop effects */}
+        <img
+          src={HERO_BG_SRC}
+          width={HERO_BG_WIDTH}
+          height={HERO_BG_HEIGHT}
+          alt=""
+          role="presentation"
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          className="hero-bg-img absolute left-1/2 top-1/2 min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover object-[center_42%] sm:object-center"
+        />
+        {/* Overlays only — kept light so the photo stays sharp */}
+        <div className="pointer-events-none absolute inset-0 bg-black/5" aria-hidden />
         <div
-          className="pointer-events-none absolute inset-0 h-full bg-[radial-gradient(ellipse_95%_90%_at_50%_42%,transparent_25%,rgba(0,0,0,0.28)_100%)]"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a1628]/55 via-[#0a1628]/22 to-transparent"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a1628]/45 via-transparent to-transparent"
           aria-hidden
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-0 w-[90%] max-w-7xl flex-1 flex-col justify-between gap-2 py-3 pb-3 pt-2 sm:gap-3 sm:py-4 md:gap-4 md:py-5">
+      <div className="relative z-10 site-container flex min-h-0 flex-1 flex-col justify-between gap-3 py-4 pb-4 pt-3 sm:gap-4 sm:py-5 md:py-6">
         <div className="min-w-0 shrink">
-          <div className="text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.55),0_1px_3px_rgba(0,0,0,0.7)] lg:max-w-3xl">
+          <div className="text-white lg:max-w-3xl">
+            {/* Badge — white outline (ref 1) + gold shield (ref 2) */}
             <div
-              className="hero-motion-up mb-2 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-3 py-1 text-xs shadow-sm backdrop-blur-md sm:mb-2.5 sm:gap-2 sm:px-3.5 sm:text-sm"
+              className="hero-motion-up mb-3 inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/45 px-3.5 py-1.5 text-xs shadow-[0_4px_24px_rgba(0,0,0,0.35)] ring-1 ring-amber-400/20 sm:mb-4 sm:px-4 sm:text-sm"
               style={{ ["--hero-d" as string]: "40ms" }}
             >
-              <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span>Edmonton{"'"}s Trusted Property Management</span>
+              <Shield className="h-3.5 w-3.5 text-amber-400 sm:h-4 sm:w-4" aria-hidden />
+              <span className="font-medium tracking-wide text-white/95">
+                Edmonton{"'"}s Trusted Property Management
+              </span>
             </div>
 
+            {/* Headline — serif + dual gold highlights from both refs */}
             <h1
-              className="hero-motion-up mb-2 text-balance font-sans text-[1.65rem] font-medium leading-[1.1] tracking-[-0.02em] sm:mb-2.5 sm:text-3xl sm:leading-[1.12] md:text-[2.35rem] md:leading-[1.1] lg:text-5xl lg:leading-[1.06]"
+              className="hero-motion-up mb-3 font-display text-[1.75rem] font-semibold leading-[1.1] tracking-[-0.01em] sm:mb-4 sm:text-[2.25rem] md:text-[2.65rem] lg:text-[3.1rem] lg:leading-[1.08]"
               style={{ ["--hero-d" as string]: "90ms" }}
             >
-              Find the Perfect Property for Your Lifestyle
+              <span className="text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
+                Find the Perfect{" "}
+                <span className={heroGoldText}>Property</span> for
+              </span>
+              <span className={`mt-1 block sm:mt-0.5 ${heroGoldText}`}>Your Lifestyle.</span>
             </h1>
 
             <p
-              className="hero-motion-up mb-3 max-w-2xl text-sm leading-snug text-white/92 sm:mb-3.5 sm:text-base sm:leading-relaxed md:text-[1.05rem]"
+              className="hero-motion-up mb-4 max-w-xl text-sm leading-relaxed text-white/88 sm:mb-5 sm:text-base md:text-[1.05rem] [text-shadow:0_1px_10px_rgba(0,0,0,0.6)]"
               style={{ ["--hero-d" as string]: "140ms" }}
             >
-              Transform your Edmonton rental property into a stress-free investment. 10+ years of delivering rock-solid
-              results for property owners.
+              Transform your Edmonton rental property into a stress-free investment.{" "}
+              <span className="font-semibold text-amber-400">10+ years</span> of delivering rock-solid results for
+              property owners.
             </p>
 
+            {/* Stats first (ref 1 layout) + circular badges + ref 2 labels */}
             <div
-              className="hero-motion-up mb-3 flex flex-wrap gap-2 sm:mb-3.5 sm:gap-3"
+              className="hero-motion-up mb-4 border-t border-amber-400/25 pt-4 sm:mb-5 sm:pt-5"
               style={{ ["--hero-d" as string]: "190ms" }}
-            >
-              <Button
-                asChild
-                size="default"
-                className="h-10 rounded-lg border-2 border-white/40 bg-secondary px-5 text-sm font-normal text-secondary-foreground shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)] ring-1 ring-white/10 transition-[transform,box-shadow] duration-200 hover:scale-[1.02] hover:border-white/55 hover:bg-secondary/90 hover:shadow-xl active:scale-[0.99] sm:h-11 sm:px-7 sm:text-base"
-              >
-                <Link
-                  href="https://www.rentfaster.ca/ab/edmonton/rentals/?l=11,53.5249,-113.47&user_ID=2236644"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center"
-                >
-                  Available Properties
-                  <ArrowRight className="ml-1.5 h-4 w-4 shrink-0 opacity-95 sm:ml-2 sm:h-5 sm:w-5" />
-                </Link>
-              </Button>
-            </div>
-
-            <div
-              className="hero-motion-up mt-1 w-full max-w-4xl border-t border-white/25 pt-2.5 text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.65),0_1px_3px_rgba(0,0,0,0.8)] sm:pt-3 md:pt-3.5"
-              style={{ ["--hero-d" as string]: "240ms" }}
               role="region"
               aria-label="Company statistics"
             >
-              <div className="grid grid-cols-2 gap-2 sm:gap-8 md:gap-12">
-                <div className="text-center sm:text-left">
-                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">10+</div>
-                  <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Years Experience</div>
+              <div className="grid max-w-lg grid-cols-2 gap-4 sm:gap-8">
+                <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-3 sm:text-left">
+                  <div className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border border-amber-400/40 bg-amber-500/10 shadow-[0_0_24px_rgba(245,158,11,0.15)] sm:mb-0">
+                    <Star className="h-5 w-5 text-amber-400" aria-hidden />
+                  </div>
+                  <div>
+                    <div className="font-display text-2xl font-bold tabular-nums leading-none sm:text-3xl">10+</div>
+                    <div className="mt-1 text-xs font-medium text-white/90 sm:text-sm">Years Experience</div>
+                  </div>
                 </div>
-                <div className="text-center sm:text-left sm:-translate-x-2 sm:pl-0 md:-translate-x-5 md:pl-1">
-                  <div className="font-sans text-xl font-bold tabular-nums sm:text-2xl md:text-3xl">98%</div>
-                  <div className="mt-0.5 text-[10px] font-semibold opacity-95 sm:mt-1 sm:text-xs md:text-sm">Client Satisfaction</div>
+
+                <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-3 sm:text-left">
+                  <div className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border border-amber-400/40 bg-amber-500/10 shadow-[0_0_24px_rgba(245,158,11,0.15)] sm:mb-0">
+                    <ThumbsUp className="h-5 w-5 text-amber-400" aria-hidden />
+                  </div>
+                  <div>
+                    <div className="font-display text-2xl font-bold tabular-nums leading-none sm:text-3xl">98%</div>
+                    <div className="mt-1 text-xs font-medium text-white/90 sm:text-sm">Client Satisfaction</div>
+                  </div>
                 </div>
               </div>
-              <p className="mt-1.5 text-center text-[9px] font-semibold uppercase leading-tight tracking-wide text-white/90 sm:mt-2 sm:text-[10px] sm:text-left md:text-xs">
-                Certified ·{" "}
-                <span className="font-sans font-medium normal-case tracking-normal">Licensed Property Management</span>
+
+              <p className="mt-3 text-center text-[9px] font-semibold uppercase leading-relaxed tracking-[0.12em] text-white/75 sm:mt-4 sm:text-left sm:text-[10px]">
+                Certified &amp; Licensed{" "}
+                <span className="text-amber-400/80">·</span>{" "}
+                <span className="font-sans font-medium normal-case tracking-normal text-white/85">
+                  Proven Results for Property Owners
+                </span>
               </p>
+            </div>
+
+            {/* CTA — wide bar (ref 1) + gradient + house icon (ref 2) */}
+            <div
+              className="hero-motion-up mb-2 sm:mb-3"
+              style={{ ["--hero-d" as string]: "250ms" }}
+            >
+              <Link
+                href="https://www.rentfaster.ca/ab/edmonton/rentals/?l=11,53.5249,-113.47&user_ID=2236644"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-12 w-full max-w-md items-center justify-center gap-2.5 rounded-xl border border-amber-300/35 bg-gradient-to-r from-amber-600 via-orange-500 to-amber-500 px-5 text-sm font-semibold text-white shadow-[0_10px_36px_-8px_rgba(245,158,11,0.6),0_4px_14px_rgba(0,0,0,0.35)] ring-1 ring-white/15 transition-[transform,box-shadow] duration-200 hover:scale-[1.015] hover:shadow-[0_14px_44px_-8px_rgba(245,158,11,0.7)] active:scale-[0.99] sm:h-[3.25rem] sm:gap-3 sm:text-base"
+              >
+                <Home className="h-4 w-4 shrink-0 opacity-95 sm:h-[1.125rem] sm:w-[1.125rem]" aria-hidden />
+                View Available Properties
+                <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 sm:h-5 sm:w-5" />
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="grid w-full shrink-0 grid-cols-1 gap-2 min-[420px]:grid-cols-3 min-[420px]:gap-1.5 sm:gap-2.5">
-          <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "320ms" }}>
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/15 text-white sm:size-9">
-              <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
-            </div>
-            <div className="min-w-0 text-left">
-              <h3 className="text-xs font-normal leading-snug text-white sm:text-sm">Maximize ROI</h3>
-              <p className="mt-0.5 line-clamp-2 text-[9px] leading-tight text-white/80 sm:text-[11px] sm:leading-snug md:text-xs">
-                Expert tenant management that boosts your rental income
-              </p>
-            </div>
-          </div>
-          <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "380ms" }}>
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/15 text-white sm:size-9">
-              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
-            </div>
-            <div className="min-w-0 text-left">
-              <h3 className="text-xs font-normal leading-snug text-white sm:text-sm">Fast Response</h3>
-              <p className="mt-0.5 line-clamp-2 text-[9px] leading-tight text-white/80 sm:text-[11px] sm:leading-snug md:text-xs">
-                Lightning-fast maintenance through our trusted vendor network
-              </p>
-            </div>
-          </div>
-          <div className={heroFeatureCardClass} style={{ ["--hero-d" as string]: "440ms" }}>
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-white/15 text-white sm:size-9">
-              <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
-            </div>
-            <div className="min-w-0 text-left">
-              <h3 className="text-xs font-normal leading-snug text-white sm:text-sm">Legal Compliance</h3>
-              <p className="mt-0.5 line-clamp-2 text-[9px] leading-tight text-white/80 sm:text-[11px] sm:leading-snug md:text-xs">
-                Stay bulletproof with Alberta rental law expertise
-              </p>
-            </div>
+        {/* Bottom bar — glass strip (ref 2) + bronze rings with color glow (unique) */}
+        <div
+          className="hero-motion-up w-full shrink-0 overflow-hidden rounded-xl border border-white/18 bg-[#0a1628]/72 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.55)] sm:rounded-2xl"
+          style={{ ["--hero-d" as string]: "310ms" }}
+        >
+          <div className="grid min-[420px]:grid-cols-3">
+            {heroFeatures.map(({ icon: Icon, ringClass, title, description, delay }, index) => (
+              <div
+                key={title}
+                className={`hero-motion-up flex items-center gap-2.5 px-3 py-3 sm:gap-3 sm:px-4 sm:py-3.5 ${
+                  index > 0 ? "border-t border-white/10 min-[420px]:border-t-0 min-[420px]:border-l min-[420px]:border-white/10" : ""
+                }`}
+                style={{ ["--hero-d" as string]: delay }}
+              >
+                <div
+                  className={`flex size-9 shrink-0 items-center justify-center rounded-full border sm:size-10 ${ringClass}`}
+                >
+                  <Icon className="h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem]" aria-hidden />
+                </div>
+                <div className="min-w-0 text-left">
+                  <h3 className="text-xs font-semibold leading-snug text-white sm:text-sm">{title}</h3>
+                  <p className="mt-0.5 line-clamp-2 text-[10px] leading-snug text-white/72 sm:text-[11px] md:text-xs">
+                    {description}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

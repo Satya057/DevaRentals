@@ -58,7 +58,7 @@ export function Services() {
     <>
       {/* For Landlords Section */}
       <section id="landlords" className="pt-4 pb-20 md:pt-8 md:pb-28 bg-card">
-        <div className="w-[90%] mx-auto">
+        <div className="site-container">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
             <div className="relative order-2 lg:order-1">
@@ -120,7 +120,7 @@ export function Services() {
 
       {/* For Tenants Section */}
       <section id="tenants" className="py-20 md:py-28 bg-primary text-primary-foreground">
-        <div className="w-[90%] mx-auto">
+        <div className="site-container">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
             <div>

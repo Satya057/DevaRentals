@@ -129,7 +129,7 @@ export function Testimonials() {
         pauseAuto.current = false
       }}
     >
-      <div className="mx-auto w-[90%] max-w-7xl">
+      <div className="site-container">
         <div className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
           <div className="mb-4 inline-flex items-center gap-2 font-medium text-secondary">
             <div className="h-0.5 w-8 bg-secondary" />

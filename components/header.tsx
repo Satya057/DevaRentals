@@ -122,7 +122,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full">
       {/* Top Bar */}
       <div className="hidden lg:block border-b border-black/20 bg-gradient-to-r from-primary via-[#8B2332] to-[#5a1216] text-primary-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
-        <div className="mx-auto flex w-[90%] items-center justify-between py-2.5">
+        <div className="site-container flex items-center justify-between py-2.5">
           <div className="flex items-center gap-8">
             <a
               href="mailto:info@devarentals.com"
@@ -193,9 +193,9 @@ export function Header() {
         </div>
       </div>
 
-      {/* Main Nav — transparent glass over hero (backdrop blur for readability) */}
-      <div className="w-full border-b border-white/15 bg-black/25 backdrop-blur-lg supports-[backdrop-filter]:bg-black/20">
-        <div className="mx-auto w-[92%] max-w-7xl">
+      {/* Main Nav — solid white bar */}
+      <div className="w-full border-b border-border bg-white shadow-sm">
+        <div className="site-container">
         <div className="flex h-[4.25rem] w-full items-center gap-4 lg:gap-6">
           <Link href="/" className="flex shrink-0 items-center gap-3">
             <BrandLogoMark priority />
@@ -223,7 +223,7 @@ export function Header() {
                       aria-current={isActive ? "true" : undefined}
                       className={cn(
                         "inline-flex items-center justify-center whitespace-nowrap rounded-full border px-3 py-2 text-[0.8125rem] font-semibold tracking-tight sm:px-3.5 sm:text-[0.9rem]",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/30",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                         isActive
                           ? "border-transparent bg-gradient-to-r from-primary via-[#8B2332] to-[#a53d4a] text-primary-foreground shadow-[0_2px_12px_-4px_rgba(108,21,23,0.4),0_0_0_1px_rgba(212,175,55,0.2)]"
                           : "border-secondary/45 bg-white/90 text-[#3d2a26] shadow-sm hover:border-primary/50 hover:bg-[#fffefb] hover:text-primary",

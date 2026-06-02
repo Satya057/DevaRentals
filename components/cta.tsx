@@ -18,7 +18,7 @@ export function CTA() {
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary rounded-full translate-x-1/2 translate-y-1/2" />
       </div>
 
-      <div className="w-[90%] max-w-7xl mx-auto relative z-10">
+      <div className="site-container relative z-10">
         <div className="text-center">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-sans font-normal text-foreground mb-3 text-balance">
             Ready to Experience Stress-Free Property Management?

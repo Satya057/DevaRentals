@@ -34,7 +34,7 @@ const solutions = [
 export function WhyUs() {
   return (
     <section id="why-us" className="py-20 md:py-28 bg-muted">
-      <div className="w-[90%] mx-auto">
+      <div className="site-container">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Content */}
           <div>
