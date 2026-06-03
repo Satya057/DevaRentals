@@ -76,7 +76,7 @@
 
 @theme inline {
   --font-sans: var(--font-body), "Work Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-heading), "Playfair Display", ui-serif, Georgia, serif;
+  --font-display: var(--font-body), "Work Sans", ui-sans-serif, system-ui, sans-serif;
   /* Match sans so legacy font-serif utilities still use Work Sans */
   --font-serif: var(--font-body), "Work Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';

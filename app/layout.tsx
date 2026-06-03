@@ -1,16 +1,9 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
-import { Work_Sans, Playfair_Display } from 'next/font/google'
+import { Work_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { VisitorHelp } from '@/components/visitor-help'
 import './globals.css'
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-heading",
-  display: "swap",
-})
 
 /** Global UI font: Work Sans; 400 is default (see globals.css base). */
 const workSans = Work_Sans({
@@ -70,7 +63,7 @@ export default function RootLayout({
         <link rel="preload" as="image" href="/pic/heroimg.png" fetchPriority="high" />
       </head>
       <body
-        className={`${workSans.variable} ${playfair.variable} font-sans font-normal antialiased`}
+        className={`${workSans.variable} font-sans font-normal antialiased`}
         suppressHydrationWarning
       >
         {children}
