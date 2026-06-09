@@ -14,6 +14,12 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "22mb",
+    },
+    proxyClientMaxBodySize: "22mb",
+  },
 }
 
 export default nextConfig

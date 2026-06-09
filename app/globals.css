@@ -164,6 +164,49 @@
   }
 }
 
+@keyframes hero-cta-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 4px 16px -6px rgba(108, 21, 23, 0.55),
+      0 0 0 0 rgba(212, 175, 55, 0);
+  }
+  50% {
+    box-shadow:
+      0 8px 24px -8px rgba(108, 21, 23, 0.65),
+      0 0 28px -6px rgba(212, 175, 55, 0.12);
+  }
+}
+
+@keyframes hero-cta-shimmer {
+  0% {
+    transform: translateX(-150%) skewX(-14deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  88% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(250%) skewX(-14deg);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-cta-arrow {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.92;
+  }
+  50% {
+    transform: translateX(5px);
+    opacity: 1;
+  }
+}
+
 @layer utilities {
   .site-container {
     @apply mx-auto w-[95%] max-w-[84rem];
@@ -193,6 +236,76 @@
     animation-delay: var(--hero-d, 0s);
   }
 
+  .hero-cta-btn {
+    @apply relative overflow-hidden;
+    background: linear-gradient(128deg, #6c1517 0%, #842028 48%, #6c1517 100%);
+    background-size: 220% 220%;
+    background-position: 0% 50%;
+    animation: hero-cta-glow 3.8s ease-in-out infinite;
+    transition:
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      background-position 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .hero-cta-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse 90% 80% at 22% -10%, rgba(255, 255, 255, 0.16), transparent 58%);
+    opacity: 0.65;
+    transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .hero-cta-btn::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+      108deg,
+      transparent 36%,
+      rgba(255, 255, 255, 0.14) 48%,
+      rgba(255, 236, 210, 0.22) 52%,
+      transparent 64%
+    );
+    transform: translateX(-150%) skewX(-14deg);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .hero-cta-btn:hover {
+    background-position: 100% 50%;
+    transform: translateY(-3px);
+    animation: none;
+    box-shadow:
+      0 16px 40px -14px rgba(108, 21, 23, 0.85),
+      0 0 36px -10px rgba(212, 175, 55, 0.22);
+  }
+
+  .hero-cta-btn:hover::before {
+    opacity: 1;
+  }
+
+  .hero-cta-btn:hover::after {
+    animation: hero-cta-shimmer 1.15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .hero-cta-btn:active {
+    transform: translateY(-1px) scale(0.985);
+    transition-duration: 0.12s;
+  }
+
+  .hero-cta-btn__icon {
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hero-cta-btn:hover .hero-cta-btn__icon {
+    animation: hero-cta-arrow 1.4s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-motion-up {
       animation: none;
@@ -204,6 +317,20 @@
       animation: none;
       opacity: 1;
       transform: none;
+    }
+
+    .hero-cta-btn:hover::after {
+      animation: none;
+    }
+
+    .hero-cta-btn,
+    .hero-cta-btn:hover {
+      animation: none;
+      transform: none;
+    }
+
+    .hero-cta-btn:hover .hero-cta-btn__icon {
+      animation: none;
     }
 
   }

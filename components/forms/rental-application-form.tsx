@@ -138,6 +138,7 @@ function RentalPhoneInput({ required, onChange, ...props }: RentalPhoneInputProp
 
 export function RentalApplicationForm({ onSuccess, className }: RentalApplicationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitPhase, setSubmitPhase] = useState<"upload" | "process" | null>(null)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitFieldIssues, setSubmitFieldIssues] = useState<string[]>([])
@@ -358,13 +359,20 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     const uploadSizeErrEarly = validateRentalUploadSizes(form)
     if (uploadSizeErrEarly) {
       setSubmitError(uploadSizeErrEarly)
-      setSubmitFieldIssues([rentalUploadSizeErrorMessage()])
+      setSubmitFieldIssues([])
       scrollRentalFeedbackIntoView()
       return
     }
     setIsSubmitting(true)
+    setSubmitPhase("upload")
     setSubmitError(null)
     setSubmitFieldIssues([])
+    const phaseTimer = window.setTimeout(() => setSubmitPhase("process"), 2500)
+    const stopSubmitting = () => {
+      window.clearTimeout(phaseTimer)
+      setSubmitPhase(null)
+      setIsSubmitting(false)
+    }
     const fd = new FormData(form)
     fd.set("employmentStatus", employmentStatus)
     fd.set("bankruptcyAnswer", bankruptcyAnswer)
@@ -381,7 +389,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     ])
     if (!applicantSigBlob) {
       setSubmitError("Could not capture applicant signature. Please draw again and submit.")
-      setIsSubmitting(false)
+      stopSubmitting()
       return
     }
     fd.append("signature_applicant", applicantSigBlob, "applicant-signature.png")
@@ -392,8 +400,8 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     const uploadSizeErrFinal = validateRentalUploadSizes(form, sigBytes)
     if (uploadSizeErrFinal) {
       setSubmitError(uploadSizeErrFinal)
-      setSubmitFieldIssues([rentalUploadSizeErrorMessage()])
-      setIsSubmitting(false)
+      setSubmitFieldIssues([])
+      stopSubmitting()
       scrollRentalFeedbackIntoView()
       return
     }
@@ -411,14 +419,20 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
           setSubmitError(rentalUploadSizeErrorMessage())
           setSubmitFieldIssues([])
         } else {
-          setSubmitError(
+          const errorMsg =
             typeof data.error === "string"
               ? data.error
-              : "Submission failed. Please try again.",
-          )
-          setSubmitFieldIssues(
-            Array.isArray(data.issues) ? data.issues.filter(Boolean) : [],
-          )
+              : "Submission failed. Please try again."
+          const issues = Array.isArray(data.issues)
+            ? data.issues.filter(
+                (line): line is string =>
+                  typeof line === "string" &&
+                  line.trim().length > 0 &&
+                  line !== errorMsg,
+              )
+            : []
+          setSubmitError(errorMsg)
+          setSubmitFieldIssues(issues)
         }
         setTimeout(() => {
           submitFeedbackRef.current?.scrollIntoView({
@@ -435,7 +449,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     } catch {
       setSubmitError("Network error. Please check your connection and try again.")
     } finally {
-      setIsSubmitting(false)
+      stopSubmitting()
     }
   }
 
@@ -463,7 +477,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
         <h2 className="text-2xl font-sans text-[#8B2332] mb-2">Thank You!</h2>
         <p className="text-[#333] mb-4 max-w-md mx-auto">
           Your rental application has been submitted successfully. We will review your application and contact you
-          shortly.
+          shortly. A copy is being emailed to our office now.
         </p>
         {!onSuccess && (
           <Link
@@ -1502,10 +1516,19 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   explicitFinalSubmitRef.current = true
                 }}
               >
-                {isSubmitting ? "Submitting…" : "Submit Application"}
+                {isSubmitting
+                  ? submitPhase === "process"
+                    ? "Finishing up…"
+                    : "Uploading files…"
+                  : "Submit Application"}
               </Button>
             )}
           </div>
+          {isSubmitting ? (
+            <p className="text-center text-sm text-[#666] mt-2 max-w-md mx-auto">
+              Please keep this page open until you see the confirmation message.
+            </p>
+          ) : null}
         </div>
       </div>
     </form>

@@ -17,6 +17,8 @@ export type RentalPdfEmbedPage = {
   filename: string
   buffer: Buffer
   contentType: string
+  /** When false, show a placeholder page instead of embedding the full image (faster). */
+  embedImage?: boolean
 }
 
 export const RENTAL_FILE_KEY_TO_SLOT: Record<string, number> = Object.fromEntries(

@@ -32,6 +32,9 @@ export async function sendRentalApplicationEmail(opts: {
     service: "gmail",
     pool: true,
     maxConnections: 1,
+    connectionTimeout: 60_000,
+    greetingTimeout: 60_000,
+    socketTimeout: 600_000,
     auth: { user, pass },
   })
 

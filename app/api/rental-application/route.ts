@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { after, NextResponse } from "next/server"
 import { z } from "zod"
 import { formatRentalApplicationEmailHtml } from "@/lib/rental-application-email-html"
 import {
@@ -8,12 +8,13 @@ import {
 import { buildRentalApplicationPdf } from "@/lib/rental-application-pdf"
 import {
   RENTAL_FILE_KEY_TO_SLOT,
-  type RentalPdfEmbedPage,
 } from "@/lib/rental-pdf-attachments"
 import { rentalApplicationIssuesFromZodFlat } from "@/lib/rental-application-field-labels"
 import {
   RENTAL_MAX_BYTES_PER_FILE,
+  RENTAL_MAX_EMAIL_BYTES,
   RENTAL_MAX_MULTIPART_TOTAL_BYTES,
+  rentalEmailSizeErrorMessage,
   rentalUploadSizeErrorMessage,
 } from "@/lib/rental-application-upload-limits"
 import {
@@ -23,7 +24,7 @@ import {
 } from "@/lib/rental-application-mail"
 import type { ShowingsAttachment } from "@/lib/showings-mail"
 
-export const maxDuration = 60
+export const maxDuration = 300
 export const runtime = "nodejs"
 
 const str = z.string().optional().default("")
@@ -117,9 +118,6 @@ const FILE_FIELDS = [
   { key: "signature_co_applicant", label: "Co-applicant signature (drawn)" },
 ] as const
 
-/** Gmail / SMTP practical cap for PDF + all files (after ingest). */
-const MAX_EMAIL_BYTES = 24 * 1024 * 1024
-
 function formDataToTextRecord(fd: FormData): Record<string, string> {
   const out: Record<string, string> = {}
   for (const [key, value] of fd.entries()) {
@@ -174,9 +172,8 @@ export async function POST(request: Request) {
   }
 
   const t = parsed.data as RentalApplicationFormStrings
-  const attachments: ShowingsAttachment[] = []
   const attachmentLines: string[] = []
-  const embedPages: RentalPdfEmbedPage[] = []
+  const emailAttachments: ShowingsAttachment[] = []
   const slotFilled = new Set<number>()
   let totalBytes = 0
   let applicantSigPng: Buffer | undefined
@@ -190,7 +187,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error: `“${entry.name}” is too large. Each file can be up to about ${Math.round((RENTAL_MAX_BYTES_PER_FILE / 1024 / 1024) * 10) / 10} MB.`,
-          issues: [rentalUploadSizeErrorMessage()],
+          issues: [],
         },
         { status: 400 },
       )
@@ -198,7 +195,7 @@ export async function POST(request: Request) {
     totalBytes += entry.size
     if (totalBytes > RENTAL_MAX_MULTIPART_TOTAL_BYTES) {
       return NextResponse.json(
-        { error: "Together, your uploads are too large to send in one go.", issues: [rentalUploadSizeErrorMessage()] },
+        { error: rentalUploadSizeErrorMessage(), issues: [] },
         { status: 400 },
       )
     }
@@ -208,20 +205,17 @@ export async function POST(request: Request) {
     const mime = entry.type || undefined
     const safeName = entry.name.replace(/[\r\n]/g, "_").slice(0, 180) || `${key}.bin`
     const slot = RENTAL_FILE_KEY_TO_SLOT[key]
+    const isSignature = key === "signature_applicant" || key === "signature_co_applicant"
     if (slot !== undefined) {
       slotFilled.add(slot)
-      embedPages.push({
-        slot,
+    }
+    if (!isSignature) {
+      emailAttachments.push({
         filename: safeName,
-        buffer: buf,
-        contentType: mime || "application/octet-stream",
+        content: buf,
+        contentType: mime,
       })
     }
-    attachments.push({
-      filename: safeName,
-      content: buf,
-      contentType: mime,
-    })
     if (slot !== undefined) {
       attachmentLines.push(`• Attachment ${slot} (${label}): ${safeName}`)
     } else {
@@ -234,7 +228,7 @@ export async function POST(request: Request) {
     pdfBuffer = await buildRentalApplicationPdf({
       t,
       slotPresent: (n) => slotFilled.has(n),
-      embedPages,
+      embedPages: [],
       applicantSignaturePng: applicantSigPng,
       coApplicantSignaturePng: coApplicantSigPng,
     })
@@ -247,12 +241,9 @@ export async function POST(request: Request) {
     )
   }
 
-  if (totalBytes + pdfBuffer.length > MAX_EMAIL_BYTES) {
+  if (totalBytes + pdfBuffer.length > RENTAL_MAX_EMAIL_BYTES) {
     return NextResponse.json(
-      {
-        error:
-          "Total size (files + PDF) is too large for email. Please use smaller images or fewer uploads.",
-      },
+      { error: rentalEmailSizeErrorMessage(), issues: [] },
       { status: 400 },
     )
   }
@@ -263,31 +254,27 @@ export async function POST(request: Request) {
       content: pdfBuffer,
       contentType: "application/pdf",
     },
-    ...attachments,
+    ...emailAttachments,
   ]
 
   const text = formatRentalApplicationEmailBody(t, attachmentLines)
   const html = formatRentalApplicationEmailHtml(t, attachmentLines)
   const subject = `Rental Application Form from ${t.applicantName}`
-
-  try {
-    await sendRentalApplicationEmail({
-      subject,
-      text,
-      html,
-      replyTo: t.applicantEmail,
-      attachments: withPdf,
-    })
-  } catch (err) {
-    console.error("[rental-application]", err)
-    return NextResponse.json(
-      {
-        error:
-          "Failed to send email. Check RENTAL_APPLICATION_GMAIL_* App Password and account settings, or try again later.",
-      },
-      { status: 502 },
-    )
+  const emailPayload = {
+    subject,
+    text,
+    html,
+    replyTo: t.applicantEmail,
+    attachments: withPdf,
   }
+
+  after(async () => {
+    try {
+      await sendRentalApplicationEmail(emailPayload)
+    } catch (err) {
+      console.error("[rental-application] email", err)
+    }
+  })
 
   return NextResponse.json({ ok: true })
 }

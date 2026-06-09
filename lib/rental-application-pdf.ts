@@ -262,7 +262,7 @@ function appendAttachmentPages(doc: PdfDoc, pages: RentalPdfEmbedPage[]) {
     const bottom = PAGE_H - MARGIN
     const innerH = bottom - top
 
-    if (isRasterImageMime(p.contentType)) {
+    if (isRasterImageMime(p.contentType) && p.embedImage !== false) {
       try {
         doc.image(p.buffer, MARGIN, top, {
           fit: [CONTENT_W, innerH],
@@ -277,6 +277,13 @@ function appendAttachmentPages(doc: PdfDoc, pages: RentalPdfEmbedPage[]) {
           { width: CONTENT_W },
         )
       }
+    } else if (isRasterImageMime(p.contentType)) {
+      doc.font("Helvetica").fontSize(SZ_GRID_VALUE).text(
+        `This photo is attached separately in the email as "${p.filename}" (large file — not embedded here to keep processing fast).`,
+        MARGIN,
+        top,
+        { width: CONTENT_W },
+      )
     } else {
       doc.font("Helvetica").fontSize(SZ_GRID_VALUE).text(
         `This file is not embedded here (${p.contentType || "unknown type"}). Open the separate "${p.filename}" attachment from the email.`,
@@ -530,11 +537,13 @@ export async function buildRentalApplicationPdf(opts: {
     } else {
       doc.x = LEFT_X
       doc.font("Helvetica").fontSize(SZ_ATTACH_META).fillColor("#555555")
-      const noEmb =
-        "No supporting document images were uploaded; see email attachments if any files were sent separately."
-      const nh = Math.max(doc.heightOfString(noEmb, { width: CONTENT_W }), 13)
+      const hasUploads = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].some((n) => slotPresent(n))
+      const note = hasUploads
+        ? "Uploaded supporting documents (IDs, employment, credit reports, etc.) are attached separately to this email."
+        : "No supporting documents were uploaded with this application."
+      const nh = Math.max(doc.heightOfString(note, { width: CONTENT_W }), 13)
       ensureSpace(doc, nh + 4)
-      doc.text(noEmb, LEFT_X, doc.y, { width: CONTENT_W })
+      doc.text(note, LEFT_X, doc.y, { width: CONTENT_W })
       doc.y += nh + 4
     }
 

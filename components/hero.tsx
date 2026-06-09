@@ -100,10 +100,13 @@ export function Hero() {
                 href="https://www.rentfaster.ca/ab/edmonton/rentals/?l=11,53.5249,-113.47&user_ID=2236644"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-md transition-colors hover:bg-primary/90 sm:h-12 sm:px-7 sm:text-base"
+                className="hero-cta-btn group inline-flex h-11 items-center gap-2 rounded-lg px-6 text-sm font-medium text-primary-foreground sm:h-12 sm:px-7 sm:text-base"
               >
-                Browse Available Properties
-                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 sm:h-[1.125rem] sm:w-[1.125rem]" />
+                <span className="hero-cta-btn__label relative z-[1]">Browse Available Properties</span>
+                <ChevronRight
+                  className="hero-cta-btn__icon relative z-[1] h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem]"
+                  aria-hidden
+                />
               </Link>
             </div>
 
