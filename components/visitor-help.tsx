@@ -297,7 +297,26 @@ function TopicCard({
 }
 
 /**
- * Launcher: transparent wrap, green circle, arched “We Are Here!” (light blue + white stroke), 👋 on the left.
+ * Mobile: icon-only FAB with blink. Desktop: full “We Are Here!” launcher.
+ */
+function ChatFabButton({ onOpen }: { onOpen: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className={cn(
+        "relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#8B2332] text-white",
+        "chat-fab-blink transition-colors hover:bg-[#7a1f2c]",
+      )}
+      aria-label="Open support chat"
+    >
+      <MessageCircle className="h-5 w-5" strokeWidth={2.15} aria-hidden />
+    </button>
+  )
+}
+
+/**
+ * Launcher: transparent wrap, arched “We Are Here!” (light blue + white stroke), 👋 on the left.
  */
 function WeAreHereLauncher({
   minimized,
@@ -316,33 +335,33 @@ function WeAreHereLauncher({
         type="button"
         onClick={onOpen}
         className={cn(
-          "relative flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center rounded-full bg-[#8B2332] text-white shadow-xl",
+          "relative flex h-[2.75rem] w-[2.75rem] shrink-0 items-center justify-center rounded-full bg-[#8B2332] text-white shadow-xl",
           "transition-transform hover:scale-[1.04] hover:bg-[#7a1f2c]",
         )}
         aria-label="Open support chat"
       >
         <span className="pointer-events-none absolute inset-0 rounded-full bg-[#8B2332]/60 animate-ping" />
-        <MessageCircle className="h-8 w-8" strokeWidth={2} aria-hidden />
+        <MessageCircle className="h-6 w-6" strokeWidth={2} aria-hidden />
       </button>
     )
   }
 
   return (
-    <div className="relative mx-auto w-[min(70vw,200px)] bg-transparent pb-1.5 pt-6">
+    <div className="relative mx-auto w-[min(50vw,140px)] bg-transparent pb-1 pt-4">
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation()
           onMinimize()
         }}
-        className="absolute right-0 top-0.5 z-30 flex h-6 w-6 items-center justify-center rounded-full bg-black/40 text-white shadow-md hover:bg-black/55 sm:h-7 sm:w-7"
+        className="absolute right-0 top-0 z-30 flex h-5 w-5 items-center justify-center rounded-full bg-black/40 text-white shadow-md hover:bg-black/55 sm:h-6 sm:w-6"
         aria-label="Minimize to icon"
       >
-        <X className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
+        <X className="h-2.5 w-2.5 sm:h-3 sm:w-3" aria-hidden />
       </button>
 
       {/* Round layout: text on circular arc around the launcher; 👋 on the ring */}
-      <div className="relative mx-auto aspect-square w-[min(64vw,176px)] max-w-[176px]">
+      <div className="relative mx-auto aspect-square w-[min(45vw,124px)] max-w-[124px]">
         <svg
           className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
           viewBox="0 0 200 200"
@@ -358,12 +377,12 @@ function WeAreHereLauncher({
           </defs>
           <text
             style={{
-              fontSize: 11,
+              fontSize: 9,
               fontWeight: 800,
               fontFamily: "var(--font-body), ui-sans-serif, system-ui, sans-serif",
               fill: BRAND.bubble,
               stroke: "#ffffff",
-              strokeWidth: 2.1,
+              strokeWidth: 1.75,
               paintOrder: "stroke fill",
             }}
           >
@@ -376,8 +395,8 @@ function WeAreHereLauncher({
         {/* Hand on the curve, left side of the ring, tilted toward the button */}
         <span
           className={cn(
-            "pointer-events-none absolute left-[7%] top-[42%] z-[5] select-none text-[1.85rem] leading-none drop-shadow-md",
-            "origin-bottom-right -rotate-[26deg] sm:left-[8%] sm:text-[2rem]",
+            "pointer-events-none absolute left-[7%] top-[42%] z-[5] select-none text-[1.35rem] leading-none drop-shadow-md",
+            "origin-bottom-right -rotate-[26deg] sm:left-[8%] sm:text-[1.5rem]",
           )}
           aria-hidden
         >
@@ -388,13 +407,13 @@ function WeAreHereLauncher({
           type="button"
           onClick={onOpen}
           className={cn(
-            "absolute left-1/2 top-[56%] z-10 flex h-[4rem] w-[4rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white",
-            "bg-[#8B2332] shadow-[0_8px_22px_-6px_rgba(139,35,50,0.45)] transition hover:scale-[1.05] hover:bg-[#7a1f2c] sm:h-[4.25rem] sm:w-[4.25rem]",
+            "absolute left-1/2 top-[56%] z-10 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white",
+            "bg-[#8B2332] shadow-[0_6px_16px_-4px_rgba(139,35,50,0.45)] transition hover:scale-[1.05] hover:bg-[#7a1f2c] sm:h-[3.25rem] sm:w-[3.25rem]",
           )}
           aria-label="Open support chat"
         >
           <span className="pointer-events-none absolute inset-0 rounded-full border border-white/25" />
-          <MessageCircle className="h-8 w-8 sm:h-9 sm:w-9" strokeWidth={2.35} aria-hidden />
+          <MessageCircle className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={2.35} aria-hidden />
         </button>
       </div>
     </div>
@@ -749,11 +768,18 @@ export function VisitorHelp() {
           </p>
         </div>
       ) : (
-        <WeAreHereLauncher
-          minimized={launcherMinimized}
-          onMinimize={() => setLauncherMinimized(true)}
-          onOpen={openChat}
-        />
+        <>
+          <div className="md:hidden">
+            <ChatFabButton onOpen={openChat} />
+          </div>
+          <div className="hidden md:block">
+            <WeAreHereLauncher
+              minimized={launcherMinimized}
+              onMinimize={() => setLauncherMinimized(true)}
+              onOpen={openChat}
+            />
+          </div>
+        </>
       )}
     </div>
   )
