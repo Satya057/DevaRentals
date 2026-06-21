@@ -19,6 +19,12 @@ const inquirySchema = z.object({
   secondOwnerEmail: emailOrEmpty.optional().default(""),
   propertyAddress: z.string().trim().min(1),
   secondPropertyAddress: optional,
+  serviceType: z.enum([
+    "full-property-management",
+    "one-time-tenant-placement",
+  ]),
+  propertyVacant: z.enum(["yes", "no"]),
+  expectedVacancyDate: optional,
   propertyType: z.string().trim().min(1),
   availableDate: z.string().trim().min(1),
   rentExpectation: z.string().trim().min(1),
@@ -41,6 +47,14 @@ const inquirySchema = z.object({
   hearAboutUs: z.string().trim().min(1),
   hearAboutSpecify: optional,
   friendName: optional,
+}).superRefine((data, ctx) => {
+  if (data.propertyVacant === "no" && !data.expectedVacancyDate.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Expected vacancy date is required when the property is occupied.",
+      path: ["expectedVacancyDate"],
+    })
+  }
 })
 
 function gmailConfigured(): boolean {

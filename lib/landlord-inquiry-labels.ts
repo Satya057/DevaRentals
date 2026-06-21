@@ -22,3 +22,12 @@ export const BATHROOM_OPTIONS: { value: string; label: string }[] = [
   { value: "4.5", label: "4.5" },
   { value: "other", label: "Other" },
 ]
+
+export const SERVICE_TYPE_OPTIONS: { value: string; label: string }[] = [
+  { value: "full-property-management", label: "Full Property Management" },
+  { value: "one-time-tenant-placement", label: "One-Time Tenant Placement" },
+]
+
+export const SERVICE_TYPE_LABELS: Record<string, string> = Object.fromEntries(
+  SERVICE_TYPE_OPTIONS.map(({ value, label }) => [value, label]),
+)

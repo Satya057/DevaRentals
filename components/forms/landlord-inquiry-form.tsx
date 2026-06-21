@@ -20,7 +20,7 @@ import {
   formFieldLabelClass as labelForm,
   formRadioOptionLabelClass as radioOptionLabel,
 } from "@/components/forms/form-label-styles"
-import { BATHROOM_OPTIONS, BEDROOM_OPTIONS } from "@/lib/landlord-inquiry-labels"
+import { BATHROOM_OPTIONS, BEDROOM_OPTIONS, SERVICE_TYPE_OPTIONS } from "@/lib/landlord-inquiry-labels"
 
 const labelPrimary = labelForm
 const labelSecondary = labelForm
@@ -50,6 +50,9 @@ export function LandlordInquiryForm({
   const [balcony, setBalcony] = useState("no")
   const [preferredLeaseTerm, setPreferredLeaseTerm] = useState("1-year")
   const [contractTerm, setContractTerm] = useState("1-year")
+  const [serviceType, setServiceType] = useState("")
+  const [propertyVacant, setPropertyVacant] = useState("")
+  const [expectedVacancyDate, setExpectedVacancyDate] = useState("")
   const [step, setStep] = useState(0)
   const step0Ref = useRef<HTMLDivElement>(null)
   const step1Ref = useRef<HTMLDivElement>(null)
@@ -64,10 +67,30 @@ export function LandlordInquiryForm({
     window.scrollTo({ top: 0, left: 0, behavior: "auto" })
   }, [step])
 
+  const validateStep1Extras = (): string | null => {
+    if (!serviceType) {
+      return "Please select which service you are interested in."
+    }
+    if (!propertyVacant) {
+      return "Please indicate whether the property is currently vacant."
+    }
+    if (propertyVacant === "no" && !expectedVacancyDate.trim()) {
+      return "Please enter when you expect the property to be vacant."
+    }
+    return null
+  }
+
   const goNext = () => {
     setSubmitError(null)
     const root = step === 0 ? step0Ref.current : step1Ref.current
     if (!validateStepNativeFields(root)) return
+    if (step === 1) {
+      const step1Err = validateStep1Extras()
+      if (step1Err) {
+        setSubmitError(step1Err)
+        return
+      }
+    }
     setStep((s) => Math.min(s + 1, 2))
   }
 
@@ -79,6 +102,12 @@ export function LandlordInquiryForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!validateStepNativeFields(step2Ref.current)) return
+    const step1Err = validateStep1Extras()
+    if (step1Err) {
+      setSubmitError(step1Err)
+      setStep(1)
+      return
+    }
     setIsSubmitting(true)
     setSubmitError(null)
     const form = e.currentTarget
@@ -92,6 +121,9 @@ export function LandlordInquiryForm({
       secondOwnerEmail: String(fd.get("secondOwnerEmail") ?? ""),
       propertyAddress: String(fd.get("propertyAddress") ?? ""),
       secondPropertyAddress: String(fd.get("secondPropertyAddress") ?? ""),
+      serviceType,
+      propertyVacant,
+      expectedVacancyDate: propertyVacant === "no" ? expectedVacancyDate : "",
       availableDate: String(fd.get("availableDate") ?? ""),
       rentExpectation: String(fd.get("rentExpectation") ?? ""),
       squareFootage: String(fd.get("squareFootage") ?? ""),
@@ -281,6 +313,63 @@ export function LandlordInquiryForm({
       </div>
 
       <div ref={step1Ref} className={step === 1 ? "space-y-4" : "hidden"} aria-hidden={step !== 1}>
+      <div>
+        <label className={labelMaroon}>
+          Which Service Are You Interested In? <span className="text-red-600">*</span>
+        </label>
+        <Select value={serviceType} onValueChange={setServiceType} required>
+          <SelectTrigger className={selectTriggerClass}>
+            <SelectValue placeholder="Select a service" />
+          </SelectTrigger>
+          <SelectContent>
+            {SERVICE_TYPE_OPTIONS.map(({ value, label }) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-3">
+        <div>
+          <label className={labelPrimary}>
+            Is the Property Currently Vacant? <span className="text-red-600">*</span>
+          </label>
+          <Select
+            value={propertyVacant}
+            onValueChange={(value) => {
+              setPropertyVacant(value)
+              if (value === "yes") setExpectedVacancyDate("")
+            }}
+            required
+          >
+            <SelectTrigger className={selectTriggerClass}>
+              <SelectValue placeholder="Select Yes or No" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="yes">Yes</SelectItem>
+              <SelectItem value="no">No</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {propertyVacant === "no" ? (
+          <div>
+            <label className={labelAccent}>
+              When Do You Expect the Property to Be Vacant?{" "}
+              <span className="text-red-600">*</span>
+            </label>
+            <Input
+              type="date"
+              value={expectedVacancyDate}
+              onChange={(e) => setExpectedVacancyDate(e.target.value)}
+              required
+              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
+            />
+          </div>
+        ) : null}
+      </div>
+
       <div className="grid md:grid-cols-2 gap-3">
         <div>
           <label className={labelPrimary}>

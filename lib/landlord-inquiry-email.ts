@@ -1,6 +1,7 @@
 import {
   BATHROOM_OPTIONS,
   BEDROOM_OPTIONS,
+  SERVICE_TYPE_LABELS,
 } from "@/lib/landlord-inquiry-labels"
 
 export type LandlordInquiryPayload = {
@@ -12,6 +13,9 @@ export type LandlordInquiryPayload = {
   secondOwnerEmail: string
   propertyAddress: string
   secondPropertyAddress: string
+  serviceType: string
+  propertyVacant: string
+  expectedVacancyDate: string
   propertyType: string
   availableDate: string
   rentExpectation: string
@@ -115,6 +119,20 @@ export function formatLandlordInquiryEmailBody(d: LandlordInquiryPayload): strin
     line("2nd Owner Email", d.secondOwnerEmail),
     line("Property Address", d.propertyAddress),
     line("2nd Property Address", d.secondPropertyAddress),
+    line(
+      "Service Requested",
+      SERVICE_TYPE_LABELS[d.serviceType] ?? d.serviceType,
+    ),
+    line(
+      "Is the Property Currently Vacant?",
+      YESNO[d.propertyVacant] ?? d.propertyVacant,
+    ),
+    line(
+      "Expected Vacancy Date",
+      d.propertyVacant === "no"
+        ? d.expectedVacancyDate
+        : "Not applicable — property is vacant",
+    ),
     line("Property Type", PROPERTY_TYPE_LABELS[d.propertyType] ?? d.propertyType),
     line("Available Date for New Tenants", d.availableDate),
     line("Rent Expectation (Monthly)", d.rentExpectation),

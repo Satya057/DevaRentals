@@ -327,8 +327,6 @@ function WeAreHereLauncher({
   onMinimize: () => void
   onOpen: () => void
 }) {
-  const arcId = `vh-arch-${useId().replace(/:/g, "")}`
-
   if (minimized) {
     return (
       <button
@@ -347,7 +345,7 @@ function WeAreHereLauncher({
   }
 
   return (
-    <div className="relative mx-auto w-[min(50vw,140px)] bg-transparent pb-1 pt-4">
+    <div className="relative mx-auto w-[min(52vw,168px)] bg-transparent pb-1 pt-5">
       <button
         type="button"
         onClick={(e) => {
@@ -360,43 +358,22 @@ function WeAreHereLauncher({
         <X className="h-2.5 w-2.5 sm:h-3 sm:w-3" aria-hidden />
       </button>
 
-      {/* Round layout: text on circular arc around the launcher; 👋 on the ring */}
-      <div className="relative mx-auto aspect-square w-[min(45vw,124px)] max-w-[124px]">
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
-          viewBox="0 0 200 200"
-          aria-hidden
+      <div className="relative mx-auto aspect-square w-[min(48vw,148px)] max-w-[148px]">
+        <p
+          className={cn(
+            "pointer-events-none absolute left-1/2 top-[2%] z-20 w-[118%] -translate-x-1/2 text-center",
+            "text-[13px] font-extrabold leading-snug tracking-tight text-white sm:text-sm",
+            "[text-shadow:0_1px_0_#6d1c28,0_2px_8px_rgba(0,0,0,0.55)]",
+          )}
         >
-          <defs>
-            {/* Upper semicircle hugging the launcher — text follows this round path */}
-            <path
-              id={arcId}
-              d="M 28 124 A 72 72 0 0 1 172 124"
-              fill="none"
-            />
-          </defs>
-          <text
-            style={{
-              fontSize: 9,
-              fontWeight: 800,
-              fontFamily: "var(--font-body), ui-sans-serif, system-ui, sans-serif",
-              fill: BRAND.bubble,
-              stroke: "#ffffff",
-              strokeWidth: 1.75,
-              paintOrder: "stroke fill",
-            }}
-          >
-            <textPath href={`#${arcId}`} startOffset="50%" textAnchor="middle">
-              We Are Here!
-            </textPath>
-          </text>
-        </svg>
+          We Are Here!
+        </p>
 
         {/* Hand on the curve, left side of the ring, tilted toward the button */}
         <span
           className={cn(
-            "pointer-events-none absolute left-[7%] top-[42%] z-[5] select-none text-[1.35rem] leading-none drop-shadow-md",
-            "origin-bottom-right -rotate-[26deg] sm:left-[8%] sm:text-[1.5rem]",
+            "pointer-events-none absolute left-[6%] top-[44%] z-[5] select-none text-[1.35rem] leading-none drop-shadow-md",
+            "origin-bottom-right -rotate-[26deg] sm:left-[7%] sm:text-[1.5rem]",
           )}
           aria-hidden
         >
@@ -407,7 +384,7 @@ function WeAreHereLauncher({
           type="button"
           onClick={onOpen}
           className={cn(
-            "absolute left-1/2 top-[56%] z-10 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white",
+            "absolute left-1/2 top-[58%] z-10 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-white",
             "bg-[#8B2332] shadow-[0_6px_16px_-4px_rgba(139,35,50,0.45)] transition hover:scale-[1.05] hover:bg-[#7a1f2c] sm:h-[3.25rem] sm:w-[3.25rem]",
           )}
           aria-label="Open support chat"
