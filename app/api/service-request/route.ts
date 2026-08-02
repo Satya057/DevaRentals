@@ -6,6 +6,7 @@ import {
   type ServiceRequestPayload,
 } from "@/lib/service-request-email"
 import { sendServiceRequestEmail, serviceRequestSmtpConfigured } from "@/lib/service-request-mail"
+import { SERVICE_REQUEST_CATEGORIES } from "@/lib/service-request-categories"
 import type { ShowingsAttachment } from "@/lib/showings-mail"
 
 export const runtime = "nodejs"
@@ -19,6 +20,15 @@ const payloadSchema = z.object({
   cell: z.string().trim().min(1),
   address: z.string().trim().min(1),
   city: z.string().trim().min(1),
+  requestCategory: z
+    .string()
+    .trim()
+    .refine(
+      (v) => v === "" || (SERVICE_REQUEST_CATEGORIES as readonly string[]).includes(v),
+      "Invalid request category",
+    )
+    .optional()
+    .default(""),
   description: z.string().trim().min(1),
   authorization: z.enum(["granted", "not-granted"]),
 })
@@ -52,6 +62,7 @@ export async function POST(request: Request) {
     cell: String(formData.get("cell") ?? ""),
     address: String(formData.get("address") ?? ""),
     city: String(formData.get("city") ?? ""),
+    requestCategory: String(formData.get("requestCategory") ?? ""),
     description: String(formData.get("description") ?? ""),
     authorization: String(formData.get("authorization") ?? "").trim(),
   }
@@ -69,7 +80,7 @@ export async function POST(request: Request) {
   const attachments: ShowingsAttachment[] = []
   let totalBytes = 0
 
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 4; i++) {
     const entry = formData.get(`attachment${i}`)
     if (!entry || typeof entry === "string") continue
     if (entry.size <= 0) continue

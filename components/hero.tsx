@@ -88,7 +88,7 @@ export function Hero() {
               className="hero-motion-up mb-6 max-w-xl text-sm leading-relaxed text-white/90 sm:mb-7 sm:text-base md:text-[1.0625rem] md:leading-relaxed"
               style={{ ["--hero-d" as string]: "140ms" }}
             >
-              Transform your Edmonton rental property into a stress-free investment. 10+ years of delivering
+              Transform your Edmonton rental property into a stress-free investment. 12+ years of delivering
               rock-solid results for property owners.
             </p>
 
@@ -123,7 +123,7 @@ export function Hero() {
                   </div>
                   <div className="min-w-0">
                     <div className="font-sans text-[1.75rem] font-semibold tabular-nums leading-none text-white sm:text-[2rem]">
-                      10+
+                      12+
                     </div>
                     <div className="mt-2 text-sm font-normal text-white/95 sm:text-[0.9375rem]">
                       Years Experience

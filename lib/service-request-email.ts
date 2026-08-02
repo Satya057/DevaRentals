@@ -4,6 +4,7 @@ export type ServiceRequestPayload = {
   cell: string
   address: string
   city: string
+  requestCategory: string
   description: string
   authorization: "granted" | "not-granted"
 }
@@ -23,6 +24,9 @@ export function formatServiceRequestEmailBody(d: ServiceRequestPayload): string 
     `Cell: ${d.cell}`,
     `Address: ${d.address}`,
     `City: ${d.city}`,
+    ...(d.requestCategory.trim()
+      ? [`Request Category: ${d.requestCategory}`]
+      : []),
     "",
     "Description:",
     d.description,
@@ -51,6 +55,11 @@ export function formatServiceRequestEmailHtml(d: ServiceRequestPayload): string 
 <tr><td style="padding:4px 12px 4px 0;font-weight:600;vertical-align:top">Cell</td><td style="padding:4px 0">${esc(d.cell)}</td></tr>
 <tr><td style="padding:4px 12px 4px 0;font-weight:600;vertical-align:top">Address</td><td style="padding:4px 0">${esc(d.address)}</td></tr>
 <tr><td style="padding:4px 12px 4px 0;font-weight:600;vertical-align:top">City</td><td style="padding:4px 0">${esc(d.city)}</td></tr>
+${
+  d.requestCategory.trim()
+    ? `<tr><td style="padding:4px 12px 4px 0;font-weight:600;vertical-align:top">Request Category</td><td style="padding:4px 0">${esc(d.requestCategory)}</td></tr>`
+    : ""
+}
 </table>
 <p style="margin:16px 0 4px;font-weight:600">Description</p>
 <p style="margin:0">${esc(d.description)}</p>
