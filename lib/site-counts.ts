@@ -94,16 +94,6 @@ export async function recordPageView(pathname: string): Promise<SiteCounts> {
   return next
 }
 
-export function siteCountPasswordConfigured(): boolean {
-  return Boolean(process.env.SITE_COUNT_PASSWORD?.trim())
-}
-
-export function verifySiteCountPassword(password: string): boolean {
-  const expected = process.env.SITE_COUNT_PASSWORD?.trim()
-  if (!expected) return false
-  return password.trim() === expected
-}
-
 export function countStorageMode(): "upstash" | "file" {
   return upstashConfigured() ? "upstash" : "file"
 }

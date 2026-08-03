@@ -11,20 +11,15 @@ type CountData = {
 }
 
 export default function SiteCountPage() {
-  const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<CountData | null>(null)
 
-  const loadFromCookie = useCallback(async () => {
+  const load = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
       const res = await fetch("/api/count", { cache: "no-store" })
-      if (res.status === 401) {
-        setData(null)
-        return
-      }
       const json = (await res.json()) as CountData & { error?: string }
       if (!res.ok) {
         setError(json.error || "Could not load counts.")
@@ -41,33 +36,8 @@ export default function SiteCountPage() {
   }, [])
 
   useEffect(() => {
-    void loadFromCookie()
-  }, [loadFromCookie])
-
-  const unlock = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch("/api/count", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      })
-      const json = (await res.json()) as CountData & { error?: string }
-      if (!res.ok) {
-        setError(json.error || "Wrong password.")
-        setData(null)
-        return
-      }
-      setData(json)
-      setPassword("")
-    } catch {
-      setError("Network error.")
-    } finally {
-      setLoading(false)
-    }
-  }
+    void load()
+  }, [load])
 
   const paths = data
     ? Object.entries(data.byPath).sort((a, b) => b[1] - a[1])
@@ -77,7 +47,7 @@ export default function SiteCountPage() {
     <main className="min-h-dvh bg-[#f5f0e8] px-4 py-10 text-[#333]">
       <div className="mx-auto w-full max-w-lg">
         <p className="mb-1 text-xs font-medium uppercase tracking-wide text-[#8B2332]/80">
-          Internal only
+          Internal
         </p>
         <h1 className="mb-6 font-sans text-2xl font-semibold text-[#8B2332]">
           Website click count
@@ -87,40 +57,13 @@ export default function SiteCountPage() {
           <p className="text-sm text-[#666]">Loading…</p>
         ) : null}
 
-        {!data ? (
-          <form
-            onSubmit={unlock}
-            className="space-y-3 rounded-lg border border-[#d4c5b0] bg-white p-5 shadow-sm"
-          >
-            <p className="text-sm text-[#555]">
-              Enter the site count password to view visit totals. This page is not linked
-              from the public site.
-            </p>
-            <label className="block text-sm font-medium text-[#3d2a26]">
-              Password
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                className="mt-1 w-full rounded-md border border-[#d4c5b0] bg-white px-3 py-2 text-sm focus:border-[#8B2332] focus:outline-none focus:ring-1 focus:ring-[#8B2332]"
-                required
-              />
-            </label>
-            {error ? (
-              <p className="text-sm text-red-600" role="alert">
-                {error}
-              </p>
-            ) : null}
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-md bg-[#8B2332] px-4 py-2 text-sm font-medium text-white hover:bg-[#6d1c28] disabled:opacity-60"
-            >
-              {loading ? "Checking…" : "View counts"}
-            </button>
-          </form>
-        ) : (
+        {error ? (
+          <p className="mb-4 text-sm text-red-600" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        {data ? (
           <div className="space-y-4">
             <div className="rounded-lg border border-[#d4c5b0] bg-white p-5 shadow-sm">
               <p className="text-sm text-[#666]">Total page views</p>
@@ -168,17 +111,20 @@ export default function SiteCountPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={() => void loadFromCookie()}
+                onClick={() => void load()}
                 className="rounded-md border border-[#8B2332] px-4 py-2 text-sm text-[#8B2332] hover:bg-[#8B2332]/10"
               >
                 Refresh
               </button>
-              <Link href="/" className="text-sm text-[#8B2332] underline-offset-2 hover:underline">
+              <Link
+                href="/"
+                className="text-sm text-[#8B2332] underline-offset-2 hover:underline"
+              >
                 Back to site
               </Link>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
     </main>
   )
