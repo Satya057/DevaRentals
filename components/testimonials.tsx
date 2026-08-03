@@ -3,57 +3,21 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import useEmblaCarousel from "embla-carousel-react"
 import type { EmblaCarouselType } from "embla-carousel"
-import { Star, ChevronLeft, ChevronRight } from "lucide-react"
+import { Star, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  GOOGLE_PROFILE_URL,
+  GOOGLE_REVIEW_URL,
+  GOOGLE_REVIEWS,
+} from "@/lib/google-reviews"
 
-const testimonials = [
-  {
-    name: "Karishma",
-    initial: "K",
-    color: "bg-emerald-600",
-    rating: 5,
-    text: "I really appreciate their work. Highly recommended! Work in effective and efficient manner. One of the best in Edmonton.",
-    date: "1 month ago",
-  },
-  {
-    name: "Pankaj Bakshi",
-    initial: "P",
-    color: "bg-blue-600",
-    rating: 5,
-    text: "Clear communication, a transparent leasing process, and professional management made our experience as tenants positive and stress-free.",
-    date: "1 month ago",
-  },
-  {
-    name: "Sisodiya Indrajitsinh",
-    initial: "S",
-    color: "bg-amber-600",
-    rating: 5,
-    text: "Communication was quick and helpful whenever we had questions, which made the rental experience much easier. The lease process was transparent, and the team was professional throughout.",
-    date: "1 month ago",
-  },
-  {
-    name: "Sarah M.",
-    initial: "S",
-    color: "bg-rose-600",
-    rating: 5,
-    text: "As a property owner, I've seen a significant increase in my rental income since partnering with Deva Rentals. Their tenant screening process is thorough and effective.",
-    date: "2 months ago",
-  },
-  {
-    name: "Michael R.",
-    initial: "M",
-    color: "bg-indigo-600",
-    rating: 5,
-    text: "Finally found a property management company that actually cares. Maintenance requests are handled within 24 hours, and the communication is excellent.",
-    date: "2 months ago",
-  },
-]
+const testimonials = GOOGLE_REVIEWS
 
 const AUTO_SLIDE_MS = 5000
 
 function GoogleIcon() {
   return (
-    <svg className="h-6 w-6 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg className="h-5 w-5 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
         fill="#4285F4"
@@ -142,41 +106,51 @@ export function Testimonials() {
           </h2>
 
           <p className="text-muted-foreground">
-            Discover the experiences of homeowners and tenants who trust us with their property needs.
+            Real reviews from our Google Business Profile — thank you to our clients in Edmonton & area.
           </p>
         </div>
 
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex touch-pan-y gap-6 [-webkit-overflow-scrolling:touch]">
-            {testimonials.map((testimonial, i) => (
+          <div className="flex touch-pan-y items-start gap-6 [-webkit-overflow-scrolling:touch]">
+            {testimonials.map((testimonial) => (
               <div
-                key={i}
-                className="min-w-0 shrink-0 grow-0 basis-full md:basis-[calc((100%-3rem)/3)]"
+                key={testimonial.name}
+                className="min-w-0 shrink-0 grow-0 basis-full self-start md:basis-[calc((100%-3rem)/3)]"
               >
-                <div className="h-full rounded-xl border border-border bg-card p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl">
-                  <div className="mb-4 flex items-start justify-between">
-                    <div className="flex items-center gap-3">
+                <div className="rounded-xl border border-border bg-card p-4 shadow-md transition-shadow duration-300 hover:shadow-lg">
+                  <div className="mb-2.5 flex items-start justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2.5">
                       <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-full text-lg font-normal text-white ${testimonial.color}`}
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base font-normal text-white ${testimonial.color}`}
                       >
                         {testimonial.initial}
                       </div>
-                      <div>
-                        <h4 className="font-normal text-foreground">{testimonial.name}</h4>
-                        <p className="text-sm text-muted-foreground">{testimonial.date}</p>
+                      <div className="min-w-0">
+                        <h4 className="truncate font-normal text-foreground">{testimonial.name}</h4>
+                        <p className="text-xs text-muted-foreground">{testimonial.date}</p>
                       </div>
                     </div>
-                    <GoogleIcon />
+                    <a
+                      href={GOOGLE_PROFILE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0"
+                      aria-label="View on Google"
+                    >
+                      <GoogleIcon />
+                    </a>
                   </div>
 
-                  <div className="mb-3 flex items-center gap-1">
+                  <div className="mb-2 flex items-center gap-1">
                     {[...Array(testimonial.rating)].map((_, j) => (
-                      <Star key={j} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star key={j} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
                     ))}
-                    <span className="ml-1 text-xs text-blue-500">✓</span>
+                    <span className="ml-0.5 text-xs text-blue-500">✓</span>
                   </div>
 
-                  <p className="leading-relaxed text-foreground">{testimonial.text}</p>
+                  <p className="line-clamp-4 text-sm leading-snug text-foreground">
+                    {testimonial.text}
+                  </p>
                 </div>
               </div>
             ))}
@@ -216,6 +190,24 @@ export function Testimonials() {
             aria-label="Next testimonials"
           >
             <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Button
+            asChild
+            className="bg-[#8B2332] text-white hover:bg-[#6d1c28]"
+          >
+            <a href={GOOGLE_REVIEW_URL} target="_blank" rel="noopener noreferrer">
+              Leave a Google Review
+              <ExternalLink className="ml-2 h-4 w-4" aria-hidden />
+            </a>
+          </Button>
+          <Button asChild variant="outline" className="border-[#8B2332] text-[#8B2332] hover:bg-[#8B2332]/10">
+            <a href={GOOGLE_PROFILE_URL} target="_blank" rel="noopener noreferrer">
+              See all reviews on Google
+              <ExternalLink className="ml-2 h-4 w-4" aria-hidden />
+            </a>
           </Button>
         </div>
       </div>
