@@ -19,7 +19,6 @@ import {
   formFieldLabelClass as labelClass,
   formRadioOptionLabelClass,
 } from "@/components/forms/form-label-styles"
-import { FormStepProgress } from "@/components/forms/form-step-progress"
 import { SERVICE_REQUEST_CATEGORIES } from "@/lib/service-request-categories"
 import { cn } from "@/lib/utils"
 
@@ -170,9 +169,8 @@ function ServiceAttachmentField({ num }: { num: number }) {
       <div className="flex flex-wrap items-center gap-2 rounded-md border border-[#d4c5b0] bg-white px-2.5 py-1">
         <Button
           type="button"
-          variant="outline"
           size="sm"
-          className="h-7 border-[#B46D2B] px-2.5 text-xs text-[#B46D2B] hover:bg-[#B46D2B]/15"
+          className="h-7 bg-[#8B2332] px-2.5 text-xs text-white hover:bg-[#6d1c28]"
           onClick={() => void openTakePic()}
         >
           <Camera className="mr-1 h-3.5 w-3.5" aria-hidden />
@@ -180,8 +178,9 @@ function ServiceAttachmentField({ num }: { num: number }) {
         </Button>
         <Button
           type="button"
+          variant="outline"
           size="sm"
-          className="h-7 bg-[#8B2332] px-2.5 text-xs text-white hover:bg-[#6d1c28]"
+          className="h-7 border-[#8B2332] px-2.5 text-xs text-[#8B2332] hover:bg-[#8B2332]/10"
           onClick={() => {
             const input = uploadInputRef.current
             if (!input) return
@@ -272,46 +271,12 @@ export function ServiceRequestForm({
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [authorization, setAuthorization] = useState<"granted" | "not-granted">("granted")
   const [requestCategory, setRequestCategory] = useState("")
-  const [step, setStep] = useState(0)
-  const formRef = useRef<HTMLFormElement>(null)
-  const step0Ref = useRef<HTMLDivElement>(null)
-  const step1Ref = useRef<HTMLDivElement>(null)
-  const skipScrollOnMount = useRef(true)
-
-  const stepTitles = ["Contact & request details", "Authorization"]
-
-  useEffect(() => {
-    if (skipScrollOnMount.current) {
-      skipScrollOnMount.current = false
-      return
-    }
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-  }, [step])
-
-  const goNext = () => {
-    setSubmitError(null)
-    if (!validateStepNativeFields(step0Ref.current)) return
-    setStep(1)
-  }
-
-  const goBack = () => setStep(0)
-
-  /** One primary control stays `type="button"` so it never swaps to a native submit under the cursor (mouseup steal). */
-  const handlePrimaryAction = () => {
-    if (step < 1) {
-      goNext()
-      return
-    }
-    formRef.current?.requestSubmit()
-  }
+  const formFieldsRef = useRef<HTMLDivElement>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    /** Step 1 has no required native inputs (Radix radios), so validation alone cannot block submit on step 0. */
-    if (step !== 1) return
     setSubmitError(null)
-    if (!validateStepNativeFields(step0Ref.current)) return
-    if (!validateStepNativeFields(step1Ref.current)) return
+    if (!validateStepNativeFields(formFieldsRef.current)) return
 
     setIsSubmitting(true)
     try {
@@ -359,38 +324,24 @@ export function ServiceRequestForm({
 
   return (
     <form
-      ref={formRef}
       onSubmit={handleSubmit}
-      onKeyDown={(ev) => {
-        if (step !== 0 || ev.key !== "Enter" || ev.defaultPrevented) return
-        const t = ev.target as HTMLElement
-        if (t.tagName === "TEXTAREA") return
-        ev.preventDefault()
-        goNext()
-      }}
       className="space-y-4"
       noValidate
     >
-      <FormStepProgress
-        step={step}
-        stepTitles={stepTitles}
-        ariaLabel="Service request form progress"
-      />
-
       <aside
-        className="rounded-md border border-[#8B2332]/35 bg-[#8B2332]/[0.07] px-3 py-2 text-xs leading-snug text-[#333] sm:text-[13px]"
+        className="rounded-md border border-[#8B2332]/35 bg-[#8B2332]/[0.07] px-2 py-0.5 text-[11px] leading-[1.2] text-[#333] sm:text-xs"
         role="note"
         aria-label="Emergency maintenance notice"
       >
-        <p className="mb-1 font-semibold text-[#8B2332]">Emergency Maintenance</p>
-        <p className="mb-1">
+        <p className="mb-0 font-semibold text-[#8B2332]">Emergency Maintenance</p>
+        <p className="mb-0">
           For fire, suspected gas leaks, immediate danger, or a life-threatening emergency, call{" "}
           <a href="tel:911" className="font-semibold text-[#8B2332] underline-offset-2 hover:underline">
             911
           </a>{" "}
           first.
         </p>
-        <p className="mb-1">
+        <p className="mb-0">
           For active flooding, no heat during dangerously cold weather, sewage backup, or another
           urgent property emergency, contact the Deva Rentals emergency maintenance number
           immediately:{" "}
@@ -407,11 +358,7 @@ export function ServiceRequestForm({
         </p>
       </aside>
 
-      <div
-        ref={step0Ref}
-        className={step === 0 ? "space-y-4" : "hidden"}
-        aria-hidden={step !== 0}
-      >
+      <div ref={formFieldsRef} className="space-y-4">
         <div className="grid md:grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>
@@ -468,34 +415,20 @@ export function ServiceRequestForm({
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-3">
-          <div>
-            <label className={labelClass}>
-              City <span className="text-red-600">*</span>
-            </label>
-            <Input
-              name="city"
-              placeholder="City"
-              required
-              autoComplete="address-level2"
-              className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-            />
-          </div>
-          <div>
-            <label className={labelClass}>Request Category</label>
-            <Select value={requestCategory} onValueChange={setRequestCategory}>
-              <SelectTrigger className="w-full bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {SERVICE_REQUEST_CATEGORIES.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <div>
+          <label className={labelClass}>Request Category</label>
+          <Select value={requestCategory} onValueChange={setRequestCategory}>
+            <SelectTrigger className="w-full bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]">
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent>
+              {SERVICE_REQUEST_CATEGORIES.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div>
@@ -516,13 +449,7 @@ export function ServiceRequestForm({
             <ServiceAttachmentField key={num} num={num} />
           ))}
         </div>
-      </div>
 
-      <div
-        ref={step1Ref}
-        className={step === 1 ? "space-y-4" : "hidden"}
-        aria-hidden={step !== 1}
-      >
         <div>
           <label className={labelClass}>
             Authorization <span className="text-red-600">*</span>
@@ -555,26 +482,14 @@ export function ServiceRequestForm({
         </p>
       )}
 
-      <div className="flex flex-col-reverse gap-3 pt-4 border-t border-[#d4c5b0]/50 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex justify-center pt-4 border-t border-[#d4c5b0]/50 sm:justify-end">
         <Button
-          type="button"
-          variant="outline"
-          className="border-[#8B2332] text-[#8B2332] hover:bg-[#8B2332]/10 sm:min-w-[100px]"
-          disabled={step === 0}
-          onClick={goBack}
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
         >
-          Back
+          {isSubmitting ? "Submitting..." : "Submit Request"}
         </Button>
-        <div className="flex justify-center gap-3 sm:justify-end">
-          <Button
-            type="button"
-            disabled={isSubmitting}
-            className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
-            onClick={handlePrimaryAction}
-          >
-            {step < 1 ? "Next" : isSubmitting ? "Submitting..." : "Submit Request"}
-          </Button>
-        </div>
       </div>
     </form>
   )

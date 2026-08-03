@@ -19,7 +19,6 @@ const payloadSchema = z.object({
   email: z.string().trim().email(),
   cell: z.string().trim().min(1),
   address: z.string().trim().min(1),
-  city: z.string().trim().min(1),
   requestCategory: z
     .string()
     .trim()
@@ -61,7 +60,6 @@ export async function POST(request: Request) {
     email: String(formData.get("email") ?? ""),
     cell: String(formData.get("cell") ?? ""),
     address: String(formData.get("address") ?? ""),
-    city: String(formData.get("city") ?? ""),
     requestCategory: String(formData.get("requestCategory") ?? ""),
     description: String(formData.get("description") ?? ""),
     authorization: String(formData.get("authorization") ?? "").trim(),
