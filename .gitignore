@@ -33,3 +33,6 @@ Thumbs.db
 
 # testing
 coverage
+
+# site visit counter (local file storage)
+data/site-counts.json

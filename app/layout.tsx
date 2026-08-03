@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Work_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { PageViewTracker } from '@/components/page-view-tracker'
 import { VisitorHelp } from '@/components/visitor-help'
 import './globals.css'
 
@@ -67,6 +68,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        <PageViewTracker />
         <VisitorHelp />
         <Analytics />
       </body>
