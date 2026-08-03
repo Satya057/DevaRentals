@@ -60,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preload" as="image" href="/pic/heroimg.png" fetchPriority="high" />
+        <link rel="preload" as="image" href="/pic/heroimg2.png" fetchPriority="high" />
       </head>
       <body
         className={`${workSans.variable} font-sans font-normal antialiased`}

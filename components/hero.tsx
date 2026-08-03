@@ -9,9 +9,9 @@ import {
 } from "lucide-react"
 
 /** Full-res PNG from `public/pic/` — plain img tag, no Next/Image compression. */
-const HERO_BG_SRC = "/pic/heroimg.png"
-const HERO_BG_WIDTH = 1536
-const HERO_BG_HEIGHT = 1024
+const HERO_BG_SRC = "/pic/heroimg2.png"
+const HERO_BG_WIDTH = 1602
+const HERO_BG_HEIGHT = 982
 
 const heroViewport =
   "min-h-[calc(100dvh-4.25rem)] lg:min-h-[calc(100dvh-7.75rem)]"
@@ -53,15 +53,15 @@ export function Hero() {
           fetchPriority="high"
           loading="eager"
           decoding="async"
-          className="hero-bg-img absolute left-1/2 top-1/2 min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover object-[center_42%] sm:object-center"
+          className="hero-bg-img absolute left-1/2 top-1/2 min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover object-[center_42%] brightness-[1.18] contrast-[1.05] sm:object-center"
         />
-        <div className="pointer-events-none absolute inset-0 bg-black/5" aria-hidden />
+        {/* Light scrim only under text — keep poster bright */}
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a1628]/60 via-[#0a1628]/25 to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/25 via-black/8 to-transparent"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a1628]/50 via-transparent to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent"
           aria-hidden
         />
       </div>

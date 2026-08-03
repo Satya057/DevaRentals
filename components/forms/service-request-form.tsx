@@ -172,7 +172,7 @@ function ServiceAttachmentField({ num }: { num: number }) {
           type="button"
           variant="outline"
           size="sm"
-          className="h-7 border-[#8B2332] px-2.5 text-xs text-[#8B2332] hover:bg-[#8B2332]/10"
+          className="h-7 border-[#B46D2B] px-2.5 text-xs text-[#B46D2B] hover:bg-[#B46D2B]/15"
           onClick={() => void openTakePic()}
         >
           <Camera className="mr-1 h-3.5 w-3.5" aria-hidden />
@@ -378,19 +378,19 @@ export function ServiceRequestForm({
       />
 
       <aside
-        className="rounded-md border border-[#8B2332]/35 bg-[#8B2332]/[0.07] px-4 py-3 text-sm leading-relaxed text-[#333]"
+        className="rounded-md border border-[#8B2332]/35 bg-[#8B2332]/[0.07] px-3 py-2 text-xs leading-snug text-[#333] sm:text-[13px]"
         role="note"
         aria-label="Emergency maintenance notice"
       >
-        <p className="mb-2 font-semibold text-[#8B2332]">Emergency Maintenance</p>
-        <p className="mb-2">
+        <p className="mb-1 font-semibold text-[#8B2332]">Emergency Maintenance</p>
+        <p className="mb-1">
           For fire, suspected gas leaks, immediate danger, or a life-threatening emergency, call{" "}
           <a href="tel:911" className="font-semibold text-[#8B2332] underline-offset-2 hover:underline">
             911
           </a>{" "}
           first.
         </p>
-        <p className="mb-2">
+        <p className="mb-1">
           For active flooding, no heat during dangerously cold weather, sewage backup, or another
           urgent property emergency, contact the Deva Rentals emergency maintenance number
           immediately:{" "}
