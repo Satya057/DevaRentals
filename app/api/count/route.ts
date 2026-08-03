@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server"
-import { countStorageMode, getSiteCounts } from "@/lib/site-counts"
+import {
+  countStorageMode,
+  countsPersistOnVercel,
+  getSiteCounts,
+  upstashConfigured,
+} from "@/lib/site-counts"
 
 export const runtime = "nodejs"
 
 export async function GET() {
   try {
     const counts = await getSiteCounts()
+    const onVercel = Boolean(process.env.VERCEL)
     return NextResponse.json({
       ok: true,
       ...counts,
       storage: countStorageMode(),
+      needsUpstash: onVercel && !upstashConfigured(),
+      persists: !onVercel || countsPersistOnVercel(),
     })
   } catch (err) {
     console.error("[count]", err)

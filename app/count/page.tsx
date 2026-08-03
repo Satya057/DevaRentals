@@ -8,6 +8,8 @@ type CountData = {
   byPath: Record<string, number>
   lastUpdated: string | null
   storage?: string
+  needsUpstash?: boolean
+  persists?: boolean
 }
 
 export default function SiteCountPage() {
@@ -52,6 +54,43 @@ export default function SiteCountPage() {
         <h1 className="mb-6 font-sans text-2xl font-semibold text-[#8B2332]">
           Website click count
         </h1>
+
+        {data?.needsUpstash ? (
+          <div
+            className="mb-4 rounded-md border border-amber-700/40 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+            role="status"
+          >
+            <p className="font-semibold">Counts are not saving on the live site yet</p>
+            <p className="mt-1.5 leading-snug">
+              Vercel cannot keep a local file. Add free Upstash Redis env vars, then redeploy:
+            </p>
+            <ol className="mt-2 list-decimal space-y-1 pl-5 leading-snug">
+              <li>
+                Create a free Redis DB at{" "}
+                <a
+                  href="https://console.upstash.com"
+                  className="font-medium underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  console.upstash.com
+                </a>
+              </li>
+              <li>Open the DB → REST API → copy URL and token</li>
+              <li>
+                In Vercel → Settings → Environment Variables, add:
+                <br />
+                <code className="text-xs">UPSTASH_REDIS_REST_URL</code>
+                <br />
+                <code className="text-xs">UPSTASH_REDIS_REST_TOKEN</code>
+              </li>
+              <li>Redeploy the project</li>
+            </ol>
+            <p className="mt-2 text-xs text-amber-900/80">
+              After that, this page should show Storage: Upstash Redis and counts will increase.
+            </p>
+          </div>
+        ) : null}
 
         {loading && !data ? (
           <p className="text-sm text-[#666]">Loading…</p>
