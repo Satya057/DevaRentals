@@ -23,6 +23,7 @@ import { ScheduleViewingForm } from "@/components/forms/schedule-viewing-form"
 import { RentalApplicationForm } from "@/components/forms/rental-application-form"
 import { ServiceRequestForm } from "@/components/forms/service-request-form"
 import { cn } from "@/lib/utils"
+import { getFormPath } from "@/lib/form-paths"
 
 const navLinks = [
   { href: "#home", label: "Home" },
@@ -116,7 +117,7 @@ export function Header() {
     }
   }
 
-  const getFormPath = (formId: string) => `/forms/${formId}`
+  const getFormPathForButton = (formId: string) => getFormPath(formId)
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -164,7 +165,7 @@ export function Header() {
                       <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
                       <div className="mt-2 text-center">
                         <Link
-                          href={getFormPath(btn.id)}
+                          href={getFormPathForButton(btn.id)}
                           onClick={() => setOpenDialog(null)}
                           className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
                         >
@@ -306,7 +307,7 @@ export function Header() {
                             <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
                             <div className="mt-2 text-center">
                               <Link
-                                href={getFormPath(btn.id)}
+                                href={getFormPathForButton(btn.id)}
                                 onClick={() => {
                                   setOpenDialog(null)
                                   setIsOpen(false)

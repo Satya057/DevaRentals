@@ -1,12 +1,13 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, ExternalLink } from "lucide-react"
+import { FORM_PATHS } from "@/lib/form-paths"
 
 const formLinks = [
-  { href: "/forms/landlord", label: "Landlord Inquiry" },
-  { href: "/forms/rental", label: "Rental Application" },
-  { href: "/forms/schedule", label: "Schedule Viewing" },
-  { href: "/forms/service", label: "Service Request" },
+  { href: FORM_PATHS.landlord, label: "Landlord Inquiry" },
+  { href: FORM_PATHS.rental, label: "Rental Application" },
+  { href: FORM_PATHS.schedule, label: "Schedule Viewing" },
+  { href: FORM_PATHS.service, label: "Service Request" },
 ]
 
 export function CTA() {

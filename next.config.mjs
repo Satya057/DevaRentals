@@ -6,6 +6,15 @@ const nextConfig = {
       { source: "/favicon.ico", destination: "/rental-dv-logo.jpg" },
     ]
   },
+  async redirects() {
+    return [
+      {
+        source: "/forms/landlord",
+        destination: "/client-inquiry",
+        permanent: true,
+      },
+    ]
+  },
   /** pdfkit reads font data from its package dir — must not be webpack-bundled */
   serverExternalPackages: ["pdfkit"],
   typescript: {

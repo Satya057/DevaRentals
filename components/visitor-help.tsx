@@ -66,7 +66,7 @@ const quickTopics: HelpTopic[] = [
     chatSummary:
       "Our landlord materials outline flat fees: $300 one-time setup, $300 tenant placement, plus 10% monthly management — all-inclusive style service in Edmonton & area. Your property may still need a quick review; send a landlord inquiry or call to confirm.",
     actions: [
-      { href: "/forms/landlord", label: "Landlord inquiry" },
+      { href: "/client-inquiry", label: "Landlord inquiry" },
       { href: "/#landlords", label: "Landlord services on site" },
       { href: "tel:780-984-1996", label: "Call 780-984-1996" },
     ],
@@ -82,7 +82,7 @@ const quickTopics: HelpTopic[] = [
       "Typical inclusions: professional photos/videos and listings (e.g. RentFaster & major rental sites), credit checks & Buildium setup, unlimited showings, move-in/out inspections and lease prep, rent collection, maintenance coordination, tenant communication, and support involving RECA-licensed professionals.",
     actions: [
       { href: "/#landlords", label: "Landlord services" },
-      { href: "/forms/landlord", label: "Landlord inquiry" },
+      { href: "/client-inquiry", label: "Landlord inquiry" },
     ],
     suggestAfter: ["fees", "why_deva", "areas"],
   },
@@ -96,7 +96,7 @@ const quickTopics: HelpTopic[] = [
       "We highlight Edmonton, Beaumont, Sherwood Park, St. Albert, and nearby communities for full-service management. Not sure your address qualifies? Call or send a landlord inquiry with the address.",
     actions: [
       { href: "tel:780-984-1996", label: "Call 780-984-1996" },
-      { href: "/forms/landlord", label: "Landlord inquiry" },
+      { href: "/client-inquiry", label: "Landlord inquiry" },
     ],
     suggestAfter: ["fees", "included", "contact"],
   },
@@ -111,7 +111,7 @@ const quickTopics: HelpTopic[] = [
     actions: [
       { href: "/#why-us", label: "Why Deva Rentals" },
       { href: "/#testimonials", label: "Testimonials" },
-      { href: "/forms/landlord", label: "Landlord inquiry" },
+      { href: "/client-inquiry", label: "Landlord inquiry" },
     ],
     suggestAfter: ["fees", "included", "contact"],
   },
@@ -123,7 +123,7 @@ const quickTopics: HelpTopic[] = [
       "Our materials state that service is handled with RECA-licensed professionals involved in the rental process. For specifics about your situation, ask on a call or landlord inquiry.",
     actions: [
       { href: "tel:780-984-1996", label: "Call 780-984-1996" },
-      { href: "/forms/landlord", label: "Landlord inquiry" },
+      { href: "/client-inquiry", label: "Landlord inquiry" },
     ],
     suggestAfter: ["included", "fees", "contact"],
   },
@@ -171,7 +171,7 @@ const quickTopics: HelpTopic[] = [
     ],
     chatSummary:
       "Tell us about your property — we’ll follow up with next steps. Great if you already know your area; if not, we can confirm coverage for Edmonton & nearby.",
-    actions: [{ href: "/forms/landlord", label: "Landlord inquiry form" }],
+    actions: [{ href: "/client-inquiry", label: "Landlord inquiry form" }],
     suggestAfter: ["fees", "included", "areas"],
   },
   {

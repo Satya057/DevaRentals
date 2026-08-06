@@ -14,6 +14,7 @@ import { LandlordInquiryForm } from "@/components/forms/landlord-inquiry-form"
 import { ScheduleViewingForm } from "@/components/forms/schedule-viewing-form"
 import { RentalApplicationForm } from "@/components/forms/rental-application-form"
 import { ServiceRequestForm } from "@/components/forms/service-request-form"
+import { getFormPath } from "@/lib/form-paths"
 
 const formCards = [
   {
@@ -101,7 +102,7 @@ export function Contact() {
                     <div className="w-16 h-0.5 bg-[#8B2332] mx-auto mt-2" />
                     <div className="mt-2 text-center">
                       <Link
-                        href={`/forms/${card.id}`}
+                        href={getFormPath(card.id)}
                         onClick={() => setOpenDialog(null)}
                         className="inline-flex items-center gap-1 text-sm font-medium text-[#8B2332] hover:underline"
                       >
