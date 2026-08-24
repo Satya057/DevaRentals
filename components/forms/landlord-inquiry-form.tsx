@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
-import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
@@ -13,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ArrowLeft, CheckCircle } from "lucide-react"
 import { validateStepNativeFields } from "@/lib/form-wizard"
 import { FormStepProgress } from "@/components/forms/form-step-progress"
 import {
@@ -21,6 +19,35 @@ import {
   formRadioOptionLabelClass as radioOptionLabel,
 } from "@/components/forms/form-label-styles"
 import { BATHROOM_OPTIONS, BEDROOM_OPTIONS, SERVICE_TYPE_OPTIONS } from "@/lib/landlord-inquiry-labels"
+import { LandlordContractDocumentsStep } from "@/components/forms/landlord-contract-documents-step"
+import { cn } from "@/lib/utils"
+
+function scrollFormToTop(anchor: HTMLElement | null) {
+  if (!anchor) return
+
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+
+  let el: HTMLElement | null = anchor.parentElement
+  while (el && el !== document.documentElement) {
+    const { overflowY } = getComputedStyle(el)
+    const scrollable =
+      overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay"
+    if (scrollable && el.scrollHeight > el.clientHeight) {
+      el.scrollTop = 0
+    }
+    el = el.parentElement
+  }
+
+  anchor.scrollIntoView({ behavior: "auto", block: "start" })
+}
+
+function stepPanelClass(active: boolean, direction: "forward" | "back") {
+  if (!active) return "hidden"
+  return cn(
+    "space-y-4",
+    direction === "forward" ? "landlord-form-step-in-from-top" : "landlord-form-step-in-from-bottom",
+  )
+}
 
 const labelPrimary = labelForm
 const labelSecondary = labelForm
@@ -38,6 +65,11 @@ export function LandlordInquiryForm({
 }: LandlordInquiryFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submittedInquiry, setSubmittedInquiry] = useState<{
+    fullName: string
+    email: string
+    propertyAddress: string
+  } | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [propertyType, setPropertyType] = useState("front-attach")
   const [petsAllowed, setPetsAllowed] = useState("no")
@@ -54,9 +86,11 @@ export function LandlordInquiryForm({
   const [propertyVacant, setPropertyVacant] = useState("")
   const [expectedVacancyDate, setExpectedVacancyDate] = useState("")
   const [step, setStep] = useState(0)
+  const [stepDirection, setStepDirection] = useState<"forward" | "back">("forward")
   const step0Ref = useRef<HTMLDivElement>(null)
   const step1Ref = useRef<HTMLDivElement>(null)
   const step2Ref = useRef<HTMLDivElement>(null)
+  const stepPanelAnchorRef = useRef<HTMLDivElement>(null)
   const skipScrollOnMount = useRef(true)
 
   useEffect(() => {
@@ -64,7 +98,10 @@ export function LandlordInquiryForm({
       skipScrollOnMount.current = false
       return
     }
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+    const id = requestAnimationFrame(() => {
+      scrollFormToTop(stepPanelAnchorRef.current)
+    })
+    return () => cancelAnimationFrame(id)
   }, [step])
 
   const validateStep1Extras = (): string | null => {
@@ -91,11 +128,13 @@ export function LandlordInquiryForm({
         return
       }
     }
+    setStepDirection("forward")
     setStep((s) => Math.min(s + 1, 2))
   }
 
   const goBack = () => {
     setSubmitError(null)
+    setStepDirection("back")
     setStep((s) => Math.max(s - 1, 0))
   }
 
@@ -105,6 +144,7 @@ export function LandlordInquiryForm({
     const step1Err = validateStep1Extras()
     if (step1Err) {
       setSubmitError(step1Err)
+      setStepDirection("back")
       setStep(1)
       return
     }
@@ -120,7 +160,6 @@ export function LandlordInquiryForm({
       email: String(fd.get("email") ?? ""),
       secondOwnerEmail: String(fd.get("secondOwnerEmail") ?? ""),
       propertyAddress: String(fd.get("propertyAddress") ?? ""),
-      secondPropertyAddress: String(fd.get("secondPropertyAddress") ?? ""),
       serviceType,
       propertyVacant,
       expectedVacancyDate: propertyVacant === "no" ? expectedVacancyDate : "",
@@ -162,10 +201,12 @@ export function LandlordInquiryForm({
         )
         return
       }
+      setSubmittedInquiry({
+        fullName: payload.fullName,
+        email: payload.email,
+        propertyAddress: payload.propertyAddress,
+      })
       setIsSubmitted(true)
-      if (onSuccess) {
-        setTimeout(onSuccess, 2000)
-      }
     } catch {
       setSubmitError("Network error. Please check your connection and try again.")
     } finally {
@@ -173,23 +214,15 @@ export function LandlordInquiryForm({
     }
   }
 
-  if (isSubmitted) {
+  if (isSubmitted && submittedInquiry) {
     return (
-      <div className="text-center py-8">
-        <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-        <h2 className="text-2xl font-sans text-[#8B2332] mb-2">Thank You!</h2>
-        <p className="text-[#333]">
-          Your landlord inquiry has been submitted successfully. We will contact you shortly.
-        </p>
-        {showBackLinkOnSuccess && (
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-[#8B2332] hover:underline mt-8"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to Home
-          </Link>
-        )}
-      </div>
+      <LandlordContractDocumentsStep
+        inquiry={submittedInquiry}
+        showBackLink={showBackLinkOnSuccess}
+        onComplete={() => {
+          if (onSuccess) onSuccess()
+        }}
+      />
     )
   }
 
@@ -212,7 +245,8 @@ export function LandlordInquiryForm({
         </p>
       ) : null}
 
-      <div ref={step0Ref} className={step === 0 ? "space-y-4" : "hidden"} aria-hidden={step !== 0}>
+      <div ref={stepPanelAnchorRef} className="scroll-mt-2 overflow-hidden">
+      <div ref={step0Ref} className={stepPanelClass(step === 0, stepDirection)} aria-hidden={step !== 0}>
         <div className="min-w-0">
           <label className={labelPrimary}>
             Full Name <span className="text-red-600">*</span>
@@ -270,16 +304,14 @@ export function LandlordInquiryForm({
             autoComplete="street-address"
             className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
           />
-        </div>
-
-        <div className="min-w-0">
-          <label className={labelPrimary}>2nd Property Address</label>
-          <Input
-            name="secondPropertyAddress"
-            placeholder="2nd Property Address (optional)"
-            autoComplete="street-address"
-            className="bg-white border-[#d4c5b0] focus:border-[#8B2332] focus:ring-[#8B2332]"
-          />
+          <p
+            className="mt-2 rounded-md border border-[#8B2332]/45 bg-[#8B2332]/10 px-3 py-2 text-sm leading-snug text-[#333]"
+            role="note"
+          >
+            <span className="font-semibold text-[#8B2332]">Second property?</span> If you have a
+            second property (such as a basement, duplex, or house), please fill out a second form
+            for that property.
+          </p>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -312,7 +344,7 @@ export function LandlordInquiryForm({
         </div>
       </div>
 
-      <div ref={step1Ref} className={step === 1 ? "space-y-4" : "hidden"} aria-hidden={step !== 1}>
+      <div ref={step1Ref} className={stepPanelClass(step === 1, stepDirection)} aria-hidden={step !== 1}>
       <div>
         <label className={labelMaroon}>
           Which Service Are You Interested In? <span className="text-red-600">*</span>
@@ -640,7 +672,7 @@ export function LandlordInquiryForm({
 
       <div
         ref={step2Ref}
-        className={step === 2 ? "space-y-4" : "hidden"}
+        className={stepPanelClass(step === 2, stepDirection)}
         aria-hidden={step !== 2}
       >
       <div>
@@ -822,6 +854,7 @@ export function LandlordInquiryForm({
             />
           </div>
         ) : null}
+      </div>
       </div>
       </div>
 

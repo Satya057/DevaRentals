@@ -12,7 +12,6 @@ export type LandlordInquiryPayload = {
   email: string
   secondOwnerEmail: string
   propertyAddress: string
-  secondPropertyAddress: string
   serviceType: string
   propertyVacant: string
   expectedVacancyDate: string
@@ -118,7 +117,6 @@ export function formatLandlordInquiryEmailBody(d: LandlordInquiryPayload): strin
     line("Email", d.email),
     line("2nd Owner Email", d.secondOwnerEmail),
     line("Property Address", d.propertyAddress),
-    line("2nd Property Address", d.secondPropertyAddress),
     line(
       "Service Requested",
       SERVICE_TYPE_LABELS[d.serviceType] ?? d.serviceType,

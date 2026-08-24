@@ -18,7 +18,6 @@ const inquirySchema = z.object({
   email: z.string().trim().email(),
   secondOwnerEmail: emailOrEmpty.optional().default(""),
   propertyAddress: z.string().trim().min(1),
-  secondPropertyAddress: optional,
   serviceType: z.enum([
     "full-property-management",
     "one-time-tenant-placement",

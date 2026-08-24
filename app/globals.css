@@ -225,6 +225,28 @@
   }
 }
 
+@keyframes landlord-form-step-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landlord-form-step-in-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer utilities {
   .site-container {
     @apply mx-auto w-[95%] max-w-[84rem];
@@ -324,6 +346,14 @@
     animation: hero-cta-arrow 1.4s cubic-bezier(0.45, 0, 0.2, 1) infinite;
   }
 
+  .landlord-form-step-in-from-top {
+    animation: landlord-form-step-in-from-top 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .landlord-form-step-in-from-bottom {
+    animation: landlord-form-step-in-from-bottom 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
   .chat-fab-blink {
     animation: chat-fab-blink 1.35s ease-in-out infinite;
   }
@@ -356,6 +386,11 @@
     }
 
     .chat-fab-blink {
+      animation: none;
+    }
+
+    .landlord-form-step-in-from-top,
+    .landlord-form-step-in-from-bottom {
       animation: none;
     }
 
