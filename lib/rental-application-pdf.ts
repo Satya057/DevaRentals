@@ -30,7 +30,6 @@ const SZ_MAIN_TITLE = 19
 const SZ_TERMS = 9
 const SZ_NOTE_TITLE = 9
 const SZ_NOTE_BODY = 8
-const SZ_UPLOAD = 9
 const SZ_ATTACH_TITLE = 11
 const SZ_ATTACH_META = 9
 const SZ_SIG_TITLE = 9
@@ -71,10 +70,6 @@ function readOptionalPublicFile(rel: string): Buffer | undefined {
   } catch {
     return undefined
   }
-}
-
-function attRef(slotPresent: (n: number) => boolean, n: number): string {
-  return slotPresent(n) ? `Attachment ${n}` : "—"
 }
 
 /** Start a new page if the block of height `h` does not fit below `doc.y` (avoids huge blank gaps). */
@@ -305,7 +300,7 @@ export async function buildRentalApplicationPdf(opts: {
   coApplicantSignaturePng?: Buffer
   submittedAt?: Date
 }): Promise<Buffer> {
-  const { t, slotPresent, embedPages, applicantSignaturePng, coApplicantSignaturePng } = opts
+  const { t, embedPages, applicantSignaturePng, coApplicantSignaturePng } = opts
   const submittedAt = opts.submittedAt ?? new Date()
 
   const { default: PDFDocument } = await import("pdfkit")
@@ -371,19 +366,19 @@ export async function buildRentalApplicationPdf(opts: {
     rowPair(doc, "Name", t.applicantName, "Social Insurance Number", "—")
     rowPair(doc, "Current Address", t.applicantAddress, "Email Address", t.applicantEmail)
     rowPair(doc, "Phone 1", t.applicantPhone1, "Phone 2", t.applicantPhone2)
-    rowPair(doc, "Date of Birth", t.applicantDob, "Govt Issued Photo ID", attRef(slotPresent, 1))
+    fullWidthLabelValue(doc, "Date of Birth", t.applicantDob)
 
     sectionTitle(doc, "Co-Applicant's Personal Information")
     rowPair(doc, "Name", t.coApplicantName, "Social Insurance Number", "—")
     rowPair(doc, "Current Address", t.coApplicantAddress, "Email Address", t.coApplicantEmail)
     rowPair(doc, "Phone 1", t.coApplicantPhone1, "Phone 2", t.coApplicantPhone2)
-    rowPair(doc, "Date of Birth", t.coApplicantDob, "Govt Issued Photo ID", attRef(slotPresent, 2))
+    fullWidthLabelValue(doc, "Date of Birth", t.coApplicantDob)
 
     sectionTitle(doc, "Co-Applicant's Personal Information (Who is under 18)")
     rowPair(doc, "Name 1", t.minorName1, "Name 2", t.minorName2)
     rowPair(doc, "Name 3", t.minorName3, "Name 4", t.minorName4)
 
-    sectionTitle(doc, "Previous Tenancy")
+    sectionTitle(doc, "Current Tenancy")
     rowPair(doc, "Landlord's Name", t.prevLandlordName, "Landlord's Phone", t.prevLandlordPhone)
     rowPair(doc, "Present Address", t.prevPresentAddress, "Time at this location", t.prevTimeAtLocation)
     rowPair(doc, "Monthly Rent", t.prevMonthlyRent, "Reason for Leaving", t.prevReasonLeaving)
@@ -395,45 +390,11 @@ export async function buildRentalApplicationPdf(opts: {
     rowPair(doc, "Monthly Wage", t.monthlyWage, "Job Position", t.jobPosition)
     fullWidthLabelValue(doc, "If you have other sources of income that you would like us to consider, please list income, source and amount", t.otherIncomeSources)
 
-    doc.x = LEFT_X
-    doc.font("Helvetica-Bold").fontSize(SZ_UPLOAD)
-    const uploadLabel = "Upload Pictures"
-    const uploadLabelH = Math.max(doc.heightOfString(uploadLabel, { width: CONTENT_W }), 11)
-    const tripRowH = 16
-    ensureSpace(doc, uploadLabelH + 4 + tripRowH)
-    const yUploadLbl = doc.y
-    doc.text(uploadLabel, LEFT_X, yUploadLbl, { width: CONTENT_W })
-    const tripY = yUploadLbl + uploadLabelH + 4
-    const tripW = (CONTENT_W - 2 * 8) / 3
-    const slotsEmp = [3, 4, 5] as const
-    for (let i = 0; i < 3; i++) {
-      const sx = LEFT_X + i * (tripW + 8)
-      doc.font("Helvetica").fontSize(SZ_UPLOAD).text(attRef(slotPresent, slotsEmp[i]), sx, tripY, { width: tripW })
-    }
-    doc.y = tripY + tripRowH
-    doc.x = LEFT_X
-
     sectionTitle(doc, "Co-Applicant's Employment Information")
     rowPair(doc, "Current Employer", t.coEmployerName, "Address", t.coEmployerAddress)
     rowPair(doc, "Supervisor's Name", t.coSupervisorName, "Phone", t.coEmployerPhone)
     rowPair(doc, "Length of Employment", t.coLengthEmployment, "Monthly Wage", t.coMonthlyWage)
     fullWidthLabelValue(doc, "Job Position", t.coJobPosition)
-
-    doc.x = LEFT_X
-    doc.font("Helvetica-Bold").fontSize(SZ_UPLOAD)
-    const uploadLabel2 = "Upload Pictures"
-    const uploadLabel2H = Math.max(doc.heightOfString(uploadLabel2, { width: CONTENT_W }), 11)
-    ensureSpace(doc, uploadLabel2H + 4 + tripRowH)
-    const yUploadLbl2 = doc.y
-    doc.text(uploadLabel2, LEFT_X, yUploadLbl2, { width: CONTENT_W })
-    const tripY2 = yUploadLbl2 + uploadLabel2H + 4
-    const slotsCo = [6, 7, 8] as const
-    for (let i = 0; i < 3; i++) {
-      const sx = LEFT_X + i * (tripW + 8)
-      doc.font("Helvetica").fontSize(SZ_UPLOAD).text(attRef(slotPresent, slotsCo[i]), sx, tripY2, { width: tripW })
-    }
-    doc.y = tripY2 + tripRowH
-    doc.x = LEFT_X
 
     sectionTitle(doc, "Credit History Description")
     rowPair(doc, "Have you declared bankruptcy in the past seven (7) years?", yn(t.bankruptcyAnswer), "Have you ever been evicted from a rental residence?", yn(t.evictedAnswer))
@@ -449,21 +410,11 @@ export async function buildRentalApplicationPdf(opts: {
       "If you have answered YES to any of the above, please state your reasons and/or circumstances",
       t.creditYesDetails,
     )
-
-    doc.x = LEFT_X
-    doc.font("Helvetica-Bold").fontSize(SZ_GRID_LABEL)
-    const crLine =
-      "Please upload if you have current credit report:"
-    const crLineH = Math.max(doc.heightOfString(crLine, { width: CONTENT_W }), 11)
-    ensureSpace(doc, crLineH + 4 + 16)
-    const yCrPrompt = doc.y
-    doc.text(crLine, LEFT_X, yCrPrompt, { width: CONTENT_W })
-    const crY = yCrPrompt + crLineH + 4
-    const half = (CONTENT_W - 8) / 2
-    doc.font("Helvetica").fontSize(SZ_GRID_LABEL).text(attRef(slotPresent, 9), LEFT_X, crY, { width: half })
-    doc.text(attRef(slotPresent, 10), LEFT_X + half + 8, crY, { width: half })
-    doc.y = crY + 16
-    doc.x = LEFT_X
+    fullWidthLabelValue(
+      doc,
+      "Required documents (email separately as PDF only)",
+      "Government-issued photo ID for every occupant 18+; recent pay stubs or bank statements for all lease signers; and a full credit report for all lease signers. Send PDFs to info@devarentals.com. Screenshots or photos will not be accepted. Incomplete applications may not be processed.",
+    )
 
     sectionTitle(doc, "Additional Information")
     rowPair(doc, "Do you wish to bring a pet(s) to the rental premises?", yn(t.bringPetsAnswer), "If yes, describe the pets:", t.petsDescription)
@@ -537,10 +488,8 @@ export async function buildRentalApplicationPdf(opts: {
     } else {
       doc.x = LEFT_X
       doc.font("Helvetica").fontSize(SZ_ATTACH_META).fillColor("#555555")
-      const hasUploads = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].some((n) => slotPresent(n))
-      const note = hasUploads
-        ? "Uploaded supporting documents (IDs, employment, credit reports, etc.) are attached separately to this email."
-        : "No supporting documents were uploaded with this application."
+      const note =
+        "Supporting documents must be emailed as PDF files to info@devarentals.com (photo ID, proof of income, and full credit report). They are not uploaded with this application."
       const nh = Math.max(doc.heightOfString(note, { width: CONTENT_W }), 13)
       ensureSpace(doc, nh + 4)
       doc.text(note, LEFT_X, doc.y, { width: CONTENT_W })

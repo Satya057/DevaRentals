@@ -181,7 +181,7 @@ const quickTopics: HelpTopic[] = [
       /application|apply to rent|tenant apply|apply for (the )?(unit|place|rental)|rental app/i,
     ],
     chatSummary:
-      "Ready to apply? Use our secure rental application — upload documents and complete signatures where required. Questions first? Call or email.",
+      "Ready to apply? Use our secure rental application and complete signatures where required. Questions first? Call or email.",
     actions: [
       { href: "/forms/rental", label: "Rental application form" },
       { href: "tel:780-984-1996", label: "Call 780-984-1996" },

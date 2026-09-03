@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  useEffect,
   useRef,
   useState,
   type ChangeEvent,
@@ -23,15 +22,10 @@ import {
   validateStepNativeFields,
 } from "@/lib/form-wizard"
 import {
-  rentalUploadSizeErrorMessage,
-  validateRentalUploadSizes,
-} from "@/lib/rental-application-upload-limits"
-import {
   formFieldLabelClass,
   formFieldLabelClassMb3,
   formRadioOptionLabelClass,
 } from "@/components/forms/form-label-styles"
-import { FormStepProgress } from "@/components/forms/form-step-progress"
 import {
   SignaturePadField,
   type SignaturePadFieldHandle,
@@ -69,11 +63,6 @@ const fieldInputClass = cn(
   "[&:-webkit-autofill]:[transition:background-color_9999s_ease-out]",
 )
 
-const fieldFileInputClass = cn(
-  fieldInputClass,
-  "py-1.5 text-[#57534e] file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-[#d4c5b0] file:bg-[#faf8f5] file:px-3 file:py-1.5 file:text-xs file:font-normal file:text-[#44403c] file:shadow-none hover:file:bg-[#ede8de]",
-)
-
 const fieldTextareaClass = cn(
   "min-h-[5.25rem] w-full rounded-md border border-[#d4c5b0] bg-white px-3 py-2 text-sm text-[#292524]",
   "shadow-none transition-[color,box-shadow,border-color]",
@@ -88,12 +77,6 @@ export type RentalApplicationFormProps = {
   onSuccess?: () => void
   className?: string
 }
-
-const stepTitles = [
-  "Property & your information",
-  "Co-applicant, tenancy & employment",
-  "Credit, additional details & agreement",
-]
 
 function RentalInput({ autoComplete, ...props }: ComponentProps<typeof UiInput>) {
   return <UiInput {...props} autoComplete={autoComplete ?? "off"} />
@@ -138,7 +121,7 @@ function RentalPhoneInput({ required, onChange, ...props }: RentalPhoneInputProp
 
 export function RentalApplicationForm({ onSuccess, className }: RentalApplicationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitPhase, setSubmitPhase] = useState<"upload" | "process" | null>(null)
+  const [submitPhase, setSubmitPhase] = useState<"send" | "process" | null>(null)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitFieldIssues, setSubmitFieldIssues] = useState<string[]>([])
@@ -152,55 +135,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
   const [smokeAnswer, setSmokeAnswer] = useState("")
   const [jointCreditAnswer, setJointCreditAnswer] = useState("")
   const [tenantInsuranceAnswer, setTenantInsuranceAnswer] = useState("")
-  const [step, setStep] = useState(0)
-  const step0Ref = useRef<HTMLDivElement>(null)
-  const step1Ref = useRef<HTMLDivElement>(null)
-  const step2Ref = useRef<HTMLDivElement>(null)
   const applicantSigRef = useRef<SignaturePadFieldHandle>(null)
   const coApplicantSigRef = useRef<SignaturePadFieldHandle>(null)
   const formRef = useRef<HTMLFormElement>(null)
-  /** Section 3: only run validation after an intentional "Submit Application" activation (not implicit Enter submit). */
+  /** Only run validation after an intentional "Submit Application" click (not implicit Enter submit). */
   const explicitFinalSubmitRef = useRef(false)
-  const prevStepForFeedbackRef = useRef<number | null>(null)
-  const skipScrollOnMount = useRef(true)
-
-  /** Modal/dialog uses an inner overflow-y-auto wrapper; window.scrollTo does not reset it. */
-  function scrollWizardShellToTop() {
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-    const form = formRef.current
-    if (!form) return
-    let el: HTMLElement | null = form.parentElement
-    while (el && el !== document.documentElement) {
-      const { overflowY } = getComputedStyle(el)
-      const yScroll =
-        overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay"
-      if (yScroll && el.scrollHeight > el.clientHeight) {
-        el.scrollTop = 0
-        return
-      }
-      el = el.parentElement
-    }
-  }
-
-  useEffect(() => {
-    if (skipScrollOnMount.current) {
-      skipScrollOnMount.current = false
-      return
-    }
-    const id = requestAnimationFrame(() => {
-      scrollWizardShellToTop()
-    })
-    return () => cancelAnimationFrame(id)
-  }, [step])
-
-  useEffect(() => {
-    const prev = prevStepForFeedbackRef.current
-    prevStepForFeedbackRef.current = step
-    if (step === 2 && prev !== null && prev !== 2) {
-      setSubmitError(null)
-      setSubmitFieldIssues([])
-    }
-  }, [step])
 
   const scrollRentalFeedbackIntoView = () => {
     requestAnimationFrame(() => {
@@ -208,50 +147,8 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     })
   }
 
-  const goNext = () => {
-    setSubmitError(null)
-    setSubmitFieldIssues([])
-    const root = step === 0 ? step0Ref.current : step1Ref.current
-    if (!stepFieldsAreValid(root)) {
-      const labels = collectInvalidRequiredFieldLabels(root)
-      setSubmitFieldIssues(
-        labels.length > 0
-          ? labels
-          : ["Fill in every required field on this section before continuing."],
-      )
-      validateStepNativeFields(root)
-      scrollRentalFeedbackIntoView()
-      return
-    }
-    if (step === 0 && !validateRadixCheckboxChecked(step0Ref.current, "rental-app-privacy-accept")) {
-      setSubmitFieldIssues([
-        "Terms & Conditions — check the box: “I have read and accept the terms above”.",
-      ])
-      scrollRentalFeedbackIntoView()
-      return
-    }
-    if (step === 1 && !isEmploymentStatusChosen(employmentStatus)) {
-      setSubmitFieldIssues([
-        "Employment — choose your status (Full-Time, Part-Time, Student, Unemployed, or Retired).",
-      ])
-      scrollRentalFeedbackIntoView()
-      return
-    }
-    setStep((s) => Math.min(s + 1, 2))
-  }
-
-  const goBack = () => {
-    setSubmitError(null)
-    setSubmitFieldIssues([])
-    setStep((s) => Math.max(s - 1, 0))
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (step < 2) {
-      goNext()
-      return
-    }
     if (!explicitFinalSubmitRef.current) {
       return
     }
@@ -260,85 +157,54 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     setSubmitError(null)
     setSubmitFieldIssues([])
     const form = e.currentTarget
-    // Do not use form.checkValidity(): it also validates inputs inside display:none
-    // steps, fails silently (reportValidity targets a hidden field), so Submit appears broken.
-    if (!stepFieldsAreValid(step0Ref.current)) {
-      setStep(0)
-      const labels = collectInvalidRequiredFieldLabels(step0Ref.current)
-      setSubmitFieldIssues(
-        labels.length > 0
-          ? labels
-          : ["Section 1 — complete all required fields before submitting."],
-      )
-      setSubmitError("Section 1 is incomplete.")
-      setTimeout(() => validateStepNativeFields(step0Ref.current), 0)
-      scrollRentalFeedbackIntoView()
-      return
-    }
-    if (!stepFieldsAreValid(step1Ref.current)) {
-      setStep(1)
-      const labels = collectInvalidRequiredFieldLabels(step1Ref.current)
-      setSubmitFieldIssues(
-        labels.length > 0
-          ? labels
-          : ["Section 2 — complete all required fields before submitting."],
-      )
-      setSubmitError("Section 2 is incomplete.")
-      setTimeout(() => validateStepNativeFields(step1Ref.current), 0)
-      scrollRentalFeedbackIntoView()
-      return
-    }
+
     if (!isEmploymentStatusChosen(employmentStatus)) {
-      setStep(1)
       setSubmitFieldIssues([
         "Employment — choose your status (Full-Time, Part-Time, Student, Unemployed, or Retired).",
       ])
-      setSubmitError("Section 2 is incomplete.")
       scrollRentalFeedbackIntoView()
       return
     }
-    const section3Unanswered: string[] = []
+    const unanswered: string[] = []
     if (!isYesNoAnswer(bankruptcyAnswer)) {
-      section3Unanswered.push("Have you declared bankruptcy in the past seven (7) years?")
+      unanswered.push("Have you declared bankruptcy in the past seven (7) years?")
     }
     if (!isYesNoAnswer(evictedAnswer)) {
-      section3Unanswered.push("Have you ever been evicted from a rental residence?")
+      unanswered.push("Have you ever been evicted from a rental residence?")
     }
     if (!isYesNoAnswer(lateRentAnswer)) {
-      section3Unanswered.push("Have you had two or more late rental payments in the past 12 months?")
+      unanswered.push("Have you had two or more late rental payments in the past 12 months?")
     }
     if (!isYesNoAnswer(refusedRentAnswer)) {
-      section3Unanswered.push("Have you ever refused to pay rent when due?")
+      unanswered.push("Have you ever refused to pay rent when due?")
     }
     if (!isYesNoAnswer(bringPetsAnswer)) {
-      section3Unanswered.push("Do you wish to bring a pet(s) to the rental premises?")
+      unanswered.push("Do you wish to bring a pet(s) to the rental premises?")
     }
     if (!isYesNoAnswer(smokeAnswer)) {
-      section3Unanswered.push("Do you, or any proposed occupant, smoke?")
+      unanswered.push("Do you, or any proposed occupant, smoke?")
     }
     if (!isYesNoAnswer(jointCreditAnswer)) {
-      section3Unanswered.push("If you are co-applicants, do you consent to a joint credit report?")
+      unanswered.push("If you are co-applicants, do you consent to a joint credit report?")
     }
     if (!isYesNoAnswer(tenantInsuranceAnswer)) {
-      section3Unanswered.push(
+      unanswered.push(
         "Tenant's insurance — below the yellow note, choose Yes or No (I/We presently insure our belongings).",
       )
     }
-    if (section3Unanswered.length > 0) {
-      setSubmitFieldIssues(section3Unanswered)
-      setSubmitError("Section 3 is incomplete.")
+    if (unanswered.length > 0) {
+      setSubmitFieldIssues(unanswered)
+      setSubmitError("Please complete the required questions.")
       scrollRentalFeedbackIntoView()
       return
     }
-    if (!stepFieldsAreValid(step2Ref.current)) {
-      const labels = collectInvalidRequiredFieldLabels(step2Ref.current)
+    if (!stepFieldsAreValid(form)) {
+      const labels = collectInvalidRequiredFieldLabels(form)
       setSubmitFieldIssues(
-        labels.length > 0
-          ? labels
-          : ["Section 3 — complete all required fields on this page."],
+        labels.length > 0 ? labels : ["Complete all required fields before submitting."],
       )
-      setSubmitError("Section 3 is incomplete.")
-      validateStepNativeFields(step2Ref.current)
+      setSubmitError("Some required fields are incomplete.")
+      validateStepNativeFields(form)
       scrollRentalFeedbackIntoView()
       return
     }
@@ -356,15 +222,8 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
       scrollRentalFeedbackIntoView()
       return
     }
-    const uploadSizeErrEarly = validateRentalUploadSizes(form)
-    if (uploadSizeErrEarly) {
-      setSubmitError(uploadSizeErrEarly)
-      setSubmitFieldIssues([])
-      scrollRentalFeedbackIntoView()
-      return
-    }
     setIsSubmitting(true)
-    setSubmitPhase("upload")
+    setSubmitPhase("send")
     setSubmitError(null)
     setSubmitFieldIssues([])
     const phaseTimer = window.setTimeout(() => setSubmitPhase("process"), 2500)
@@ -396,15 +255,6 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     if (coSigBlob) {
       fd.append("signature_co_applicant", coSigBlob, "co-applicant-signature.png")
     }
-    const sigBytes = applicantSigBlob.size + (coSigBlob?.size ?? 0)
-    const uploadSizeErrFinal = validateRentalUploadSizes(form, sigBytes)
-    if (uploadSizeErrFinal) {
-      setSubmitError(uploadSizeErrFinal)
-      setSubmitFieldIssues([])
-      stopSubmitting()
-      scrollRentalFeedbackIntoView()
-      return
-    }
     try {
       const res = await fetch("/api/rental-application", {
         method: "POST",
@@ -415,25 +265,20 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
         issues?: string[]
       }
       if (!res.ok) {
-        if (res.status === 413) {
-          setSubmitError(rentalUploadSizeErrorMessage())
-          setSubmitFieldIssues([])
-        } else {
-          const errorMsg =
-            typeof data.error === "string"
-              ? data.error
-              : "Submission failed. Please try again."
-          const issues = Array.isArray(data.issues)
-            ? data.issues.filter(
-                (line): line is string =>
-                  typeof line === "string" &&
-                  line.trim().length > 0 &&
-                  line !== errorMsg,
-              )
-            : []
-          setSubmitError(errorMsg)
-          setSubmitFieldIssues(issues)
-        }
+        const errorMsg =
+          typeof data.error === "string"
+            ? data.error
+            : "Submission failed. Please try again."
+        const issues = Array.isArray(data.issues)
+          ? data.issues.filter(
+              (line): line is string =>
+                typeof line === "string" &&
+                line.trim().length > 0 &&
+                line !== errorMsg,
+            )
+          : []
+        setSubmitError(errorMsg)
+        setSubmitFieldIssues(issues)
         setTimeout(() => {
           submitFeedbackRef.current?.scrollIntoView({
             behavior: "smooth",
@@ -453,10 +298,8 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     }
   }
 
-  /** Section 3: Enter in a text field otherwise triggers full form submit and shows errors for fields below the fold. */
-  const suppressAccidentalSubmitOnEnterInSection3 = (e: KeyboardEvent<HTMLFormElement>) => {
+  const suppressAccidentalSubmitOnEnter = (e: KeyboardEvent<HTMLFormElement>) => {
     if (e.key !== "Enter") return
-    if (step < 2) return
     const target = e.target
     if (target instanceof HTMLTextAreaElement) return
     if (target instanceof HTMLInputElement) {
@@ -495,7 +338,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      onKeyDown={suppressAccidentalSubmitOnEnterInSection3}
+      onKeyDown={suppressAccidentalSubmitOnEnter}
       autoComplete="off"
       className={cn("w-full max-w-none space-y-5", className)}
       noValidate
@@ -527,45 +370,10 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
         </div>
       ) : null}
 
-      <FormStepProgress
-        step={step}
-        stepTitles={stepTitles}
-        stepLabel="Section"
-        ariaLabel={`Rental application step ${step + 1} of 3`}
-      />
-
-      <div
-        ref={step0Ref}
-        className={cn(step === 0 ? "space-y-6" : "hidden")}
-        aria-hidden={step !== 0}
-      >
+      <div className="space-y-6">
           {/* Your Personal Information */}
           <section>
             <h2 className="text-xl font-normal text-[#1c1917] mb-4">Your Personal Information</h2>
-            
-            <div className="mb-4">
-              <h3 className="mb-3 text-lg font-normal text-[#1c1917]">Terms & Conditions</h3>
-              <div className="overflow-hidden rounded border border-[#d4c5b0] bg-white">
-                <div
-                  className="max-h-24 overflow-y-auto overscroll-y-contain p-3 text-sm leading-relaxed text-[#555] sm:max-h-32 [&_p+p]:mt-2.5"
-                  tabIndex={0}
-                  role="region"
-                  aria-label="Privacy and application terms — scroll to read full text"
-                >
-                  <p>MaxWell Excel Realty [The LANDLORD] is committed to safeguarding the personal information entrusted to us by the Applicant. Personal information means any information about an identifiable individual. This can include but is not limited to an individual{"'"}s name, home address and phone number, age, sex, marital or family status, financial information, educational history, or employment status. We manage your personal information in accordance with Alberta{"'"}s Personal Information Protection Act and other applicable laws. This policy applies to the LANDLORD and to any person providing services on our behalf.</p>
-                  <p>We collect the personal information for the purposes of assessing the Applicant(s) and co co-Applicant(s) if any as to suitability as a tenant in general, and/or for a specific rental location</p>
-                  <p>Your completion of this Application will be taken as your consent to the above use by us, including both the information provided in the Application and personal information obtained by us from other sources as noted in the Application. We will assume the same consent in cases where you volunteer other personal information for an obvious purpose, even though it may not be specifically requested in the Application.</p>
-                  <p>You may withdraw consent to the use and disclosure of personal information at any time, unless the personal information is necessary for us to fulfill our legal obligations. We will respect your decision, but may not be able to provide you with rental accommodation if we do not have sufficient personal information.</p>
-                  <p className="font-medium">I/We, the undersigned (the {"'"}Applicant{"'"}, and if applicable the {"'"}Co-Applicant{"'"}) hereby apply for approval as a Tenant(s) of the Landlord based on the information provided on this page and the following 2 pages. I/We understand that the information provided will be viewed to determine my/our suitability for the premises described below, and any other premises that the Landlord my deem appropriate.</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-start gap-2.5">
-                <Checkbox id="rental-app-privacy-accept" className="mt-0.5 border-[#d4c5b0]" />
-                <label htmlFor="rental-app-privacy-accept" className={cn(formRadioOptionLabelClass, "text-sm leading-snug")}>
-                  I have read and accept the terms above <span className="text-red-600">*</span>
-                </label>
-              </div>
-            </div>
 
             <p className="text-sm text-[#444] mb-4 leading-relaxed">
               Don{"'"}t have a specific unit yet?{" "}
@@ -690,28 +498,9 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 </label>
                 <RentalInput name="applicantDob" type="date" required className={fieldInputClass} />
               </div>
-              <div>
-                <label className={formFieldLabelClass}>
-                  Govt Issued Photo ID <span className="text-red-600">*</span>
-                </label>
-                <RentalInput
-                  name="file_applicant_id"
-                  type="file"
-                  accept="image/*,.pdf"
-                  required
-                  className={fieldFileInputClass}
-                />
-              </div>
             </div>
           </section>
 
-      </div>
-
-      <div
-        ref={step1Ref}
-        className={cn(step === 1 ? "space-y-6" : "hidden")}
-        aria-hidden={step !== 1}
-      >
           {/* Co-Applicant's Personal Information */}
           <section>
             <h2 className="mb-3 text-xl font-normal text-[#1c1917]">
@@ -752,15 +541,6 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 <label className={formFieldLabelClass}>Date of Birth</label>
                 <RentalInput name="coApplicantDob" type="date" className={fieldInputClass} />
               </div>
-              <div>
-                <label className={formFieldLabelClass}>Govt Issued Photo ID</label>
-                <RentalInput
-                  name="file_co_applicant_id"
-                  type="file"
-                  accept="image/*,.pdf"
-                  className={fieldFileInputClass}
-                />
-              </div>
             </div>
           </section>
 
@@ -788,11 +568,9 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
             </div>
           </section>
 
-          {/* Previous Tenancy */}
+          {/* Current Tenancy */}
           <section>
-            <h2 className="text-xl font-normal text-[#1c1917] mb-2">Previous Tenancy</h2>
-            <p className="text-sm text-[#666] mb-4 italic">If less than 2 years at current location</p>
-            
+            <h2 className="mb-4 text-xl font-normal text-[#1c1917]">Current Tenancy</h2>
             <div className="grid md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className={formFieldLabelClass}>
@@ -987,44 +765,6 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 className={fieldTextareaClass}
               />
             </div>
-
-            <div className="space-y-3">
-              <div>
-                <label className={formFieldLabelClass}>
-                  Upload Pictures <span className="text-red-600">*</span>
-                </label>
-                <RentalInput
-                  name="file_employment_1"
-                  type="file"
-                  accept="image/*,.pdf"
-                  required
-                  className={fieldFileInputClass}
-                />
-              </div>
-              <div>
-                <label className={formFieldLabelClass}>
-                  Upload Pictures <span className="text-red-600">*</span>
-                </label>
-                <RentalInput
-                  name="file_employment_2"
-                  type="file"
-                  accept="image/*,.pdf"
-                  required
-                  className={fieldFileInputClass}
-                />
-              </div>
-              <div>
-                <label className={formFieldLabelClass}>
-                  Upload Pictures
-                </label>
-                <RentalInput
-                  name="file_employment_3"
-                  type="file"
-                  accept="image/*,.pdf"
-                  className={fieldFileInputClass}
-                />
-              </div>
-            </div>
           </section>
 
           {/* Co-Applicant's Employment Information */}
@@ -1092,45 +832,8 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 className={fieldInputClass}
               />
             </div>
-
-            <div className="space-y-3">
-              <div>
-                <label className={formFieldLabelClass}>Upload Pictures</label>
-                <RentalInput
-                  name="file_co_employment_1"
-                  type="file"
-                  accept="image/*,.pdf"
-                  className={fieldFileInputClass}
-                />
-              </div>
-              <div>
-                <label className={formFieldLabelClass}>Upload Pictures</label>
-                <RentalInput
-                  name="file_co_employment_2"
-                  type="file"
-                  accept="image/*,.pdf"
-                  className={fieldFileInputClass}
-                />
-              </div>
-              <div>
-                <label className={formFieldLabelClass}>Upload Pictures</label>
-                <RentalInput
-                  name="file_co_employment_3"
-                  type="file"
-                  accept="image/*,.pdf"
-                  className={fieldFileInputClass}
-                />
-              </div>
-            </div>
           </section>
 
-      </div>
-
-      <div
-        ref={step2Ref}
-        className={cn(step === 2 ? "space-y-6" : "hidden")}
-        aria-hidden={step !== 2}
-      >
           {/* Credit History Description */}
           <section>
             <h2 className="text-xl font-normal text-[#1c1917] mb-4">Credit History Description</h2>
@@ -1225,30 +928,6 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                   placeholder="If you have answered YES to any of the above, please state your reasons and/or circumstances"
                   rows={3}
                   className={fieldTextareaClass}
-                />
-              </div>
-
-              <div>
-                <label className={formFieldLabelClass}>
-                  Please upload if you have current credit report
-                </label>
-                <RentalInput
-                  name="file_credit_1"
-                  type="file"
-                  accept="image/*,.pdf"
-                  className={fieldFileInputClass}
-                />
-              </div>
-
-              <div>
-                <label className={formFieldLabelClass}>
-                  Please upload if you have current credit report
-                </label>
-                <RentalInput
-                  name="file_credit_2"
-                  type="file"
-                  accept="image/*,.pdf"
-                  className={fieldFileInputClass}
                 />
               </div>
             </div>
@@ -1424,6 +1103,11 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 role="region"
                 aria-label="Final terms and authorizations — scroll to read full text"
               >
+                <p>MaxWell Excel Realty [The LANDLORD] is committed to safeguarding the personal information entrusted to us by the Applicant. Personal information means any information about an identifiable individual. This can include but is not limited to an individual{"'"}s name, home address and phone number, age, sex, marital or family status, financial information, educational history, or employment status. We manage your personal information in accordance with Alberta{"'"}s Personal Information Protection Act and other applicable laws. This policy applies to the LANDLORD and to any person providing services on our behalf.</p>
+                <p>We collect the personal information for the purposes of assessing the Applicant(s) and co co-Applicant(s) if any as to suitability as a tenant in general, and/or for a specific rental location</p>
+                <p>Your completion of this Application will be taken as your consent to the above use by us, including both the information provided in the Application and personal information obtained by us from other sources as noted in the Application. We will assume the same consent in cases where you volunteer other personal information for an obvious purpose, even though it may not be specifically requested in the Application.</p>
+                <p>You may withdraw consent to the use and disclosure of personal information at any time, unless the personal information is necessary for us to fulfill our legal obligations. We will respect your decision, but may not be able to provide you with rental accommodation if we do not have sufficient personal information.</p>
+                <p className="font-medium">I/We, the undersigned (the {"'"}Applicant{"'"}, and if applicable the {"'"}Co-Applicant{"'"}) hereby apply for approval as a Tenant(s) of the Landlord based on the information provided on this page and the following 2 pages. I/We understand that the information provided will be viewed to determine my/our suitability for the premises described below, and any other premises that the Landlord my deem appropriate.</p>
                 <p className="text-[#8B2332]">The Applicant and/or Co-Applicant acknowledges that pets, barbeques, waterbeds and aquariums are not permitted without the advance written permission of the Landlord.</p>
                 <p className="text-[#8B2332]">If the Landlord permits a pet, an additional Pet Damage Deposit of $100.00 will be paid to the Landlord. The Landlord will hold the Deposit(s) until the Tenancy ends.</p>
                 <p>The Applicant(s) do(es) hereby state that the information contained herein is true and correct, and contain no misrepresentations. If misrepresentations are found after a residential tenancy agreement is entered into with the Applicant and/or Co-Applicant, the Landlord shall have the option to terminate the residential tenancy agreement and seek all available remedies.</p>
@@ -1448,7 +1132,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 </p>
                 <SignaturePadField
                   ref={applicantSigRef}
-                  active={step === 2}
+                  active
                   aria-label="Applicant signature — draw here"
                 />
               </div>
@@ -1461,7 +1145,7 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
                 </p>
                 <SignaturePadField
                   ref={coApplicantSigRef}
-                  active={step === 2}
+                  active
                   aria-label="Co-applicant signature — draw here"
                 />
               </div>
@@ -1484,52 +1168,75 @@ export function RentalApplicationForm({ onSuccess, className }: RentalApplicatio
               </div>
             </div>
           </section>
-
       </div>
 
-      <div className="space-y-2 border-t border-[#d4c5b0]/50 pt-4">
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Button
-            type="button"
-            variant="outline"
-            className="border-[#8B2332] text-[#8B2332] hover:bg-[#8B2332]/10 sm:min-w-[100px]"
-            disabled={step === 0}
-            onClick={goBack}
+      <aside
+        className="rounded-md border border-[#8B2332]/45 bg-[#8B2332]/10 px-3.5 py-3 text-sm leading-relaxed text-[#333]"
+        role="note"
+      >
+        <p className="mb-2 font-semibold text-[#8B2332]">Required documents</p>
+        <p className="mb-3">
+          Please email the following documents with your application. PDF files only — screenshots
+          and photos will not be accepted.
+        </p>
+        <ol className="mb-3 list-decimal space-y-2 pl-5">
+          <li>
+            <span className="font-medium">Government-issued photo ID</span>
+            <span className="block text-[#444]">
+              Required for every occupant 18 years of age or older.
+            </span>
+          </li>
+          <li>
+            <span className="font-medium">Proof of income</span>
+            <span className="block text-[#444]">
+              Recent pay stubs or bank statements (PDF). Required for all lease signers.
+            </span>
+          </li>
+          <li>
+            <span className="font-medium">Full credit report</span>
+            <span className="block text-[#444]">
+              A complete credit report (PDF). Required for all lease signers.
+            </span>
+          </li>
+        </ol>
+        <p className="mb-1">
+          Send all documents to{" "}
+          <a
+            href="mailto:info@devarentals.com"
+            className="font-semibold text-[#8B2332] underline-offset-2 hover:underline"
           >
-            Back
+            info@devarentals.com
+          </a>
+          .
+        </p>
+        <p className="mb-0 text-[#444]">
+          Incomplete applications, or applications submitted without these documents, may not be
+          processed.
+        </p>
+      </aside>
+
+      <div className="space-y-2 border-t border-[#d4c5b0]/50 pt-4">
+        <div className="flex justify-center sm:justify-end">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3 text-lg min-h-12"
+            onClick={() => {
+              explicitFinalSubmitRef.current = true
+            }}
+          >
+            {isSubmitting
+              ? submitPhase === "process"
+                ? "Finishing up…"
+                : "Submitting…"
+              : "Submit Application"}
           </Button>
-          <div className="flex justify-center gap-3 sm:justify-end">
-            {step < 2 ? (
-              <Button
-                type="button"
-                className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-h-12 min-w-[120px]"
-                onClick={goNext}
-              >
-                Next
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-12 py-3 text-lg min-h-12"
-                onClick={() => {
-                  explicitFinalSubmitRef.current = true
-                }}
-              >
-                {isSubmitting
-                  ? submitPhase === "process"
-                    ? "Finishing up…"
-                    : "Uploading files…"
-                  : "Submit Application"}
-              </Button>
-            )}
-          </div>
-          {isSubmitting ? (
-            <p className="text-center text-sm text-[#666] mt-2 max-w-md mx-auto">
-              Please keep this page open until you see the confirmation message.
-            </p>
-          ) : null}
         </div>
+        {isSubmitting ? (
+          <p className="text-center text-sm text-[#666] mt-2 max-w-md mx-auto">
+            Please keep this page open until you see the confirmation message.
+          </p>
+        ) : null}
       </div>
     </form>
   )

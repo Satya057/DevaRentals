@@ -93,7 +93,7 @@ ${row("Name 2", t.minorName2)}
 ${row("Name 3", t.minorName3)}
 ${row("Name 4", t.minorName4)}
 
-<h2 style="font-size:16px;margin:18px 0 8px;color:${"#8B2332"};">Previous Tenancy</h2>
+<h2 style="font-size:16px;margin:18px 0 8px;color:${"#8B2332"};">Current Tenancy</h2>
 ${row("Landlord's Name", t.prevLandlordName)}
 ${row("Landlord's Phone", t.prevLandlordPhone)}
 ${row("Present Address", t.prevPresentAddress)}

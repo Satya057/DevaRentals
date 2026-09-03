@@ -118,7 +118,7 @@ export function formatRentalApplicationEmailBody(
     line("Name 3", t.minorName3),
     line("Name 4", t.minorName4),
     "",
-    "— Previous tenancy —",
+    "— Current tenancy —",
     line("Landlord's Name", t.prevLandlordName),
     line("Landlord's Phone", t.prevLandlordPhone),
     line("Present Address", t.prevPresentAddress),

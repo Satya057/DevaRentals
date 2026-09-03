@@ -104,16 +104,6 @@ const textSchema = z.object({
 })
 
 const FILE_FIELDS = [
-  { key: "file_applicant_id", label: "Applicant Govt Issued Photo ID" },
-  { key: "file_co_applicant_id", label: "Co-Applicant Govt Issued Photo ID" },
-  { key: "file_employment_1", label: "Employment upload 1" },
-  { key: "file_employment_2", label: "Employment upload 2" },
-  { key: "file_employment_3", label: "Employment upload 3" },
-  { key: "file_co_employment_1", label: "Co-applicant employment upload 1" },
-  { key: "file_co_employment_2", label: "Co-applicant employment upload 2" },
-  { key: "file_co_employment_3", label: "Co-applicant employment upload 3" },
-  { key: "file_credit_1", label: "Credit report / screenshot 1" },
-  { key: "file_credit_2", label: "Credit report / screenshot 2" },
   { key: "signature_applicant", label: "Applicant signature (drawn)" },
   { key: "signature_co_applicant", label: "Co-applicant signature (drawn)" },
 ] as const
