@@ -20,6 +20,11 @@ import {
   formRadioOptionLabelClass,
 } from "@/components/forms/form-label-styles"
 import { SERVICE_REQUEST_CATEGORIES } from "@/lib/service-request-categories"
+import {
+  compressUploadFile,
+  formatBytes,
+  MAX_SERVICE_ATTACHMENT_BYTES,
+} from "@/lib/compress-upload-file"
 import { cn } from "@/lib/utils"
 
 function assignFileToInput(input: HTMLInputElement, file: File) {
@@ -28,7 +33,13 @@ function assignFileToInput(input: HTMLInputElement, file: File) {
   input.files = dt.files
 }
 
-function ServiceAttachmentField({ num }: { num: number }) {
+function ServiceAttachmentField({
+  num,
+  onBusyChange,
+}: {
+  num: number
+  onBusyChange?: (busy: boolean) => void
+}) {
   const cameraInputRef = useRef<HTMLInputElement>(null)
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -36,6 +47,11 @@ function ServiceAttachmentField({ num }: { num: number }) {
   const [fileName, setFileName] = useState<string | null>(null)
   const [cameraOpen, setCameraOpen] = useState(false)
   const [cameraError, setCameraError] = useState<string | null>(null)
+  const [compressing, setCompressing] = useState(false)
+  const [compressProgress, setCompressProgress] = useState(0)
+  const [compressError, setCompressError] = useState<string | null>(null)
+  const compressGen = useRef(0)
+  const abortRef = useRef<AbortController | null>(null)
 
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((t) => t.stop())
@@ -48,6 +64,12 @@ function ServiceAttachmentField({ num }: { num: number }) {
     setCameraOpen(false)
     setCameraError(null)
   }
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort()
+    }
+  }, [])
 
   useEffect(() => {
     if (!cameraOpen) return
@@ -79,12 +101,54 @@ function ServiceAttachmentField({ num }: { num: number }) {
     }
   }, [cameraOpen])
 
+  const replaceWithCompressed = async (namedInput: HTMLInputElement, file: File) => {
+    const gen = ++compressGen.current
+    abortRef.current?.abort()
+    const ac = new AbortController()
+    abortRef.current = ac
+    setCompressError(null)
+    setCompressing(true)
+    setCompressProgress(0)
+    onBusyChange?.(true)
+    try {
+      const out = await compressUploadFile(file, {
+        signal: ac.signal,
+        onProgress: (ratio) => {
+          if (gen === compressGen.current) setCompressProgress(ratio)
+        },
+      })
+      if (gen !== compressGen.current) return
+      if (out.size > MAX_SERVICE_ATTACHMENT_BYTES) {
+        namedInput.value = ""
+        setFileName(null)
+        setCompressError(
+          `This file is still ${formatBytes(out.size)} after compression (limit ${formatBytes(MAX_SERVICE_ATTACHMENT_BYTES)}). Please use a shorter clip.`,
+        )
+        return
+      }
+      assignFileToInput(namedInput, out)
+      setFileName(`${out.name} (${formatBytes(out.size)})`)
+    } catch (err) {
+      if (gen !== compressGen.current) return
+      if (err instanceof DOMException && err.name === "AbortError") return
+      namedInput.value = ""
+      setFileName(null)
+      setCompressError("Could not compress this file. Please try a shorter video or a photo.")
+    } finally {
+      if (gen === compressGen.current) {
+        setCompressing(false)
+        onBusyChange?.(false)
+      }
+    }
+  }
+
   const onCameraPicked = (input: HTMLInputElement) => {
     const file = input.files?.[0]
     const named = uploadInputRef.current
     if (file && named) {
       assignFileToInput(named, file)
       setFileName(file.name)
+      void replaceWithCompressed(named, file)
     } else {
       setFileName(null)
     }
@@ -92,7 +156,14 @@ function ServiceAttachmentField({ num }: { num: number }) {
   }
 
   const onUploadPicked = (input: HTMLInputElement) => {
-    setFileName(input.files?.[0]?.name ?? null)
+    const file = input.files?.[0]
+    if (!file) {
+      setFileName(null)
+      setCompressError(null)
+      return
+    }
+    setFileName(file.name)
+    void replaceWithCompressed(input, file)
   }
 
   const openNativeCamera = () => {
@@ -140,6 +211,7 @@ function ServiceAttachmentField({ num }: { num: number }) {
         if (cameraInputRef.current) cameraInputRef.current.value = ""
         setFileName(file.name)
         closeCamera()
+        void replaceWithCompressed(input, file)
       },
       "image/jpeg",
       0.92,
@@ -170,6 +242,7 @@ function ServiceAttachmentField({ num }: { num: number }) {
         <Button
           type="button"
           size="sm"
+          disabled={compressing}
           className="h-7 bg-[#8B2332] px-2.5 text-xs text-white hover:bg-[#6d1c28]"
           onClick={() => void openTakePic()}
         >
@@ -181,6 +254,7 @@ function ServiceAttachmentField({ num }: { num: number }) {
           variant="outline"
           size="sm"
           className="h-7 border-[#8B2332] px-2.5 text-xs text-[#8B2332] hover:bg-[#8B2332]/10"
+          disabled={compressing}
           onClick={() => {
             const input = uploadInputRef.current
             if (!input) return
@@ -194,12 +268,19 @@ function ServiceAttachmentField({ num }: { num: number }) {
         <span
           className={cn(
             "min-w-0 flex-1 truncate text-sm",
-            fileName ? "font-medium text-[#333]" : "text-[#777]",
+            fileName || compressing ? "font-medium text-[#333]" : "text-[#777]",
           )}
         >
-          {fileName ?? "No file chosen"}
+          {compressing
+            ? `Compressing… ${Math.round(compressProgress * 100)}%`
+            : (fileName ?? "No file chosen")}
         </span>
       </div>
+      {compressError ? (
+        <p className="mt-1 text-xs text-red-600" role="alert">
+          {compressError}
+        </p>
+      ) : null}
 
       {cameraOpen ? (
         <div
@@ -271,7 +352,9 @@ export function ServiceRequestForm({
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [authorization, setAuthorization] = useState<"granted" | "not-granted">("granted")
   const [requestCategory, setRequestCategory] = useState("")
+  const [busySlots, setBusySlots] = useState<Record<number, boolean>>({})
   const formFieldsRef = useRef<HTMLDivElement>(null)
+  const attachmentsBusy = Object.values(busySlots).some(Boolean)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -445,8 +528,17 @@ export function ServiceRequestForm({
         </div>
 
         <div className="space-y-4">
+          <p className="text-xs text-[#555]">
+            Photos or videos — files up to 40 MB are kept as-is; larger videos are compressed automatically.
+          </p>
           {[1, 2, 3, 4].map((num) => (
-            <ServiceAttachmentField key={num} num={num} />
+            <ServiceAttachmentField
+              key={num}
+              num={num}
+              onBusyChange={(busy) =>
+                setBusySlots((prev) => (prev[num] === busy ? prev : { ...prev, [num]: busy }))
+              }
+            />
           ))}
         </div>
 
@@ -485,10 +577,10 @@ export function ServiceRequestForm({
       <div className="flex justify-center pt-4 border-t border-[#d4c5b0]/50 sm:justify-end">
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || attachmentsBusy}
           className="bg-[#8B2332] hover:bg-[#6d1c28] text-white px-10 py-3 min-w-[120px]"
         >
-          {isSubmitting ? "Submitting..." : "Submit Request"}
+          {isSubmitting ? "Submitting..." : attachmentsBusy ? "Compressing..." : "Submit Request"}
         </Button>
       </div>
     </form>

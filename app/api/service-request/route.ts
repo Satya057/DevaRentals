@@ -8,11 +8,12 @@ import {
 import { sendServiceRequestEmail, serviceRequestSmtpConfigured } from "@/lib/service-request-mail"
 import { SERVICE_REQUEST_CATEGORIES } from "@/lib/service-request-categories"
 import type { ShowingsAttachment } from "@/lib/showings-mail"
+import { MAX_SERVICE_ATTACHMENT_BYTES } from "@/lib/compress-upload-file"
 
 export const runtime = "nodejs"
 
-const MAX_FILE_BYTES = 12 * 1024 * 1024
-const MAX_TOTAL_ATTACH_BYTES = 22 * 1024 * 1024
+const MAX_FILE_BYTES = MAX_SERVICE_ATTACHMENT_BYTES
+const MAX_TOTAL_ATTACH_BYTES = 45 * 1024 * 1024
 
 const payloadSchema = z.object({
   tenantName: z.string().trim().min(1),
