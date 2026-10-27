@@ -8,6 +8,12 @@ export const BEDROOM_OPTIONS: { value: string; label: string }[] = [
   { value: "4-den", label: "4+Den" },
   { value: "5", label: "5" },
   { value: "5-den", label: "5+Den" },
+  { value: "6", label: "6" },
+  { value: "6-den", label: "6+Den" },
+  { value: "7", label: "7" },
+  { value: "7-den", label: "7+Den" },
+  { value: "8", label: "8" },
+  { value: "8-den", label: "8+Den" },
   { value: "other", label: "Other" },
 ]
 
@@ -20,6 +26,14 @@ export const BATHROOM_OPTIONS: { value: string; label: string }[] = [
   { value: "3.5", label: "3.5" },
   { value: "4", label: "4" },
   { value: "4.5", label: "4.5" },
+  { value: "5", label: "5" },
+  { value: "5.5", label: "5.5" },
+  { value: "6", label: "6" },
+  { value: "6.5", label: "6.5" },
+  { value: "7", label: "7" },
+  { value: "7.5", label: "7.5" },
+  { value: "8", label: "8" },
+  { value: "8.5", label: "8.5" },
   { value: "other", label: "Other" },
 ]
 
