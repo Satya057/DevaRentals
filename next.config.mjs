@@ -1,5 +1,14 @@
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url))
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Parent folder has another package-lock.json; keep env + Turbopack rooted here.
+  turbopack: {
+    root: projectRoot,
+  },
   /** Google and browsers often request `/favicon.ico` first — serve main logo bytes */
   async rewrites() {
     return [
